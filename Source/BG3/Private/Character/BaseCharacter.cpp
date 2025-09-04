@@ -4,6 +4,8 @@
 #include "BG3/BG3.h"
 #include "UObject/ConstructorHelpers.h"
 #include "BG3/BG3.h"
+#include "Data/SkillDefinition.h"
+#include "Component/SkillBookComponent.h"
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -22,11 +24,15 @@ ABaseCharacter::ABaseCharacter()
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
+}
 
-	if (DefaultSkills)
+void ABaseCharacter::GrantSkillsFromArchetype()
+{
+	for (USkillDefinition* Def : DefaultSkills)
 	{
-		PRINTLOG(TEXT("Default Skills Valid"));
-	}
+		SkillBook->AddSkill(Def);
+	}                 
 }
 
 void ABaseCharacter::Tick(float DeltaTime)

@@ -36,8 +36,7 @@ enum class EActionCost : uint8
 {
 	Action,
 	Bonus,
-	Reaction,
-	Free
+	Reaction
 };
 
 USTRUCT(BlueprintType)
