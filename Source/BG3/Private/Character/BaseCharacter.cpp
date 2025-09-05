@@ -3,14 +3,12 @@
 #include "Data/SkillSet.h"
 #include "BG3/BG3.h"
 #include "UObject/ConstructorHelpers.h"
-#include "BG3/BG3.h"
 #include "Data/SkillDefinition.h"
 #include "Component/SkillBookComponent.h"
 
 ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = false;
-
 	
 	static ConstructorHelpers::FObjectFinder<USkillSet> TempSkillSet(TEXT("/Game/Blueprints/Data/DA_DefaultSkills.DA_DefaultSkills"));
 
@@ -24,12 +22,13 @@ ABaseCharacter::ABaseCharacter()
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	GrantSkills();
 }
 
-void ABaseCharacter::GrantSkillsFromArchetype()
+void ABaseCharacter::GrantSkills()
 {
-	for (USkillDefinition* Def : DefaultSkills)
+	for (USkillDefinition* Def : DefaultSkills->Skills)
 	{
 		SkillBook->AddSkill(Def);
 	}                 

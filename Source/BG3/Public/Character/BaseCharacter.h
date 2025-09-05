@@ -7,6 +7,7 @@
 
 class UCharacterArchetype;
 class USkillSet;
+class USkillBookComponent;
 
 UCLASS()
 class BG3_API ABaseCharacter : public ACharacter
@@ -31,6 +32,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	void GrantSkillsFromArchetype();
+	void GrantSkills();
 	
 };
