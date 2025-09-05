@@ -5,7 +5,6 @@
 #include "UObject/Interface.h"
 #include "ActionBudgetProvider.generated.h"
 
-enum EActionCost;
 
 UINTERFACE(MinimalAPI)
 class UActionBudgetProvider : public UInterface
