@@ -35,12 +35,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSlotClicked, int32, SkillID);
 UCLASS()
 class BG3_API UActionSlotEntry : public UUserWidget
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-protected:
+public:
 
-	UFUNCTION(BlueprintCallable)
-	void Setup(const FActionSlotView& InView);
+    UFUNCTION(BlueprintCallable)
+    void Setup(const FActionSlotView& InView);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnSlotClicked OnClicked;

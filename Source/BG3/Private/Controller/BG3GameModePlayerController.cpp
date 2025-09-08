@@ -1,12 +1,13 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-
+﻿
 #include "Controller/BG3GameModePlayerController.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "BG3/Public/Actor/BG3GameCamera.h"
-#include "GameFramework/SpringArmComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "Character/BaseCharacter.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "UI/Widget/CombatActionPanel.h"
+#include "UI/WidgetController/CombatActionWidgetController.h"
 #include "Game/BG3GameManageSubsystem.h"
 
 ABG3GameModePlayerController::ABG3GameModePlayerController()
@@ -21,6 +22,14 @@ void ABG3GameModePlayerController::BeginPlay()
 	// camera setting
 	SpawnCamera();
 	SetViewTargetWithBlend(BG3Camera);
+
+	// Create Combat Action Panel
+	ActionPanel = CreateWidget<UCombatActionPanel>(this, ActionPanelClass);
+	ActionPanel->AddToViewport();
+	UCombatActionWidgetController* WC = NewObject<UCombatActionWidgetController>();
+	if (WC) ActionPanel->SetController(WC);
+	ABaseCharacter* PCharacter = Cast<ABaseCharacter>(GetCharacter());
+	WC->Initialize(PCharacter);
 }
 
 void ABG3GameModePlayerController::Tick(float DeltaTime)

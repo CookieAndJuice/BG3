@@ -81,12 +81,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category="SkillBook")
 	void CommitUse(USkillDefinition* Def, int32 CurrentRound);
 
-	UFUNCTION(BlueprintCallable, Category="SkillBook")
-	void CancelReservation(USkillDefinition* Def);
+    UFUNCTION(BlueprintCallable, Category="SkillBook")
+    void CancelReservation(USkillDefinition* Def);
 
 	/** 턴 훅: 소유자 턴 시작에 호출(쿨다운 -1, 턴 카운터 리셋) */
-	UFUNCTION(BlueprintCallable, Category="SkillBook")
-	void OnOwnerTurnStart();
+    UFUNCTION(BlueprintCallable, Category="SkillBook")
+    void OnOwnerTurnStart();
+
+    UFUNCTION(BlueprintCallable, BlueprintPure, Category="SkillBook")
+    int32 GetCooldownRemaining(USkillDefinition* Def) const;
 
 protected:
 	virtual void BeginPlay() override;

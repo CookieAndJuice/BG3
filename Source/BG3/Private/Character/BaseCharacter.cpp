@@ -8,31 +8,46 @@
 
 ABaseCharacter::ABaseCharacter()
 {
-	PrimaryActorTick.bCanEverTick = false;
-	
-	static ConstructorHelpers::FObjectFinder<USkillSet> TempSkillSet(TEXT("/Game/Blueprints/Data/DA_DefaultSkills.DA_DefaultSkills"));
+    PrimaryActorTick.bCanEverTick = false;
+    
+    static ConstructorHelpers::FObjectFinder<USkillSet> TempSkillSet(TEXT("/Game/Blueprints/Data/DA_DefaultSkills.DA_DefaultSkills"));
 
 	if (TempSkillSet.Succeeded())
 	{
 		DefaultSkills = TempSkillSet.Object;
-	}
-	
+    }
+    
+    // Ensure SkillBook component exists for C++ characters
+    SkillBook = CreateDefaultSubobject<USkillBookComponent>(TEXT("SkillBook"));
 }
 
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	GrantSkills();
 }
 
 void ABaseCharacter::GrantSkills()
 {
-	for (USkillDefinition* Def : DefaultSkills->Skills)
-	{
-		SkillBook->AddSkill(Def);
-	}                 
-}
+    if (!SkillBook)
+    {
+        SkillBook = FindComponentByClass<USkillBookComponent>();
+    }
+
+    if (!SkillBook || !DefaultSkills)
+    {
+        return;
+    }
+
+    for (USkillDefinition* Def : DefaultSkills->Skills)
+    {
+        if (Def)
+        {
+            SkillBook->AddSkill(Def);
+        }
+    }
+} 
 
 void ABaseCharacter::Tick(float DeltaTime)
 {

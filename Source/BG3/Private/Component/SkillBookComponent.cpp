@@ -173,6 +173,16 @@ void USkillBookComponent::OnOwnerTurnStart()
 	}
 }
 
+int32 USkillBookComponent::GetCooldownRemaining(USkillDefinition* Def) const
+{
+    if (!Def) return 0;
+    if (const FSkillRuntimeState* State = Runtime.Find(Def))
+    {
+        return State->CooldownRemainingRounds;
+    }
+    return 0;
+}
+
 bool USkillBookComponent::HasSkill(const USkillDefinition* Def) const
 {
 	return Def && Skills.Contains(const_cast<USkillDefinition*>(Def));
