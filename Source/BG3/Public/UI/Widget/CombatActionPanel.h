@@ -20,7 +20,7 @@ public:
     void SetController(UCombatActionWidgetController* InController);
 
 protected:
-    UPROPERTY(meta=(BindWidgetOptional))
+    UPROPERTY(meta=(BindWidgetOptional), BlueprintReadWrite)
     UPanelWidget* Panel_Root = nullptr;
 
     UPROPERTY(EditDefaultsOnly, Category="Combat|UI")
