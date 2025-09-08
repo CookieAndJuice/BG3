@@ -14,10 +14,13 @@ class BG3_API ABG3GameState : public AGameStateBase
 {
 	GENERATED_BODY()
 
+public:
+	void InitBG3GameState();
+
 private:
 	// round
-	int Round = 0;
-	int Turn = 0;
+	int Round = 1;
+	int Turn = 1;
 
 	// pawn numbers
 	int Players = 0;

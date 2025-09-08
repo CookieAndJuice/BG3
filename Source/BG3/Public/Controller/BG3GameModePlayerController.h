@@ -22,6 +22,9 @@ protected:
 
 public:
 	virtual void Tick(float DeltaTime) override;
+
+public:	// Pawn
+	void SwitchToPawn(class ABaseCharacter* NewCharacter);
 	
 public:	// camera
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Camera")

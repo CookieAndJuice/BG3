@@ -1,9 +1,4 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Game/BG3GameState.h"
-
-void ABG3GameState::InitBG3GameState()
-{
-	
-}
+#include "Data/InitialPlayerInfo.h"
