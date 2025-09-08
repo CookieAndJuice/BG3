@@ -55,7 +55,7 @@ protected:
 	class UImage* Img_Icon = nullptr;
 
 	UPROPERTY(meta=(BindWidgetOptional))
-	UBorder* Overlay_Disalbed = nullptr;
+	class UBorder* Overlay_Disalbed = nullptr;
 
 
 private:

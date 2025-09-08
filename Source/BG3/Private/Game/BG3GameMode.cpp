@@ -8,9 +8,4 @@ void ABG3GameMode::BeginPlay()
 	Super::BeginPlay();
 }
 
-APawn* ABG3GameMode::GetCurrentPawn()
-{
-	APawn* pawn = CastChecked<APawn>(CombatPawns[Index]);
-	Index += Index % CombatPawns.Num();
-	return pawn;
-}
+
