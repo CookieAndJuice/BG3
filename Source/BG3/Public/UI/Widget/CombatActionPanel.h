@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "CombatActionPanel.generated.h"
 
+class UUniformGridPanel;
 class UPanelWidget;
 class UActionSlotEntry;
 class UCombatActionWidgetController;
@@ -21,10 +22,13 @@ public:
 
 protected:
     UPROPERTY(meta=(BindWidgetOptional), BlueprintReadWrite)
-    UPanelWidget* Panel_Root = nullptr;
+    UUniformGridPanel* Panel_Root = nullptr;
 
     UPROPERTY(EditDefaultsOnly, Category="Combat|UI")
     TSubclassOf<UActionSlotEntry> ActionSlotEntryClass;
+
+    UPROPERTY(EditAnywhere, Category="Combat|UI")
+    int32 NumColumns = 6;
 
 private:
     UPROPERTY()
