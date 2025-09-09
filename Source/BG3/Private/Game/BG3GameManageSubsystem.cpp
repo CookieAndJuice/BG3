@@ -17,10 +17,11 @@ UBG3GameManageSubsystem::UBG3GameManageSubsystem()
 	}
 }
 
-void UBG3GameManageSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+void UBG3GameManageSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
-	Super::Initialize(Collection);
+	Super::OnWorldBeginPlay(InWorld);
 
+	// Init Pawns
 	SpawnPlayers();
 	SpawnEnemies();
 	SortCombatPawns();
@@ -28,19 +29,18 @@ void UBG3GameManageSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UBG3GameManageSubsystem::SpawnEnemies()
 {
-	// spawn & init
+	// Spawn & Init
 }
 
 void UBG3GameManageSubsystem::SpawnPlayers()
 {
-	// spawn & init
+	// Spawn & Init
 	for (const auto& playerInfo : PlayerDataAsset->CharInfos)
 	{
 		auto player = GetWorld()->SpawnActor<ABG3PlayerCharacter>(playerInfo.Character, playerInfo.SpawnTransform);
 		if (player)
 		{
-			PRINTLOG(TEXT("player"));
-			FTurnData data = {0, player};
+			FTurnData data = {tempSpawnIndex++, player};
 			CombatPawns.Add(data);
 		}
 	}
@@ -48,16 +48,10 @@ void UBG3GameManageSubsystem::SpawnPlayers()
 
 void UBG3GameManageSubsystem::SortCombatPawns()
 {
-	// sort 기준 함수를 별도 구현해야 할 듯
+	// Sort 기준 함수를 별도 구현해야 할 듯
 	
 	// 선제권 값이 같을 경우
 	// 다를 경우
-}
-
-void UBG3GameManageSubsystem::InitializeCamera()
-{
-	// 카메라 스폰
-	// 폰에 카메라 붙이기 (attach actor to component)
 }
 
 void UBG3GameManageSubsystem::BeginNextTurn()

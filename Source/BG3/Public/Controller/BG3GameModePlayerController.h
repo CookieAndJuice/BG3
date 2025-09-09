@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "InputActionValue.h"
 #include "BG3GameModePlayerController.generated.h"
 
 class UCombatActionPanel;
@@ -14,12 +15,40 @@ class BG3_API ABG3GameModePlayerController : public APlayerController
 
 public:
 	ABG3GameModePlayerController();
+
+protected:
+	virtual void BeginPlay() override;
+
+public:
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void SetupInputComponent() override;
+
+public:	// Input
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<class UInputMappingContext> PlayerIMC;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<class UInputAction> CameraMoveAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<class UInputAction> CameraZoomAction;
+
+	void OnMoveCamera(const FInputActionValue& value);
+
+	void OnZoomCamera(const FInputActionValue& value);
+	
+public:	// Manager Classes
+	UPROPERTY()
+	TObjectPtr<class UBG3GameManageSubsystem> GMSubsystem;
+	
 public:	// Pawn
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<class ABaseCharacter> PossessedCharacter;
+	
 	void SwitchToPawn(class ABaseCharacter* NewCharacter);
 	
-public:	// camera
+public:	// Camera
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Camera")
 	TSubclassOf<class ABG3GameCamera> BG3CameraClass;
 
@@ -28,9 +57,7 @@ public:	// camera
 	
 	void SpawnCamera();
 
-	UFUNCTION(BlueprintCallable)
-	void SetCameraLocation(FVector location);
-
+	void InitializeCamera();
 
 	/* Widget */
 
@@ -39,11 +66,5 @@ public:	// camera
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCombatActionPanel> ActionPanel; 
-	
-
-protected:
-	virtual void BeginPlay() override;
-
-	
 	
 };

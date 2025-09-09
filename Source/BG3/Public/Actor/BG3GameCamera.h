@@ -6,6 +6,13 @@
 #include "GameFramework/Actor.h"
 #include "BG3GameCamera.generated.h"
 
+UENUM()
+enum class EGameCameraViewMode : uint8
+{
+	FocusMode,
+	FreeMode
+};
+
 UCLASS()
 class BG3_API ABG3GameCamera : public AActor
 {
@@ -23,14 +30,34 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-private: // root component
+private: // Root Component
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class USceneComponent> BG3RootComponent;
 	
-public:	// camera
+public:	// Camera
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	TObjectPtr<class USpringArmComponent> SpringArmComponent;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	TObjectPtr<class UCameraComponent> CameraComponent;
+
+private:// Camera State
+	EGameCameraViewMode ViewMode = EGameCameraViewMode::FocusMode;
+
+public:	// Camera State
+	__declspec(property(get=GetViewMode)) EGameCameraViewMode VIEWMODE;
+
+	EGameCameraViewMode GetViewMode();
+	
+	void ChangeViewMode(EGameCameraViewMode NewViewMode);
+
+private:// Camera Movement
+	int8 bDoesCameraMove : 1 = false;
+	
+public:	// Camera Movement
+	void FocusCamera(FVector location);
+	
+	void FreeCamera(FVector2D direction);
+	
+	void Zoom(float input);
 };

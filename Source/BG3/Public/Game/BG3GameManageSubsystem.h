@@ -31,16 +31,14 @@ class BG3_API UBG3GameManageSubsystem : public UWorldSubsystem
 public:
 	UBG3GameManageSubsystem();
 	
-	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-
-public:	// Initialize pawns
+	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
+	
+public:	// Initialize Pawns
 	void SpawnEnemies();
 
 	void SpawnPlayers();
 
 	void SortCombatPawns();
-
-	void InitializeCamera();
 
 public:	// Every Turn
 	void BeginNextTurn();
@@ -49,13 +47,14 @@ private:
 	UPROPERTY()
 	TObjectPtr<class UInitialPlayerInfo> PlayerDataAsset;
 	
-public: // find pawns
+public: // Find Pawns
 	UFUNCTION(BlueprintCallable)
 	ABaseCharacter* GetCurrentPawn();
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FTurnData> CombatPawns;
 
-private:	// find pawns
+private:	// Find Pawns
 	int Index = 0;
+	int tempSpawnIndex = 0;	// 나중에 주사위 선제권 값으로 바꿀 것
 };

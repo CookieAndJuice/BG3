@@ -5,6 +5,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -19,6 +20,7 @@ ABG3GameCamera::ABG3GameCamera()
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	SpringArmComponent->SetupAttachment(GetRootComponent());
 	SpringArmComponent->TargetArmLength = 1000.f;
+	SpringArmComponent->bDoCollisionTest = false;
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
@@ -35,5 +37,36 @@ void ABG3GameCamera::BeginPlay()
 void ABG3GameCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (ViewMode == EGameCameraViewMode::FocusMode)
+	{
+		SetActorLocation(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)->GetActorLocation());
+	}
 }
 
+EGameCameraViewMode ABG3GameCamera::GetViewMode()
+{
+	return ViewMode;
+}
+
+void ABG3GameCamera::ChangeViewMode(EGameCameraViewMode NewViewMode)
+{
+	ViewMode = NewViewMode;
+}
+
+void ABG3GameCamera::FocusCamera(FVector location)
+{
+	ChangeViewMode(EGameCameraViewMode::FocusMode);
+	SetActorLocation(location);
+}
+
+void ABG3GameCamera::FreeCamera(FVector2D direction)
+{
+	ChangeViewMode(EGameCameraViewMode::FreeMode);
+	// 카메라 actor -> pawn으로 바꿔야 함...
+}
+
+void ABG3GameCamera::Zoom(float input)
+{
+	// Scaling
+}
