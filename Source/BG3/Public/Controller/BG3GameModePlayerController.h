@@ -44,6 +44,7 @@ public:	// camera
 protected:
 	virtual void BeginPlay() override;
 
-	
+private:
+	void UseSkill(int32 SkillID);
 	
 };

@@ -1,6 +1,7 @@
 
 #include "UI/WidgetController/CombatActionWidgetController.h"
 
+#include "BG3/BG3.h"
 #include "Character/BaseCharacter.h"
 #include "Component/SkillBookComponent.h"
 #include "Data/SkillDefinition.h"
@@ -22,6 +23,25 @@ void UCombatActionWidgetController::Initialize(ABaseCharacter* InCharacter)
 void UCombatActionWidgetController::RefreshSlots()
 {
     BuildAndBroadcast();
+}
+
+void UCombatActionWidgetController::RequestUseSkill(int32 SkillID)
+{
+    if (!SkillBook) return;
+    for (USkillDefinition* Def : SkillBook->Skills)
+    {
+        if (Def && Def->Meta.ID == SkillID)
+        {
+            if (SkillBook->ReserveUse(Def))
+            {
+                PRINTLOG(TEXT(" Skill Activated "));
+            }
+            else
+            {
+                PRINTLOG(TEXT(" Skill Is Not Activated "));
+            }
+        }
+    }
 }
 
 void UCombatActionWidgetController::HandleCooldownChanged(const USkillDefinition* /*Skill*/, int32 /*NewRounds*/)
@@ -52,22 +72,8 @@ void UCombatActionWidgetController::BuildAndBroadcast()
         V.SkillID = Def->Meta.ID;
         V.DisplayName = FText::FromName(Def->Meta.DisplayName);
         V.Icon = Def->Meta.Icon.IsNull() ? nullptr : Def->Meta.Icon.LoadSynchronous();
-
-        switch (Def->Cost.ActionCost)
-        {
-        case EActionCost::Action:
-            V.ActionCost = 1;
-            break;
-        case EActionCost::Bonus:
-            V.ActionCost = 0;
-            break;
-        case EActionCost::Reaction:
-            V.ActionCost = 0;
-            break;
-        default:
-            V.ActionCost = 1;
-            break;
-        }
+        V.IconBG = Def->Meta.IconBG.IsNull() ? nullptr : Def->Meta.IconBG.LoadSynchronous();
+        V.ActionCost = Def->Cost.ActionCost;
 
         bool bUsable = false;
         SkillBook->GetUsability(Def, bUsable);

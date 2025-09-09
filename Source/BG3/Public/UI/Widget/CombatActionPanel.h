@@ -11,6 +11,8 @@ class UActionSlotEntry;
 class UCombatActionWidgetController;
 struct FActionSlotView;
 
+
+
 UCLASS()
 class BG3_API UCombatActionPanel : public UUserWidget
 {
@@ -19,6 +21,7 @@ class BG3_API UCombatActionPanel : public UUserWidget
 public:
     UFUNCTION(BlueprintCallable, Category="Combat|UI")
     void SetController(UCombatActionWidgetController* InController);
+
 
 protected:
     UPROPERTY(meta=(BindWidgetOptional), BlueprintReadWrite)
@@ -36,4 +39,7 @@ private:
 
     UFUNCTION()
     void RebuildSlots(const TArray<FActionSlotView>& Slots);
+
+    UFUNCTION()
+    void OnSkillButtonClicked(int32 SkillID);
 };

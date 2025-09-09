@@ -27,6 +27,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="Combat|UI")
 	FOnActionSlotsUpdated OnActionSlotsUpdated;
 
+	UFUNCTION(Category="Combat|UI")
+	void RequestUseSkill(int32 SkillID);
+
 private:
 	UPROPERTY()
 	TWeakObjectPtr<ABaseCharacter> OwningCharacter;

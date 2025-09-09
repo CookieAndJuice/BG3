@@ -12,6 +12,14 @@ void UActionSlotEntry::Setup(const FActionSlotView& InView)
         Img_Icon->SetBrushFromTexture(View.Icon);
     }
 
+    if (Btn_Use)
+    {
+        FButtonStyle BtnStyle;
+        BtnStyle.NormalPadding = 0.f;
+        BtnStyle.PressedPadding = 0.f;
+        Btn_Use->SetStyle(BtnStyle);
+    }
+
     if (Overlay_Disalbed)
     {
         Overlay_Disalbed->SetVisibility(View.bUsable ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);

@@ -32,6 +32,7 @@ void UCombatActionPanel::RebuildSlots(const TArray<FActionSlotView>& Slots)
         UActionSlotEntry* Entry = CreateWidget<UActionSlotEntry>(this, ActionSlotEntryClass);
         if (!Entry) continue;
         Entry->Setup(View);
+        Entry->OnClicked.AddDynamic(this, &UCombatActionPanel::OnSkillButtonClicked);
 
         const int32 Row = Index / Columns;
         const int32 Col = Index % Columns;
@@ -41,4 +42,9 @@ void UCombatActionPanel::RebuildSlots(const TArray<FActionSlotView>& Slots)
             GridSlot->SetVerticalAlignment(VAlign_Fill);
         }
     }
+}
+
+void UCombatActionPanel::OnSkillButtonClicked(int32 SkillID)
+{
+    Controller->RequestUseSkill(SkillID);
 }

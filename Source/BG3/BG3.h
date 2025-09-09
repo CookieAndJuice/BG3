@@ -14,3 +14,9 @@ DECLARE_LOG_CATEGORY_EXTERN(BGLog, Log, All);
 
 #define PRINTLOG(fmt, ...) \
 UE_LOG(BGLog, Warning, TEXT("%s : %s"), *CALLINFO, *FString::Printf(fmt, ##__VA_ARGS__))
+
+#define SLOG_K(key, timeSeconds, color, fmt, ...) \
+do { if (GEngine) { \
+GEngine->AddOnScreenDebugMessage((key), (timeSeconds), (color), \
+FString::Printf(TEXT(fmt), ##__VA_ARGS__)); \
+} } while(0)

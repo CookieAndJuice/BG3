@@ -1,6 +1,7 @@
 
 #include "Component/SkillBookComponent.h"
 
+#include "BG3/BG3.h"
 #include "Interface/ActionBudgetProvider.h"
 
 USkillBookComponent::USkillBookComponent()
@@ -190,7 +191,7 @@ bool USkillBookComponent::HasSkill(const USkillDefinition* Def) const
 
 bool USkillBookComponent::QueryCanSpendSlot(EActionCost Cost) const
 {
-	const AActor* OwnerActor = GetOwner();
+	AActor* OwnerActor = GetOwner();
 	if (OwnerActor && OwnerActor->GetClass()->ImplementsInterface(UActionBudgetProvider::StaticClass()))
 	{
 		return IActionBudgetProvider::Execute_CanSpendActionSlot(OwnerActor, Cost);
@@ -204,7 +205,7 @@ void USkillBookComponent::SpendSlot(EActionCost Cost) const
 	AActor* OwnerActor = GetOwner();
 	if (OwnerActor && OwnerActor->GetClass()->ImplementsInterface(UActionBudgetProvider::StaticClass()))
 	{
-		IActionBudgetProvider::Execute_SpendActionSlot(OwnerActor, Cost);
+		return IActionBudgetProvider::Execute_SpendActionSlot(OwnerActor, Cost);
 	}
 }
 
@@ -213,7 +214,7 @@ void USkillBookComponent::RefundSlot(EActionCost Cost) const
 	AActor* OwnerActor = GetOwner();
 	if (OwnerActor && OwnerActor->GetClass()->ImplementsInterface(UActionBudgetProvider::StaticClass()))
 	{
-		IActionBudgetProvider::Execute_RefundActionSlot(OwnerActor, Cost);
+		return IActionBudgetProvider::Execute_RefundActionSlot(OwnerActor, Cost);
 	}
 }
 
