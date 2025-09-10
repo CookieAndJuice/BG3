@@ -5,6 +5,7 @@
 #include "GameFramework/PlayerController.h"
 #include "BG3GameModePlayerController.generated.h"
 
+class UOverlayWidget;
 class UCombatActionPanel;
 
 UCLASS()
@@ -35,10 +36,10 @@ public:	// camera
 	/* Widget */
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UCombatActionPanel> ActionPanelClass;
+	TSubclassOf<UOverlayWidget> OverlayWidgetClass;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UCombatActionPanel> ActionPanel; 
+	TObjectPtr<UOverlayWidget> OverlayWidget; 
 	
 
 protected:

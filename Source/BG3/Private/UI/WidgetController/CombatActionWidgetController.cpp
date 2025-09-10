@@ -60,7 +60,7 @@ void UCombatActionWidgetController::BuildAndBroadcast()
 
     if (!SkillBook)
     {
-        OnActionSlotsUpdated.Broadcast(Views);
+        //OnActionSlotsUpdated.Broadcast(Views);
         return;
     }
 
@@ -84,5 +84,5 @@ void UCombatActionWidgetController::BuildAndBroadcast()
         Views.Add(V);
     }
 
-    OnActionSlotsUpdated.Broadcast(Views);
+    //OnActionSlotsUpdated.Broadcast(Views);
 }

@@ -8,7 +8,7 @@
 class UUniformGridPanel;
 class UPanelWidget;
 class UActionSlotEntry;
-class UCombatActionWidgetController;
+class UOverlayWidgetController;
 struct FActionSlotView;
 
 
@@ -20,7 +20,7 @@ class BG3_API UCombatActionPanel : public UUserWidget
 
 public:
     UFUNCTION(BlueprintCallable, Category="Combat|UI")
-    void SetController(UCombatActionWidgetController* InController);
+    void SetController(UOverlayWidgetController* InController);
 
 
 protected:
@@ -35,7 +35,7 @@ protected:
 
 private:
     UPROPERTY()
-    UCombatActionWidgetController* Controller = nullptr;
+    UOverlayWidgetController* Controller = nullptr;
 
     UFUNCTION()
     void RebuildSlots(const TArray<FActionSlotView>& Slots);

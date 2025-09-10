@@ -3,6 +3,10 @@
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/Border.h"
+#include "Styling/SlateTypes.h"
+// For MakeBrushFromTexture and texture size
+#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Engine/Texture2D.h"
 
 void UActionSlotEntry::Setup(const FActionSlotView& InView)
 {
@@ -14,10 +18,26 @@ void UActionSlotEntry::Setup(const FActionSlotView& InView)
 
     if (Btn_Use)
     {
-        FButtonStyle BtnStyle;
-        BtnStyle.NormalPadding = 0.f;
-        BtnStyle.PressedPadding = 0.f;
-        Btn_Use->SetStyle(BtnStyle);
+        // Keep a reference to the BG texture for GC safety
+        CachedIconBG = View.IconBG;
+
+        // Build a fresh style and assign via SetStyle (WidgetStyle is deprecated)
+        FButtonStyle NewStyle = Btn_Use->GetStyle();
+        NewStyle.NormalPadding = FMargin(0.f);
+        NewStyle.PressedPadding = FMargin(0.f);
+
+        if (CachedIconBG)
+        {
+            const int32 W = CachedIconBG->GetSizeX();
+            const int32 H = CachedIconBG->GetSizeY();
+            const FSlateBrush Brush = UWidgetBlueprintLibrary::MakeBrushFromTexture(CachedIconBG, W, H);
+            NewStyle.Normal   = Brush;
+            NewStyle.Hovered  = Brush;
+            NewStyle.Pressed  = Brush;
+            NewStyle.Disabled = Brush;
+        }
+
+        Btn_Use->SetStyle(NewStyle);
     }
 
     if (Overlay_Disalbed)

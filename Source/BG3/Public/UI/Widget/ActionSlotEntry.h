@@ -6,6 +6,8 @@
 #include "Data/SkillDefinition.h"
 #include "ActionSlotEntry.generated.h"
 
+class UTexture2D;
+
 enum class EActionCost : uint8;
 
 USTRUCT(BlueprintType)
@@ -67,6 +69,10 @@ protected:
 private:
 	
 	FActionSlotView View;
+
+	// Keep a reference so GC doesn't collect the texture used in the button style
+	UPROPERTY()
+	UTexture2D* CachedIconBG = nullptr;
 
 	UFUNCTION()
 	void HandleClick();

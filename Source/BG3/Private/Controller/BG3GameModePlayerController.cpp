@@ -10,6 +10,8 @@
 #include "UI/Widget/CombatActionPanel.h"
 #include "UI/WidgetController/CombatActionWidgetController.h"
 #include "Game/BG3GameManageSubsystem.h"
+#include "UI/Widget/OverlayWidget.h"
+#include "UI/WidgetController/OverlayWidgetController.h"
 
 ABG3GameModePlayerController::ABG3GameModePlayerController()
 {
@@ -25,16 +27,16 @@ void ABG3GameModePlayerController::BeginPlay()
 	SetViewTargetWithBlend(BG3Camera);
 
 	// Create Combat Action Panel
-	ActionPanel = CreateWidget<UCombatActionPanel>(this, ActionPanelClass);
-	ActionPanel->AddToViewport();
-	UCombatActionWidgetController* WC = NewObject<UCombatActionWidgetController>();
+	OverlayWidget = CreateWidget<UOverlayWidget>(this, OverlayWidgetClass);
+	OverlayWidget->AddToViewport();
+	UOverlayWidgetController* WC = NewObject<UOverlayWidgetController>();
 	if (WC)
 	{
 		if (ABaseCharacter* PCharacter = Cast<ABaseCharacter>(GetCharacter()))
 		{
 			WC->Initialize(PCharacter);	
 		}
-		ActionPanel->SetController(WC);
+		OverlayWidget->SetController(WC);
 	}
 	
 	

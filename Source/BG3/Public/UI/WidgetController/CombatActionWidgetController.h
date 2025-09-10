@@ -10,7 +10,7 @@ class ABaseCharacter;
 class USkillBookComponent;
 class USkillDefinition;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActionSlotsUpdated, const TArray<FActionSlotView>&, Slots);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActionSlotsUpdated, const TArray<FActionSlotView>&, Slots);
 
 UCLASS()
 class BG3_API UCombatActionWidgetController : public UObject
@@ -24,8 +24,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Combat|UI")
 	void RefreshSlots();
 
-	UPROPERTY(BlueprintAssignable, Category="Combat|UI")
-	FOnActionSlotsUpdated OnActionSlotsUpdated;
+	//UPROPERTY(BlueprintAssignable, Category="Combat|UI")
+	//FOnActionSlotsUpdated OnActionSlotsUpdated;
 
 	UFUNCTION(Category="Combat|UI")
 	void RequestUseSkill(int32 SkillID);

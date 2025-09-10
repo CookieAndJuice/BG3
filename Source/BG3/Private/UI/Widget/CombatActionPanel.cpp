@@ -1,12 +1,12 @@
 
 #include "UI/Widget/CombatActionPanel.h"
 #include "UI/Widget/ActionSlotEntry.h"
-#include "UI/WidgetController/CombatActionWidgetController.h"
 #include "Components/PanelWidget.h"
 #include "Components/UniformGridPanel.h"
 #include "Components/UniformGridSlot.h"
+#include "UI/WidgetController/OverlayWidgetController.h"
 
-void UCombatActionPanel::SetController(UCombatActionWidgetController* InController)
+void UCombatActionPanel::SetController(UOverlayWidgetController* InController)
 {
     Controller = InController;
     if (Controller)
