@@ -23,7 +23,7 @@ ABG3GameCamera::ABG3GameCamera()
 	
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	SpringArmComponent->SetupAttachment(CameraBaseComponent);
-	SpringArmComponent->TargetArmLength = 1000.f;
+	SpringArmComponent->TargetArmLength = MaxTargetArmLength;
 	SpringArmComponent->bDoCollisionTest = false;
 	SpringArmComponent->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
 
@@ -44,9 +44,7 @@ void ABG3GameCamera::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	if (bIsFreeCameraMode)
-	{
-		PRINTLOG(TEXT("FreeEEEEEEEEEEE!!!"));
-		
+	{		
 		FVector desiredDir(GetActorForwardVector() * Dx + GetActorRightVector() * Dy);
 		desiredDir = FMath::VInterpTo(PreDirection, desiredDir, DeltaTime, MoveSpeed);
 		FVector target(GetActorLocation() + desiredDir * MoveSpeed * DeltaTime);
@@ -89,6 +87,22 @@ void ABG3GameCamera::FreeCamera(FVector2D direction)
 void ABG3GameCamera::Zoom(float input)
 {
 	// Scaling
+	if (input > 0.01)
+	{
+		// ZoomSpeed가 너무 커지면 min, max에서 이상해 짐.
+		// zoom의 다른 방법이 있을 수도
+		if (SpringArmComponent->TargetArmLength > MinTargetArmLength)
+			SpringArmComponent->TargetArmLength -= ZoomSpeed;
+		else if (SpringArmComponent->TargetArmLength < MinTargetArmLength)
+			SpringArmComponent->TargetArmLength = MinTargetArmLength;
+	}
+	else if (input < -0.01)
+	{
+		if (SpringArmComponent->TargetArmLength < MaxTargetArmLength)
+			SpringArmComponent->TargetArmLength += ZoomSpeed;
+		else if (SpringArmComponent->TargetArmLength > MaxTargetArmLength)
+			SpringArmComponent->TargetArmLength = MaxTargetArmLength;
+	}
 }
 
 void ABG3GameCamera::RotateCamera(float input)

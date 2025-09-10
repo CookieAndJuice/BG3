@@ -51,8 +51,22 @@ private:// Camera Movement
 	float Dy;
 	FVector PreDirection;
 	bool bDoesCameraMove = false;
-	float MoveSpeed = 400.f;
-	float RotateSpeed = 70.f;
+
+public:	// Camera Movement
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	float MoveSpeed = 1000.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	float RotateSpeed = 75.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	float ZoomSpeed = 30.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	float MaxTargetArmLength = 1000.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	float MinTargetArmLength = 300.f;
 	
 public:	// Camera Movement
 	void FocusCamera(FVector location);
