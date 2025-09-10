@@ -3,23 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GameFramework/Pawn.h"
 #include "BG3GameCamera.generated.h"
 
-UENUM()
-enum class EGameCameraViewMode : uint8
-{
-	FocusMode,
-	FreeMode
-};
-
 UCLASS()
-class BG3_API ABG3GameCamera : public AActor
+class BG3_API ABG3GameCamera : public APawn
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
+	// Sets default values for this pawn's properties
 	ABG3GameCamera();
 
 protected:
@@ -30,9 +23,15 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 private: // Root Component
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class USceneComponent> BG3RootComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class USceneComponent> CameraBaseComponent;
 	
 public:	// Camera
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
@@ -41,18 +40,19 @@ public:	// Camera
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	TObjectPtr<class UCameraComponent> CameraComponent;
 
-private:// Camera State
-	EGameCameraViewMode ViewMode = EGameCameraViewMode::FocusMode;
-
-public:	// Camera State
-	__declspec(property(get=GetViewMode)) EGameCameraViewMode VIEWMODE;
-
-	EGameCameraViewMode GetViewMode();
+public: // Camerae State
+	void SetFreeCameraMode(bool val);
 	
-	void ChangeViewMode(EGameCameraViewMode NewViewMode);
+private:// Camera State
+	bool bIsFreeCameraMode = false;
 
 private:// Camera Movement
-	int8 bDoesCameraMove : 1 = false;
+	float Dx;
+	float Dy;
+	FVector PreDirection;
+	bool bDoesCameraMove = false;
+	float MoveSpeed = 400.f;
+	float RotateSpeed = 70.f;
 	
 public:	// Camera Movement
 	void FocusCamera(FVector location);
@@ -60,4 +60,6 @@ public:	// Camera Movement
 	void FreeCamera(FVector2D direction);
 	
 	void Zoom(float input);
+
+	void RotateCamera(float input);
 };

@@ -34,9 +34,14 @@ public:	// Input
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<class UInputAction> CameraZoomAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<class UInputAction> CameraRotateAction;
+
 	void OnMoveCamera(const FInputActionValue& value);
 
 	void OnZoomCamera(const FInputActionValue& value);
+
+	void OnRotateCamera(const FInputActionValue& value);
 	
 public:	// Manager Classes
 	UPROPERTY()

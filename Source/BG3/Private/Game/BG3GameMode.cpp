@@ -5,7 +5,6 @@
 
 ABG3GameMode::ABG3GameMode()
 {
-	bStartPlayersAsSpectators = true;
 	DefaultPawnClass = ASpectatorPawn::StaticClass();
 }
 

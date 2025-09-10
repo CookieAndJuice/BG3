@@ -10,8 +10,10 @@
 #include "UI/WidgetController/CombatActionWidgetController.h"
 #include "Game/BG3GameManageSubsystem.h"
 #include "EnhancedInputSubsystems.h"
+#include "BG3/BG3.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
 #include "EnhancedInput/Public/InputMappingContext.h"
+#include "Game/BG3GameMode.h"
 
 ABG3GameModePlayerController::ABG3GameModePlayerController()
 {
@@ -30,6 +32,16 @@ ABG3GameModePlayerController::ABG3GameModePlayerController()
 	{
 		CameraZoomAction = cameraZoomRef.Object;
 	}
+	ConstructorHelpers::FObjectFinder<UInputAction> cameraRotateRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/IA_CameraRotate.IA_CameraRotate'"));
+	if (cameraRotateRef.Succeeded())
+	{
+		CameraRotateAction = cameraRotateRef.Object;
+	}
+	ConstructorHelpers::FClassFinder<ABG3GameCamera> CameraClassRef(TEXT("'/Game/Blueprints/Actor/BP_GameCamera.BP_GameCamera_C'"));
+	if (CameraClassRef.Succeeded())
+	{
+		BG3CameraClass = CameraClassRef.Class;
+	}
 }
 
 void ABG3GameModePlayerController::BeginPlay()
@@ -47,9 +59,13 @@ void ABG3GameModePlayerController::BeginPlay()
 	// Initialize Character
 	GMSubsystem = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>();
 	PossessedCharacter = GMSubsystem->GetCurrentPawn();
+	//Possess(PossessedCharacter);
+	//PossessedCharacter->EnableInput(this);
 
 	// Initialize Camera Setting
 	InitializeCamera();
+	Possess(BG3Camera);
+	BG3Camera->EnableInput(this);
 	
 	// Create Combat Action Panel
 	ActionPanel = CreateWidget<UCombatActionPanel>(this, ActionPanelClass);
@@ -74,20 +90,25 @@ void ABG3GameModePlayerController::SetupInputComponent()
 	{
 		EIC->BindAction(CameraMoveAction, ETriggerEvent::Triggered, this, &ABG3GameModePlayerController::OnMoveCamera);
 		EIC->BindAction(CameraZoomAction, ETriggerEvent::Triggered, this, &ABG3GameModePlayerController::OnZoomCamera);
+		EIC->BindAction(CameraRotateAction, ETriggerEvent::Triggered, this, &ABG3GameModePlayerController::OnRotateCamera);
 	}
 }
 
 void ABG3GameModePlayerController::OnMoveCamera(const FInputActionValue& value)
 {
 	FVector2D inputVec = value.Get<FVector2D>();
-	BG3Camera->FreeCamera(inputVec);
-	
-}
+	BG3Camera->FreeCamera(inputVec);}
 
 void ABG3GameModePlayerController::OnZoomCamera(const FInputActionValue& value)
 {
 	float input =  value.Get<float>();
 	BG3Camera->Zoom(input);
+}
+
+void ABG3GameModePlayerController::OnRotateCamera(const FInputActionValue& value)
+{
+	float input = value.Get<float>();
+	BG3Camera->RotateCamera(input);
 }
 
 void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
@@ -96,7 +117,7 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
 
 	// Possess New Character
 	PossessedCharacter->DisableInput(this);
-	
+
 	Possess(NewCharacter);
 	PossessedCharacter = NewCharacter;
 	PossessedCharacter->EnableInput(this);
@@ -108,12 +129,11 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
 void ABG3GameModePlayerController::SpawnCamera()
 {
 	FRotator spawnRotation = FRotator(0, 0, 0);
-	FVector spawnLocation = UGameplayStatics::GetPlayerPawn(GetWorld(), 0)->GetActorLocation();
-
+	// FVector spawnLocation = UGameplayStatics::GetPlayerPawn(GetWorld(), 0)->GetActorLocation();
+	FVector spawnLocation = GMSubsystem->GetCurrentPawn()->GetActorLocation();
 	FTransform spawnTransform(spawnRotation, spawnLocation);
 
 	BG3Camera = GetWorld()->SpawnActor<ABG3GameCamera>(BG3CameraClass, spawnTransform);
-	BG3Camera->SpringArmComponent->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
 }
 
 void ABG3GameModePlayerController::InitializeCamera()
@@ -124,6 +144,6 @@ void ABG3GameModePlayerController::InitializeCamera()
 	// Set Follow Mode
 	FVector location = PossessedCharacter->GetActorLocation();
 	BG3Camera->SetActorLocation(location);
-	BG3Camera->ChangeViewMode(EGameCameraViewMode::FocusMode);
+	BG3Camera->SetFreeCameraMode(true);
 }
 
