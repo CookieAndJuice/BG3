@@ -20,14 +20,14 @@ class BG3_API IActionBudgetProvider
 public:
 
 	// 현재 턴의 예산에서 이 비용을 쓸 수 있나?
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="ActionBudget")
 	bool CanSpendActionSlot(EActionCost Cost) const;
 
 	// 실제로 소비
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="ActionBudget")
 	void SpendActionSlot(EActionCost Cost);
 
 	// 취소/실패 시 환불
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="ActionBudget")
 	void RefundActionSlot(EActionCost Cost);
 };

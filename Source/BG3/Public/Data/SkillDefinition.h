@@ -70,6 +70,9 @@ public:
 	TSoftObjectPtr<UTexture2D> Icon = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
+	TSoftObjectPtr<UTexture2D> IconBG = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
 	FGameplayTagContainer Tags;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Rules")

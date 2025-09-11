@@ -5,13 +5,14 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Data/SkillDefinition.h"
 #include "Component/SkillBookComponent.h"
-
 ABaseCharacter::ABaseCharacter()
 {
+
     PrimaryActorTick.bCanEverTick = false;
     
     static ConstructorHelpers::FObjectFinder<USkillSet> TempSkillSet(TEXT("/Game/Blueprints/Data/DA_DefaultSkills.DA_DefaultSkills"));
 
+    
 	if (TempSkillSet.Succeeded())
 	{
 		DefaultSkills = TempSkillSet.Object;
@@ -59,3 +60,53 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+void ABaseCharacter::SpendActionSlot_Implementation(EActionCost Cost)
+{
+    switch (Cost)
+    {
+    case EActionCost::Action:
+        Actions--;
+        return;
+    case EActionCost::Bonus:
+        BonusActions--;
+        return;
+    case EActionCost::Reaction:
+        Reactions--;
+        return;
+    }
+
+    PRINTLOG(TEXT("After SpendActionSlot : %d"), Actions);
+}
+
+bool ABaseCharacter::CanSpendActionSlot_Implementation(EActionCost Cost) const
+{
+    switch (Cost)
+    {
+    case EActionCost::Action:
+        return Actions > 0;
+    case EActionCost::Bonus:
+        return BonusActions > 0;
+    case EActionCost::Reaction:
+        return Reactions > 0;
+    default:
+        return false;
+    }
+}
+
+void ABaseCharacter::RefundActionSlot_Implementation(EActionCost Cost)
+{
+    switch (Cost)
+    {
+    case EActionCost::Action:
+        Actions++;
+        return;
+    case EActionCost::Bonus:
+        BonusActions++;
+        return;
+    case EActionCost::Reaction:
+        Reactions++;
+        return;
+    }
+
+    PRINTLOG(TEXT("After RefundActionSlot : %d"), Actions);
+}

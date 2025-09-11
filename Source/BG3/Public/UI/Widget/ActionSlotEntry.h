@@ -3,7 +3,12 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Data/SkillDefinition.h"
 #include "ActionSlotEntry.generated.h"
+
+class UTexture2D;
+
+enum class EActionCost : uint8;
 
 USTRUCT(BlueprintType)
 struct FActionSlotView
@@ -18,9 +23,12 @@ struct FActionSlotView
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* Icon = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* IconBG = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 ActionCost = 1;  // 예: Action=1, Bonus=0 ...
+	EActionCost ActionCost = EActionCost::Action;  // 예: Action=1, Bonus=0 ...
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bUsable = true;
@@ -61,6 +69,10 @@ protected:
 private:
 	
 	FActionSlotView View;
+
+	// Keep a reference so GC doesn't collect the texture used in the button style
+	UPROPERTY()
+	UTexture2D* CachedIconBG = nullptr;
 
 	UFUNCTION()
 	void HandleClick();

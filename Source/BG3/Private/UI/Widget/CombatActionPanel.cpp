@@ -1,10 +1,12 @@
 
 #include "UI/Widget/CombatActionPanel.h"
 #include "UI/Widget/ActionSlotEntry.h"
-#include "UI/WidgetController/CombatActionWidgetController.h"
 #include "Components/PanelWidget.h"
+#include "Components/UniformGridPanel.h"
+#include "Components/UniformGridSlot.h"
+#include "UI/WidgetController/OverlayWidgetController.h"
 
-void UCombatActionPanel::SetController(UCombatActionWidgetController* InController)
+void UCombatActionPanel::SetController(UOverlayWidgetController* InController)
 {
     Controller = InController;
     if (Controller)
@@ -23,11 +25,26 @@ void UCombatActionPanel::RebuildSlots(const TArray<FActionSlotView>& Slots)
 
     Panel_Root->ClearChildren();
 
-    for (const FActionSlotView& View : Slots)
+    const int32 Rows = FMath::Max(1, NumRow);
+    for (int32 Index = 0; Index < Slots.Num(); ++Index)
     {
+        const FActionSlotView& View = Slots[Index];
         UActionSlotEntry* Entry = CreateWidget<UActionSlotEntry>(this, ActionSlotEntryClass);
         if (!Entry) continue;
         Entry->Setup(View);
-        Panel_Root->AddChild(Entry);
+        Entry->OnClicked.AddDynamic(this, &UCombatActionPanel::OnSkillButtonClicked);
+
+        const int32 Row = Index % Rows;
+        const int32 Col = Index / Rows;
+        if (UUniformGridSlot* GridSlot = Panel_Root->AddChildToUniformGrid(Entry, Row, Col))
+        {
+            GridSlot->SetHorizontalAlignment(HAlign_Left);                                                                               
+            GridSlot->SetVerticalAlignment(VAlign_Top);  
+        }
     }
+}
+
+void UCombatActionPanel::OnSkillButtonClicked(int32 SkillID)
+{
+    Controller->RequestUseSkill(SkillID);
 }

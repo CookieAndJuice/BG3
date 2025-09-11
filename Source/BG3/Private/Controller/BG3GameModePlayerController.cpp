@@ -1,6 +1,7 @@
 ﻿
 #include "Controller/BG3GameModePlayerController.h"
 
+#include "BG3/BG3.h"
 #include "Kismet/GameplayStatics.h"
 #include "BG3/Public/Actor/BG3GameCamera.h"
 #include "Blueprint/UserWidget.h"
@@ -9,6 +10,8 @@
 #include "UI/Widget/CombatActionPanel.h"
 #include "UI/WidgetController/CombatActionWidgetController.h"
 #include "Game/BG3GameManageSubsystem.h"
+#include "UI/Widget/OverlayWidget.h"
+#include "UI/WidgetController/OverlayWidgetController.h"
 #include "EnhancedInputSubsystems.h"
 #include "BG3/BG3.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
@@ -68,12 +71,24 @@ void ABG3GameModePlayerController::BeginPlay()
 	BG3Camera->EnableInput(this);
 	
 	// Create Combat Action Panel
-	ActionPanel = CreateWidget<UCombatActionPanel>(this, ActionPanelClass);
-	ActionPanel->AddToViewport();
-	UCombatActionWidgetController* WC = NewObject<UCombatActionWidgetController>();
-	if (WC) ActionPanel->SetController(WC);
-	ABaseCharacter* PCharacter = Cast<ABaseCharacter>(GetCharacter());
-	WC->Initialize(PCharacter);
+	OverlayWidget = CreateWidget<UOverlayWidget>(this, OverlayWidgetClass);
+	OverlayWidget->AddToViewport();
+	UOverlayWidgetController* WC = NewObject<UOverlayWidgetController>();
+	if (WC)
+	{
+		if (ABaseCharacter* PCharacter = Cast<ABaseCharacter>(GetCharacter()))
+		{
+			WC->Initialize(PCharacter);	
+		}
+		OverlayWidget->SetController(WC);
+	}
+	
+	
+}
+
+void ABG3GameModePlayerController::UseSkill(int32 SkillID)
+{
+	PRINTLOG(TEXT("UseSkill"));
 }
 
 void ABG3GameModePlayerController::Tick(float DeltaTime)
