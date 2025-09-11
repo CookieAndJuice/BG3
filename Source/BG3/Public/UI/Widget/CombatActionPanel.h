@@ -11,6 +11,7 @@ class UPanelWidget;
 class UActionSlotEntry;
 class UOverlayWidgetController;
 struct FActionSlotView;
+class UGridPanel;
 
 
 
@@ -26,7 +27,7 @@ public:
 
 protected:
     UPROPERTY(meta=(BindWidgetOptional), BlueprintReadWrite)
-    UUniformGridPanel* Panel_Root = nullptr;
+    UGridPanel* Panel_Root = nullptr;
 
     UPROPERTY(EditDefaultsOnly, Category="Combat|UI")
     TSubclassOf<UActionSlotEntry> ActionSlotEntryClass;
