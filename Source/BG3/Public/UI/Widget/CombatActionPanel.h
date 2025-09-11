@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "UI/Widget/ActionSlotEntry.h"
 #include "CombatActionPanel.generated.h"
 
 class UUniformGridPanel;
@@ -31,9 +32,8 @@ protected:
     TSubclassOf<UActionSlotEntry> ActionSlotEntryClass;
 
     UPROPERTY(EditAnywhere, Category="Combat|UI")
-    int32 NumColumns = 6;
+    int32 NumRow = 2;
 
-private:
     UPROPERTY()
     UOverlayWidgetController* Controller = nullptr;
 
@@ -42,4 +42,7 @@ private:
 
     UFUNCTION()
     void OnSkillButtonClicked(int32 SkillID);
+
+private:
+    
 };

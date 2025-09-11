@@ -10,11 +10,13 @@
 
 UBG3GameManageSubsystem::UBG3GameManageSubsystem()
 {
+	
 	ConstructorHelpers::FObjectFinder<UInitialPlayerInfo> playerInfosRef(TEXT("/Script/BG3.InitialPlayerInfo'/Game/Blueprints/Data/DA_InitialCharInfo.DA_InitialCharInfo'"));
 	if (playerInfosRef.Succeeded())
 	{
 		PlayerDataAsset = playerInfosRef.Object;
 	}
+	
 }
 
 void UBG3GameManageSubsystem::Initialize(FSubsystemCollectionBase& Collection)

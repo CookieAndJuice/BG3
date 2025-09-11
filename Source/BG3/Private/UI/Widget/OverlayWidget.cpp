@@ -11,4 +11,9 @@ void UOverlayWidget::NativeConstruct()
 void UOverlayWidget::SetController(UOverlayWidgetController* InController)
 {
     Controller = InController;
+
+    if (ActionPanel)
+    {
+        ActionPanel->SetController(Controller);
+    }
 }

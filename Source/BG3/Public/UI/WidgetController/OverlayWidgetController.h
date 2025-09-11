@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
+#include "UI/Widget/ActionSlotEntry.h" // For FActionSlotView used in delegate
 #include "OverlayWidgetController.generated.h"
 
 class ABaseCharacter;
@@ -30,7 +31,6 @@ public:
 	UFUNCTION(Category="Combat|UI")
 	void RequestUseSkill(int32 SkillID);
 
-private:
 	UPROPERTY()
 	TWeakObjectPtr<ABaseCharacter> OwningCharacter;
 
@@ -44,4 +44,7 @@ private:
 
 	UFUNCTION()
 	void HandleUsabilityChanged(const USkillDefinition* Skill, bool bUsable);
+
+private:
+	
 };

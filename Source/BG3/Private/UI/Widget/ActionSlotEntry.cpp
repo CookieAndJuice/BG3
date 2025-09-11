@@ -13,7 +13,8 @@ void UActionSlotEntry::Setup(const FActionSlotView& InView)
     View = InView;
     if (Img_Icon)
     {
-        Img_Icon->SetBrushFromTexture(View.Icon);
+        // Match the brush size to the texture so the widget has a non-zero desired size
+        Img_Icon->SetBrushFromTexture(View.Icon, /*bMatchSize=*/true);
     }
 
     if (Btn_Use)

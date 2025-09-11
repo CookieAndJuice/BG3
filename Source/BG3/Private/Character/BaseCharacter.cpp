@@ -5,13 +5,14 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Data/SkillDefinition.h"
 #include "Component/SkillBookComponent.h"
-
 ABaseCharacter::ABaseCharacter()
 {
+
     PrimaryActorTick.bCanEverTick = false;
     
     static ConstructorHelpers::FObjectFinder<USkillSet> TempSkillSet(TEXT("/Game/Blueprints/Data/DA_DefaultSkills.DA_DefaultSkills"));
 
+    
 	if (TempSkillSet.Succeeded())
 	{
 		DefaultSkills = TempSkillSet.Object;

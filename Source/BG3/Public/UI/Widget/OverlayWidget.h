@@ -22,4 +22,8 @@ protected:
     
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     UOverlayWidgetController* Controller = nullptr;
+
+    // Optional binding to the combat action panel within this overlay
+    UPROPERTY(meta=(BindWidgetOptional), BlueprintReadOnly)
+    UCombatActionPanel* ActionPanel = nullptr;
 };

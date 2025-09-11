@@ -25,7 +25,7 @@ void UCombatActionPanel::RebuildSlots(const TArray<FActionSlotView>& Slots)
 
     Panel_Root->ClearChildren();
 
-    const int32 Columns = FMath::Max(1, NumColumns);
+    const int32 Rows = FMath::Max(1, NumRow);
     for (int32 Index = 0; Index < Slots.Num(); ++Index)
     {
         const FActionSlotView& View = Slots[Index];
@@ -34,12 +34,12 @@ void UCombatActionPanel::RebuildSlots(const TArray<FActionSlotView>& Slots)
         Entry->Setup(View);
         Entry->OnClicked.AddDynamic(this, &UCombatActionPanel::OnSkillButtonClicked);
 
-        const int32 Row = Index / Columns;
-        const int32 Col = Index % Columns;
+        const int32 Row = Index % Rows;
+        const int32 Col = Index / Rows;
         if (UUniformGridSlot* GridSlot = Panel_Root->AddChildToUniformGrid(Entry, Row, Col))
         {
-            GridSlot->SetHorizontalAlignment(HAlign_Fill);
-            GridSlot->SetVerticalAlignment(VAlign_Fill);
+            GridSlot->SetHorizontalAlignment(HAlign_Left);                                                                               
+            GridSlot->SetVerticalAlignment(VAlign_Top);  
         }
     }
 }
