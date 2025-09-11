@@ -5,16 +5,22 @@
 
 #include "BG3/BG3.h"
 #include "Character/BaseCharacter.h"
+#include "Character/BG3EnemyCharacter.h"
 #include "Character/BG3PlayerCharacter.h"
-#include "Data/InitialPlayerInfo.h"
+#include "Data/InitialCharacterInfo.h"
 #include "Game/BG3GameMode.h"
 
 UBG3GameManageSubsystem::UBG3GameManageSubsystem()
 {
-	ConstructorHelpers::FObjectFinder<UInitialPlayerInfo> playerInfosRef(TEXT("/Script/BG3.InitialPlayerInfo'/Game/Blueprints/Data/DA_InitialCharInfo.DA_InitialCharInfo'"));
+	ConstructorHelpers::FObjectFinder<UInitialCharacterInfo> playerInfosRef(TEXT("/Script/BG3.InitialCharacterInfo'/Game/Blueprints/Data/DA_InitPlayerInfo.DA_InitPlayerInfo'"));
 	if (playerInfosRef.Succeeded())
 	{
 		PlayerDataAsset = playerInfosRef.Object;
+	}
+	ConstructorHelpers::FObjectFinder<UInitialCharacterInfo> enemyInfosRef(TEXT("/Script/BG3.InitialCharacterInfo'/Game/Blueprints/Data/DA_InitEnemyInfo.DA_InitEnemyInfo'"));
+	if (enemyInfosRef.Succeeded())
+	{
+		EnemyDataAsset = enemyInfosRef.Object;
 	}
 }
 
@@ -33,6 +39,17 @@ void UBG3GameManageSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 void UBG3GameManageSubsystem::SpawnEnemies()
 {
 	// Spawn & Init
+	for (const auto& enemyInfo : EnemyDataAsset->CharInfos)
+	{
+		auto enemy = GetWorld()->SpawnActor<ABG3EnemyCharacter>(enemyInfo.Character, enemyInfo.SpawnTransform);
+		if (enemy)
+		{
+			int32 order = GM->CalcInitiative(5);
+			PRINTLOG(TEXT("Enemy %d"), order);
+			FTurnData data = {order, enemy};
+			CombatPawns.Add(data);
+		}
+	}
 }
 
 void UBG3GameManageSubsystem::SpawnPlayers()
@@ -43,7 +60,8 @@ void UBG3GameManageSubsystem::SpawnPlayers()
 		auto player = GetWorld()->SpawnActor<ABG3PlayerCharacter>(playerInfo.Character, playerInfo.SpawnTransform);
 		if (player)
 		{
-			int32 order = GM->CalcInitiative(1);
+			int32 order = GM->CalcInitiative(10);
+			PRINTLOG(TEXT("Player %d"), order);
 			FTurnData data = {order, player};
 			CombatPawns.Add(data);
 		}

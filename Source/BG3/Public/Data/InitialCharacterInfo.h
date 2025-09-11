@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "InitialPlayerInfo.generated.h"
+#include "InitialCharacterInfo.generated.h"
 
 /**
  * 
@@ -21,7 +21,7 @@ public:
 };
 
 UCLASS()
-class BG3_API UInitialPlayerInfo : public UPrimaryDataAsset
+class BG3_API UInitialCharacterInfo : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 

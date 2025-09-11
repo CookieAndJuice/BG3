@@ -17,7 +17,6 @@ ABG3GameMode::ABG3GameMode()
 	for (int s=1; s<=30; ++s)
 	{
 		StatModifierByScore[s] = FMath::FloorToInt((s - 10) / 2.0f);
-		PRINTLOG(TEXT("%d"), StatModifierByScore[s]);
 	}
 }
 

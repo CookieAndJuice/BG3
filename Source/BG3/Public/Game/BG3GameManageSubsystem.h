@@ -45,7 +45,10 @@ public:	// Every Turn
 
 private:
 	UPROPERTY()
-	TObjectPtr<class UInitialPlayerInfo> PlayerDataAsset;
+	TObjectPtr<class UInitialCharacterInfo> PlayerDataAsset;
+
+	UPROPERTY()
+	TObjectPtr<class UInitialCharacterInfo> EnemyDataAsset;
 
 	UPROPERTY()
 	TObjectPtr<class ABG3GameMode> GM;
