@@ -17,6 +17,7 @@ void UCombatActionWidgetController::Initialize(ABaseCharacter* InCharacter)
         SkillBook->OnUsabilityChanged.AddDynamic(this, &UCombatActionWidgetController::HandleUsabilityChanged);
     }
 
+    
     RefreshSlots();
 }
 
