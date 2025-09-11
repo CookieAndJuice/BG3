@@ -46,6 +46,9 @@ public:	// Every Turn
 private:
 	UPROPERTY()
 	TObjectPtr<class UInitialPlayerInfo> PlayerDataAsset;
+
+	UPROPERTY()
+	TObjectPtr<class ABG3GameMode> GM;
 	
 public: // Find Pawns
 	UFUNCTION(BlueprintCallable)

@@ -60,7 +60,7 @@ public:	// Camera Movement
 	float RotateSpeed = 75.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
-	float ZoomSpeed = 30.f;
+	float ZoomSpeed = 50.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
 	float MaxTargetArmLength = 1000.f;

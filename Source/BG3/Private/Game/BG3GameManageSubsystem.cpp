@@ -7,6 +7,7 @@
 #include "Character/BaseCharacter.h"
 #include "Character/BG3PlayerCharacter.h"
 #include "Data/InitialPlayerInfo.h"
+#include "Game/BG3GameMode.h"
 
 UBG3GameManageSubsystem::UBG3GameManageSubsystem()
 {
@@ -21,6 +22,8 @@ void UBG3GameManageSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
 
+	GM = Cast<ABG3GameMode>(GetWorld()->GetAuthGameMode());
+	
 	// Init Pawns
 	SpawnPlayers();
 	SpawnEnemies();
@@ -40,7 +43,8 @@ void UBG3GameManageSubsystem::SpawnPlayers()
 		auto player = GetWorld()->SpawnActor<ABG3PlayerCharacter>(playerInfo.Character, playerInfo.SpawnTransform);
 		if (player)
 		{
-			FTurnData data = {tempSpawnIndex++, player};
+			int32 order = GM->CalcInitiative(1);
+			FTurnData data = {order, player};
 			CombatPawns.Add(data);
 		}
 	}

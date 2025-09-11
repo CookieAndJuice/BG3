@@ -14,6 +14,16 @@ public:
 	ABG3GameMode();
 	
 	virtual void BeginPlay() override;
-	
 
+private:// Stat Modifier
+	const int32 MAXPOINT = 30;
+	
+	UPROPERTY()
+	TArray<int32> StatModifierByScore;
+	
+public:	// Dice
+	UPROPERTY()
+	TObjectPtr<class UBG3DiceManager> Dice;
+
+	int32 CalcInitiative(float Dex);
 };
