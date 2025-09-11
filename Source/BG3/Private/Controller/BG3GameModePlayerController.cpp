@@ -76,9 +76,9 @@ void ABG3GameModePlayerController::BeginPlay()
 	UOverlayWidgetController* WC = NewObject<UOverlayWidgetController>();
 	if (WC)
 	{
-		if (ABaseCharacter* PCharacter = Cast<ABaseCharacter>(GetCharacter()))
+		if (ABaseCharacter* PCharacter = Cast<ABaseCharacter>(GMSubsystem->GetCurrentPawn()))
 		{
-			WC->Initialize(PCharacter);	
+			WC->Initialize(PCharacter);
 		}
 		OverlayWidget->SetController(WC);
 	}
