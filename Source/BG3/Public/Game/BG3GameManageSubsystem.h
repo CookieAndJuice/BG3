@@ -62,5 +62,4 @@ public: // Find Pawns
 
 private:	// Find Pawns
 	int Index = 0;
-	int tempSpawnIndex = 0;	// 나중에 주사위 선제권 값으로 바꿀 것
 };

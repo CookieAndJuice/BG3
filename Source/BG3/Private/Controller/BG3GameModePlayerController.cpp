@@ -40,11 +40,17 @@ ABG3GameModePlayerController::ABG3GameModePlayerController()
 	{
 		CameraRotateAction = cameraRotateRef.Object;
 	}
+	ConstructorHelpers::FObjectFinder<UInputAction> LMBClickRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Blueprints/Input/IA_LMBClick.IA_LMBClick'"));
+	if (LMBClickRef.Succeeded())
+	{
+		LMBClickAction = LMBClickRef.Object;
+	}
 	ConstructorHelpers::FClassFinder<ABG3GameCamera> CameraClassRef(TEXT("'/Game/Blueprints/Actor/BP_GameCamera.BP_GameCamera_C'"));
 	if (CameraClassRef.Succeeded())
 	{
 		BG3CameraClass = CameraClassRef.Class;
 	}
+	
 }
 
 void ABG3GameModePlayerController::BeginPlay()
@@ -83,7 +89,7 @@ void ABG3GameModePlayerController::BeginPlay()
 		OverlayWidget->SetController(WC);
 	}
 	
-	
+	SetShowMouseCursor(true);
 }
 
 void ABG3GameModePlayerController::UseSkill(int32 SkillID)
@@ -106,6 +112,20 @@ void ABG3GameModePlayerController::SetupInputComponent()
 		EIC->BindAction(CameraMoveAction, ETriggerEvent::Triggered, this, &ABG3GameModePlayerController::OnMoveCamera);
 		EIC->BindAction(CameraZoomAction, ETriggerEvent::Triggered, this, &ABG3GameModePlayerController::OnZoomCamera);
 		EIC->BindAction(CameraRotateAction, ETriggerEvent::Triggered, this, &ABG3GameModePlayerController::OnRotateCamera);
+		EIC->BindAction(LMBClickAction, ETriggerEvent::Started, this, &ABG3GameModePlayerController::OnLMBClick);
+		EIC->BindAction(LMBClickAction, ETriggerEvent::Completed, this, &ABG3GameModePlayerController::OnLMBClick);
+	}
+}
+
+void ABG3GameModePlayerController::OnLMBClick(const FInputActionValue& value)
+{
+	if (auto* PC = GetWorld()->GetFirstPlayerController())
+	{
+		bool bIsClicked = value.Get<bool>();
+		if (bIsClicked)
+			PC->CurrentMouseCursor = EMouseCursor::GrabHand;
+		else
+			PC->CurrentMouseCursor = EMouseCursor::Default;
 	}
 }
 
