@@ -1,5 +1,8 @@
 
 #include "UI/Widget/CombatActionPanel.h"
+
+#include "Components/GridPanel.h"
+#include "Components/GridSlot.h"
 #include "UI/Widget/ActionSlotEntry.h"
 #include "Components/PanelWidget.h"
 #include "Components/UniformGridPanel.h"
@@ -36,7 +39,7 @@ void UCombatActionPanel::RebuildSlots(const TArray<FActionSlotView>& Slots)
 
         const int32 Row = Index % Rows;
         const int32 Col = Index / Rows;
-        if (UUniformGridSlot* GridSlot = Panel_Root->AddChildToUniformGrid(Entry, Row, Col))
+        if (UGridSlot* GridSlot = Panel_Root->AddChildToGrid(Entry, Row, Col))
         {
             GridSlot->SetHorizontalAlignment(HAlign_Left);                                                                               
             GridSlot->SetVerticalAlignment(VAlign_Top);  

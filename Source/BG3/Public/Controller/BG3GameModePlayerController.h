@@ -8,6 +8,7 @@
 
 class UOverlayWidget;
 class UCombatActionPanel;
+class UMouseInputComponent;
 
 UCLASS()
 class BG3_API ABG3GameModePlayerController : public APlayerController
@@ -15,7 +16,7 @@ class BG3_API ABG3GameModePlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
-	ABG3GameModePlayerController();
+    ABG3GameModePlayerController();
 
 protected:
 	virtual void BeginPlay() override;
@@ -71,14 +72,19 @@ public:	// Camera
 
 	void InitializeCamera();
 
-	/* Widget */
+    /* Widget */
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UOverlayWidget> OverlayWidgetClass;
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UOverlayWidget> OverlayWidget; 
-	
+    UPROPERTY(VisibleAnywhere)
+    TObjectPtr<UOverlayWidget> OverlayWidget; 
+    
+public:
+    // 마우스 입력 컴포넌트(클릭/확정/취소 → SkillExecutionSubsystem 연동)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Input")
+    TObjectPtr<UMouseInputComponent> MouseInput;
+
 
 private:
 	void UseSkill(int32 SkillID);
