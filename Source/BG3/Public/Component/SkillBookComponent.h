@@ -47,7 +47,7 @@ class BG3_API USkillBookComponent : public UActorComponent
 public:
 	USkillBookComponent();
 	
-	/** 보유 스킬 목록 (핫바 느낌) */
+	/** 보유 스킬 목록 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="SkillBook")
 	TArray<TObjectPtr<USkillDefinition>> Skills;
 

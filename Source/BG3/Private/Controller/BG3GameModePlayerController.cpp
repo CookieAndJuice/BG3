@@ -17,6 +17,7 @@
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
 #include "EnhancedInput/Public/InputMappingContext.h"
 #include "Game/BG3GameMode.h"
+#include "Component/MouseInputComponent.h"
 
 ABG3GameModePlayerController::ABG3GameModePlayerController()
 {
@@ -41,10 +42,13 @@ ABG3GameModePlayerController::ABG3GameModePlayerController()
 		CameraRotateAction = cameraRotateRef.Object;
 	}
 	ConstructorHelpers::FClassFinder<ABG3GameCamera> CameraClassRef(TEXT("'/Game/Blueprints/Actor/BP_GameCamera.BP_GameCamera_C'"));
-	if (CameraClassRef.Succeeded())
-	{
-		BG3CameraClass = CameraClassRef.Class;
-	}
+    if (CameraClassRef.Succeeded())
+    {
+        BG3CameraClass = CameraClassRef.Class;
+    }
+
+    // 마우스 입력 컴포넌트 생성(입력 바인딩은 SetupInputComponent에서 수행)
+    MouseInput = CreateDefaultSubobject<UMouseInputComponent>(TEXT("MouseInputComponent"));
 }
 
 void ABG3GameModePlayerController::BeginPlay()
@@ -99,14 +103,20 @@ void ABG3GameModePlayerController::Tick(float DeltaTime)
 
 void ABG3GameModePlayerController::SetupInputComponent()
 {
-	Super::SetupInputComponent();
+    Super::SetupInputComponent();
 
-	if (auto* EIC = Cast<UEnhancedInputComponent>(InputComponent))
-	{
-		EIC->BindAction(CameraMoveAction, ETriggerEvent::Triggered, this, &ABG3GameModePlayerController::OnMoveCamera);
-		EIC->BindAction(CameraZoomAction, ETriggerEvent::Triggered, this, &ABG3GameModePlayerController::OnZoomCamera);
-		EIC->BindAction(CameraRotateAction, ETriggerEvent::Triggered, this, &ABG3GameModePlayerController::OnRotateCamera);
-	}
+    if (auto* EIC = Cast<UEnhancedInputComponent>(InputComponent))
+    {
+        EIC->BindAction(CameraMoveAction, ETriggerEvent::Triggered, this, &ABG3GameModePlayerController::OnMoveCamera);
+        EIC->BindAction(CameraZoomAction, ETriggerEvent::Triggered, this, &ABG3GameModePlayerController::OnZoomCamera);
+        EIC->BindAction(CameraRotateAction, ETriggerEvent::Triggered, this, &ABG3GameModePlayerController::OnRotateCamera);
+
+        // 마우스 입력(타겟 선택/확정/취소) 바인딩 연결
+        if (MouseInput)
+        {
+            MouseInput->BindInput(EIC);
+        }
+    }
 }
 
 void ABG3GameModePlayerController::OnMoveCamera(const FInputActionValue& value)

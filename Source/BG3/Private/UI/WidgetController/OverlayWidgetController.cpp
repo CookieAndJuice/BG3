@@ -5,6 +5,7 @@
 #include "Component/SkillBookComponent.h"
 #include "Data/SkillDefinition.h"
 #include "UI/Widget/ActionSlotEntry.h"
+#include "Game/SkillExecutionSubsystem.h"
 
 void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter)
 {
@@ -32,13 +33,21 @@ void UOverlayWidgetController::RequestUseSkill(int32 SkillID)
     {
         if (Def && Def->Meta.ID == SkillID)
         {
-            if (SkillBook->ReserveUse(Def))
+            if (UWorld* World = GetWorld())
             {
-                PRINTLOG(TEXT(" Skill Activated "));
-            }
-            else
-            {
-                PRINTLOG(TEXT(" Skill Is Not Activated "));
+                if (USkillExecutionSubsystem* SES = World->GetSubsystem<USkillExecutionSubsystem>())
+                {
+                    // 이전엔 SkillBook->ReserveUse 를 직접 호출했지만,
+                    // 이제는 Subsystem이 예약/상태/실행을 일괄 관리합니다.
+                    if (SES->RequestCast(OwningCharacter.Get(), Def))
+                    {
+                        PRINTLOG(TEXT("Skill cast started (targeting)"));
+                    }
+                    else
+                    {
+                        PRINTLOG(TEXT("Skill cast request failed"));
+                    }
+                }
             }
         }
     }
