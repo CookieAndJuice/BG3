@@ -28,24 +28,18 @@ void UOverlayWidgetController::RefreshSlots()
 
 void UOverlayWidgetController::RequestUseSkill(int32 SkillID)
 {
-    PRINTLOG(TEXT("RequestUseSkill Called"));
     if (!SkillBook)
     {
-        PRINTLOG(TEXT("SkillBook Is Not Valid"));
         return;
     }
     for (USkillDefinition* Def : SkillBook->Skills)
     {
-        PRINTLOG(TEXT("%s"), *Def->GetName());
         if (Def && Def->Meta.ID == SkillID)
         {
-            PRINTLOG(TEXT("Skill Found"));
             if (UWorld* World = GetWorld())
             {
-                PRINTLOG(TEXT("World Found"));
                 if (USkillExecutionSubsystem* SES = World->GetSubsystem<USkillExecutionSubsystem>())
                 {
-                    PRINTLOG(TEXT("SES Found"));
                     if (SES->RequestCast(OwningCharacter.Get(), Def))
                     {
                         PRINTLOG(TEXT("Skill cast started (targeting)"));
@@ -55,10 +49,6 @@ void UOverlayWidgetController::RequestUseSkill(int32 SkillID)
                         PRINTLOG(TEXT("Skill cast request failed"));
                     }
                 }
-            }
-            else
-            {
-                PRINTLOG(TEXT("World is Not Valid"));
             }
         }
     }

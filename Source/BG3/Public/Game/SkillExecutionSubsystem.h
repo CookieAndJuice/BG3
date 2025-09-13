@@ -61,17 +61,28 @@ public:
 
     // 캐스트 시작 요청(검증+예약 → Targeting 진입)
     bool RequestCast(ABaseCharacter* Caster, USkillDefinition* Skill);
+	
     // 캐스트 취소(예약 환불, 상태 초기화)
     void CancelCast();
+	
     // 타겟 지정(사거리/최대수 제한 내부 검증 후 반영)
     void SetTargets(const TArray<AActor*>& InTargets);
+	
     // 확정 및 실행(데미지 적용 후 커밋, 결과 브로드캐스트)
     bool ConfirmAndExecute(int32 CurrentRound);
+	
     // 현재 바쁜지 여부(Idle이 아니면 true)
     bool IsBusy() const;
+	
     // 현재 상태 조회
     ECastState GetCastState() const;
 
+	void OnClickInTargeting(FHitResult Hit);
+
+	
+
+	/* 델리게이트 */
+	
     FOnCastingStarted CastingStarted;
     FOnTargetsUpdated TargetsUpdated;
     FOnSkillResolved SkillResolved;
@@ -93,6 +104,8 @@ private:
     // 상태 및 결과 버퍼
     ECastState CastState;
     FSkillResult CurrentSkillResult;
+
+	
     // 외부 시스템 레퍼런스(필요 시 활용)
     TWeakObjectPtr<ABG3GameMode> GameMode;
     TWeakObjectPtr<UBG3GameManageSubsystem> TurnSubsystem;

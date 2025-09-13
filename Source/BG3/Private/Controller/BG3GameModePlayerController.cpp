@@ -141,12 +141,16 @@ void ABG3GameModePlayerController::OnLMBClick(const FInputActionValue& value)
 		else
 			PC->CurrentMouseCursor = EMouseCursor::Default;
 	}
+
+	// SkillExecutionSubsystem의 CastState가 ECastState::Targeting 일 때만 동작 (스킬 타겟팅 중일 때만) 
+	MouseInput->OnClick(value);
 }
 
 void ABG3GameModePlayerController::OnMoveCamera(const FInputActionValue& value)
 {
 	FVector2D inputVec = value.Get<FVector2D>();
-	BG3Camera->FreeCamera(inputVec);}
+	BG3Camera->FreeCamera(inputVec);
+}
 
 void ABG3GameModePlayerController::OnZoomCamera(const FInputActionValue& value)
 {

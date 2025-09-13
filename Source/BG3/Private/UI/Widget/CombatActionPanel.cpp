@@ -50,6 +50,5 @@ void UCombatActionPanel::RebuildSlots(const TArray<FActionSlotView>& Slots)
 
 void UCombatActionPanel::OnSkillButtonClicked(int32 SkillID)
 {
-    PRINTLOG(TEXT("Skill Icon Clicked"));
     Controller->RequestUseSkill(SkillID);
 }

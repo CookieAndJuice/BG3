@@ -9,11 +9,22 @@
 class UTexture2D;
 
 UENUM(BlueprintType)
+enum class ETargetingMode : uint8
+{
+	None,
+	Actor,
+	Point,
+	Area,
+	Self
+};
+
+UENUM(BlueprintType)
 enum class ESkillKind : uint8
 {
 	Melee,
 	Ranged,
-	Spell
+	Spell,
+	NonCombat
 };
 
 UENUM(BlueprintType)
@@ -76,7 +87,7 @@ public:
 	FGameplayTagContainer Tags;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Rules")
-	ESkillKind SkillKind = ESkillKind::Melee;
+	ESkillKind SkillKind = ESkillKind::NonCombat;
 };
 
 USTRUCT(BlueprintType)
@@ -95,6 +106,15 @@ USTRUCT(BlueprintType)
 struct FTargeting
 {
 	GENERATED_BODY();
+
+	// 타게팅 시 모드
+	// ex] 스킬 선택 후 타게팅 중일 때 액터 선택하여 타겟 지정할지, 목표 지점을 타겟 위치로 설정할지 결정
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	ETargetingMode TargetingMode;
+
+	// 자기 자신을 타겟으로 설정할 수 있는지 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bAllowSelfTarget = false;
 
 	// 한 번 시전에 총 몇 발/몇 타인지
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -157,5 +177,6 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Rules")
 	FDamagePackage Damage;
+
 	
 };

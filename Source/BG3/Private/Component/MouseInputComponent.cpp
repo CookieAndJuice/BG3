@@ -18,10 +18,6 @@ void UMouseInputComponent::BindInput(UEnhancedInputComponent* EIC)
     }
 
     // 액션 에셋이 설정된 경우에만 바인딩
-    if (ClickAction)
-    {
-        EIC->BindAction(ClickAction, ETriggerEvent::Triggered, this, &UMouseInputComponent::OnClick);
-    }
     if (ConfirmAction)
     {
         EIC->BindAction(ConfirmAction, ETriggerEvent::Triggered, this, &UMouseInputComponent::OnConfirm);
@@ -34,15 +30,20 @@ void UMouseInputComponent::BindInput(UEnhancedInputComponent* EIC)
 
 void UMouseInputComponent::OnClick(const FInputActionValue& /*Value*/)
 {
-    if (!IsTargeting())
-    {
-        return;
-    }
+    if (!IsTargeting()) return;
+    
 
     if (UWorld* World = GetWorld())
     {
         if (USkillExecutionSubsystem* SES = World->GetSubsystem<USkillExecutionSubsystem>())
         {
+            const APlayerController* PC = Cast<APlayerController>(GetOwner());
+            if (!PC) return;
+            
+            FHitResult Hit;
+            const bool bHit = PC->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
+
+            /*
             if (AActor* HitActor = GetActorUnderCursor())
             {
                 TArray<AActor*> Targets;
@@ -51,8 +52,8 @@ void UMouseInputComponent::OnClick(const FInputActionValue& /*Value*/)
                 PRINTLOG(TEXT("Target Set : %s"), *HitActor->GetName());
                 // TODO: CurrentRound 입력하기
                 SES->ConfirmAndExecute( 0);
-                PRINTLOG(TEXT("Target Set : %s"), *HitActor->GetName());
             }
+            */
         }
     }
 }
@@ -94,7 +95,7 @@ AActor* UMouseInputComponent::GetActorUnderCursor() const
     }
 
     FHitResult Hit;
-    const bool bHit = PC->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
+    const bool bHit = PC->GetHitResultUnderCursor(ECC_Pawn, true, Hit);
     
     if (bHit && Hit.GetActor())
     {

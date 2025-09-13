@@ -3,7 +3,6 @@
 // - 상태 전이/예약/확정/적용을 단순 파이프라인으로 구성
 // - 명중/세이브 등 고급 규칙은 생략, 타겟당 데미지 적용만 수행
 #include "Game/SkillExecutionSubsystem.h"
-
 #include "BG3/BG3.h"
 #include "Character/BaseCharacter.h"
 #include "Component/SkillBookComponent.h"
@@ -51,6 +50,7 @@ bool USkillExecutionSubsystem::RequestCast(ABaseCharacter* Caster, USkillDefinit
 
         // 타게팅 단계 진입 알림
         CastState = ECastState::Targeting;
+        PRINTLOG(TEXT("Reserve Success"));
         // TODO: SkillExecutor 구현 후 콜백함수 바인딩하기
         //CastingStarted.Execute(Caster, Skill);
         return true;
@@ -200,6 +200,7 @@ bool USkillExecutionSubsystem::ConfirmAndExecute(int32 CurrentRound)
         CurrentSkillResult.TotalDamage += Damage;
         CurrentSkillResult.Affected.Add(Target);
         UGameplayStatics::ApplyDamage(Target, Damage, nullptr, Caster, UDamageType::StaticClass());
+        Cast<ABaseCharacter>(Target);
     }
 
     // Commit cost/cooldown on success
@@ -225,6 +226,19 @@ bool USkillExecutionSubsystem::IsBusy() const
 ECastState USkillExecutionSubsystem::GetCastState() const
 {
     return CastState;
+}
+
+void USkillExecutionSubsystem::OnClickInTargeting(FHitResult Hit)
+{
+    ETargetingMode Mode = CurrentSkill->Targeting.TargetingMode;
+
+    if (Mode == ETargetingMode::Actor)
+    {
+        if (!Hit.GetActor()) return;
+        if (!CurrentSkill->Targeting.bAllowSelfTarget && Hit.GetActor() == CurrentCaster) return;
+        CurrentTargets.Add(Hit.GetActor());
+    }
+    
 }
 
 void USkillExecutionSubsystem::ResetCast()
