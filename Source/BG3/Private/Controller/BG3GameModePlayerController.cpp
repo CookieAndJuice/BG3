@@ -87,7 +87,7 @@ void ABG3GameModePlayerController::BeginPlay()
 	// Create Combat Action Panel
 	OverlayWidget = CreateWidget<UOverlayWidget>(this, OverlayWidgetClass);
 	OverlayWidget->AddToViewport();
-	UOverlayWidgetController* WC = NewObject<UOverlayWidgetController>();
+	UOverlayWidgetController* WC = NewObject<UOverlayWidgetController>(GetWorld());
 	if (WC)
 	{
 		if (ABaseCharacter* PCharacter = Cast<ABaseCharacter>(GMSubsystem->GetCurrentPawn()))

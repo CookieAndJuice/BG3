@@ -1,6 +1,7 @@
 
 #include "UI/Widget/CombatActionPanel.h"
 
+#include "BG3/BG3.h"
 #include "Components/GridPanel.h"
 #include "Components/GridSlot.h"
 #include "UI/Widget/ActionSlotEntry.h"
@@ -49,5 +50,6 @@ void UCombatActionPanel::RebuildSlots(const TArray<FActionSlotView>& Slots)
 
 void UCombatActionPanel::OnSkillButtonClicked(int32 SkillID)
 {
+    PRINTLOG(TEXT("Skill Icon Clicked"));
     Controller->RequestUseSkill(SkillID);
 }

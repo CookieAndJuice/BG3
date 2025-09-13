@@ -3,6 +3,8 @@
 // - 상태 전이/예약/확정/적용을 단순 파이프라인으로 구성
 // - 명중/세이브 등 고급 규칙은 생략, 타겟당 데미지 적용만 수행
 #include "Game/SkillExecutionSubsystem.h"
+
+#include "BG3/BG3.h"
 #include "Character/BaseCharacter.h"
 #include "Component/SkillBookComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -20,20 +22,24 @@ bool USkillExecutionSubsystem::RequestCast(ABaseCharacter* Caster, USkillDefinit
     // 이미 다른 캐스트가 진행 중이면 거절
     if (CastState != ECastState::Idle)
     {
-        CastFailed.Execute("Busy");
+        PRINTLOG(TEXT("Busy"));
         return false;
     }
     
     // 유효성 검사(시전자, 스킬 보유 여부)
     if (!Caster || !Skill || !Caster->SkillBook->Skills.Contains(Skill) )
     {
-        CastFailed.Execute("No Caster or Skill");
+        PRINTLOG(TEXT("No Caster or Skill"));
         return false;
     }
     
     bool OutResult;
     Caster->SkillBook->GetUsability(Skill, OutResult);
-    if (!OutResult) return false; // 사용 불가 상태면 거절
+    if (!OutResult)
+    {
+        PRINTLOG(TEXT("GetUsability false"));
+        return false; // 사용 불가 상태면 거절
+    }
 
     // 리소스/행동 슬롯 예약
     if (Caster->SkillBook->ReserveUse(Skill))
@@ -45,12 +51,14 @@ bool USkillExecutionSubsystem::RequestCast(ABaseCharacter* Caster, USkillDefinit
 
         // 타게팅 단계 진입 알림
         CastState = ECastState::Targeting;
-        CastingStarted.Execute(Caster, Skill);
+        // TODO: SkillExecutor 구현 후 콜백함수 바인딩하기
+        //CastingStarted.Execute(Caster, Skill);
         return true;
     }
     else
     {
-        CastFailed.Execute("Reserve Failed");
+        PRINTLOG(TEXT("Reserve Failed"));
+        
         return false;
     }
 }
@@ -138,14 +146,14 @@ bool USkillExecutionSubsystem::ConfirmAndExecute(int32 CurrentRound)
     // 타게팅 상태에서만 확정 가능
     if (CastState != ECastState::Targeting || !CurrentCaster.IsValid() || !CurrentSkill.IsValid())
     {
-        CastFailed.ExecuteIfBound("InvalidState");
+        PRINTLOG(TEXT("InvalidState"));
         return false;
     }
 
     ABG3GameMode* GM = GetWorld() ? Cast<ABG3GameMode>(GetWorld()->GetAuthGameMode()) : nullptr;
     if (!GM)
     {
-        CastFailed.ExecuteIfBound("NoGameMode");
+        PRINTLOG(TEXT("NoGameMode"));
         return false;
     }
 
@@ -157,7 +165,7 @@ bool USkillExecutionSubsystem::ConfirmAndExecute(int32 CurrentRound)
     ABaseCharacter* Caster = CurrentCaster.Get();
     if (!Skill || !Caster)
     {
-        CastFailed.ExecuteIfBound("InvalidContext");
+        PRINTLOG(TEXT("InvalidContext"));
         ResetCast();
         CastState = ECastState::Idle;
         return false;

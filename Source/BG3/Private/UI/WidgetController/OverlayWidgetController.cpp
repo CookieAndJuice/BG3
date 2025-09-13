@@ -10,7 +10,7 @@
 void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter)
 {
     OwningCharacter = InCharacter;
-    SkillBook = InCharacter ? InCharacter->FindComponentByClass<USkillBookComponent>() : nullptr;
+    SkillBook = InCharacter ? InCharacter->SkillBook : nullptr;
 
     if (SkillBook)
     {
@@ -28,17 +28,24 @@ void UOverlayWidgetController::RefreshSlots()
 
 void UOverlayWidgetController::RequestUseSkill(int32 SkillID)
 {
-    if (!SkillBook) return;
+    PRINTLOG(TEXT("RequestUseSkill Called"));
+    if (!SkillBook)
+    {
+        PRINTLOG(TEXT("SkillBook Is Not Valid"));
+        return;
+    }
     for (USkillDefinition* Def : SkillBook->Skills)
     {
+        PRINTLOG(TEXT("%s"), *Def->GetName());
         if (Def && Def->Meta.ID == SkillID)
         {
+            PRINTLOG(TEXT("Skill Found"));
             if (UWorld* World = GetWorld())
             {
+                PRINTLOG(TEXT("World Found"));
                 if (USkillExecutionSubsystem* SES = World->GetSubsystem<USkillExecutionSubsystem>())
                 {
-                    // 이전엔 SkillBook->ReserveUse 를 직접 호출했지만,
-                    // 이제는 Subsystem이 예약/상태/실행을 일괄 관리합니다.
+                    PRINTLOG(TEXT("SES Found"));
                     if (SES->RequestCast(OwningCharacter.Get(), Def))
                     {
                         PRINTLOG(TEXT("Skill cast started (targeting)"));
@@ -48,6 +55,10 @@ void UOverlayWidgetController::RequestUseSkill(int32 SkillID)
                         PRINTLOG(TEXT("Skill cast request failed"));
                     }
                 }
+            }
+            else
+            {
+                PRINTLOG(TEXT("World is Not Valid"));
             }
         }
     }

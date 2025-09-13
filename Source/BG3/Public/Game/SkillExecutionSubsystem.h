@@ -44,7 +44,6 @@ DECLARE_DELEGATE_TwoParams(FOnCastingStarted, ABaseCharacter* /*Caster*/, const 
 DECLARE_DELEGATE_OneParam(FOnTargetsUpdated, const TArray<AActor*>& /*Targets*/);
 DECLARE_DELEGATE_OneParam(FOnSkillResolved, const FSkillResult& /*Result*/);
 DECLARE_DELEGATE(FOnCastingCanceled);
-DECLARE_DELEGATE_OneParam(FOnCastingFailed, FName /*Fail*/);
 
 /**
  * USkillExecutionSubsystem
@@ -74,7 +73,6 @@ public:
     ECastState GetCastState() const;
 
     FOnCastingStarted CastingStarted;
-    FOnCastingFailed CastFailed;
     FOnTargetsUpdated TargetsUpdated;
     FOnSkillResolved SkillResolved;
     FOnCastingCanceled CastingCanceled;
