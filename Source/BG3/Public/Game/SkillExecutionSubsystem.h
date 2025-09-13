@@ -9,6 +9,7 @@ class ABG3GameMode;
 class USkillDefinition;
 class ABaseCharacter;
 class UBG3GameManageSubsystem;
+class USkillCastExecutor;
 
 // 스킬 캐스팅 진행 상태(간소화 버전)
 // Idle: 대기, Targeting: 대상 선택, Resolving/Applying: 계산/적용, Completed/Canceled: 종료 알림용
@@ -58,6 +59,9 @@ class BG3_API USkillExecutionSubsystem : public UWorldSubsystem
 public:
     // 기본 생성자(초기 상태 Idle)
     USkillExecutionSubsystem();
+
+    virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+    virtual void Deinitialize() override;
 
     
 
@@ -111,6 +115,10 @@ private:
     // 외부 시스템 레퍼런스(필요 시 활용)
     TWeakObjectPtr<ABG3GameMode> GameMode;
     TWeakObjectPtr<UBG3GameManageSubsystem> TurnSubsystem;
+
+    // Casting executor (presentation/aux logic)
+    UPROPERTY()
+    TObjectPtr<USkillCastExecutor> SkillExecutor;
 
     
 

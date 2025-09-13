@@ -53,7 +53,7 @@ bool USkillExecutionSubsystem::RequestCast(ABaseCharacter* Caster, USkillDefinit
         
         PRINTLOG(TEXT("Reserve Success"));
         // TODO: SkillExecutor 구현 후 콜백함수 바인딩하기
-        //CastingStarted.Execute(Caster, Skill);
+        CastingStarted.ExecuteIfBound(Caster, Skill);
         return true;
     }
     else
