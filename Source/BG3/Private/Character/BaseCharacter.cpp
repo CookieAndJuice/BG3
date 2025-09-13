@@ -5,6 +5,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Data/SkillDefinition.h"
 #include "Component/SkillBookComponent.h"
+#include "Component/CharacterStatsComponent.h"
 ABaseCharacter::ABaseCharacter()
 {
 
@@ -20,6 +21,10 @@ ABaseCharacter::ABaseCharacter()
     
     // Ensure SkillBook component exists for C++ characters
     SkillBook = CreateDefaultSubobject<USkillBookComponent>(TEXT("SkillBook"));
+
+    // Basic stats (HP/MP)
+    Stats = CreateDefaultSubobject<UCharacterStatsComponent>(TEXT("CharacterStats"));
+    
 }
 
 void ABaseCharacter::BeginPlay()

@@ -3,6 +3,7 @@
 #include "BG3/BG3.h"
 #include "Character/BaseCharacter.h"
 #include "Component/SkillBookComponent.h"
+#include "Component/CharacterStatsComponent.h"
 #include "Data/SkillDefinition.h"
 #include "UI/Widget/ActionSlotEntry.h"
 #include "Game/SkillExecutionSubsystem.h"
@@ -11,11 +12,23 @@ void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter)
 {
     OwningCharacter = InCharacter;
     SkillBook = InCharacter ? InCharacter->SkillBook : nullptr;
+    Stats = InCharacter ? InCharacter->FindComponentByClass<UCharacterStatsComponent>() : nullptr;
 
     if (SkillBook)
     {
         SkillBook->OnCooldownChanged.AddDynamic(this, &UOverlayWidgetController::HandleCooldownChanged);
         SkillBook->OnUsabilityChanged.AddDynamic(this, &UOverlayWidgetController::HandleUsabilityChanged);
+    }
+
+    if (Stats)
+    {
+        Stats->OnHealthChanged.AddDynamic(this, &UOverlayWidgetController::HandleHealthChanged);
+        Stats->OnManaChanged.AddDynamic(this, &UOverlayWidgetController::HandleManaChanged);
+
+        // Initial push for UI
+        HandleHealthChanged(Stats->GetHealth(), Stats->GetMaxHealth());
+        HandleManaChanged(Stats->GetMana(), Stats->GetMaxMana());
+        OnStatsInitialized.Broadcast();
     }
 
     RefreshSlots();
@@ -62,6 +75,16 @@ void UOverlayWidgetController::HandleCooldownChanged(const USkillDefinition* /*S
 void UOverlayWidgetController::HandleUsabilityChanged(const USkillDefinition* /*Skill*/, bool /*bUsable*/)
 {
     BuildAndBroadcast();
+}
+
+void UOverlayWidgetController::HandleHealthChanged(float NewHealth, float MaxHealth)
+{
+    OnHealthChanged.Broadcast(NewHealth, MaxHealth);
+}
+
+void UOverlayWidgetController::HandleManaChanged(float NewMana, float MaxMana)
+{
+    OnManaChanged.Broadcast(NewMana, MaxMana);
 }
 
 void UOverlayWidgetController::BuildAndBroadcast()

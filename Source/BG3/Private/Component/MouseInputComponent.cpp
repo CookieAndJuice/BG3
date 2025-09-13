@@ -42,6 +42,7 @@ void UMouseInputComponent::OnClick(const FInputActionValue& /*Value*/)
             
             FHitResult Hit;
             const bool bHit = PC->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
+            SES->OnClickInTargeting(Hit);
 
             /*
             if (AActor* HitActor = GetActorUnderCursor())

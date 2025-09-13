@@ -9,6 +9,7 @@
 class UCharacterArchetype;
 class USkillSet;
 class USkillBookComponent;
+class UCharacterStatsComponent;
 
 UCLASS()
 class BG3_API ABaseCharacter : public ACharacter, public IActionBudgetProvider
@@ -25,8 +26,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skills|Defaults")
 	TObjectPtr<USkillSet> DefaultSkills;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	TObjectPtr<USkillBookComponent> SkillBook;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    TObjectPtr<USkillBookComponent> SkillBook;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    TObjectPtr<UCharacterStatsComponent> Stats;
+    
 
 	/* 행동력 */
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="ActionBudget")

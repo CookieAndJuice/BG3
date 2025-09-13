@@ -59,6 +59,8 @@ public:
     // 기본 생성자(초기 상태 Idle)
     USkillExecutionSubsystem();
 
+    
+
     // 캐스트 시작 요청(검증+예약 → Targeting 진입)
     bool RequestCast(ABaseCharacter* Caster, USkillDefinition* Skill);
 	
@@ -109,6 +111,8 @@ private:
     // 외부 시스템 레퍼런스(필요 시 활용)
     TWeakObjectPtr<ABG3GameMode> GameMode;
     TWeakObjectPtr<UBG3GameManageSubsystem> TurnSubsystem;
+
+    
 
     // 내부 상태 초기화(참조/결과 클리어)
     void ResetCast();

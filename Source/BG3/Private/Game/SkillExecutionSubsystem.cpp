@@ -50,6 +50,7 @@ bool USkillExecutionSubsystem::RequestCast(ABaseCharacter* Caster, USkillDefinit
 
         // 타게팅 단계 진입 알림
         CastState = ECastState::Targeting;
+        
         PRINTLOG(TEXT("Reserve Success"));
         // TODO: SkillExecutor 구현 후 콜백함수 바인딩하기
         //CastingStarted.Execute(Caster, Skill);
@@ -235,8 +236,10 @@ void USkillExecutionSubsystem::OnClickInTargeting(FHitResult Hit)
     if (Mode == ETargetingMode::Actor)
     {
         if (!Hit.GetActor()) return;
-        if (!CurrentSkill->Targeting.bAllowSelfTarget && Hit.GetActor() == CurrentCaster) return;
+        //if (!CurrentSkill->Targeting.bAllowSelfTarget && Hit.GetActor() == CurrentCaster) return;
+        PRINTLOG(TEXT("Hit Actor : %s"), *Hit.GetActor()->GetName());
         CurrentTargets.Add(Hit.GetActor());
+        ConfirmAndExecute(0);
     }
     
 }
