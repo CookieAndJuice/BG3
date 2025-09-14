@@ -41,6 +41,9 @@ void USkillCastExecutor::OnCastConfirmed(ABaseCharacter* Caster, const USkillDef
     USkillTaskMoveTo*     TMove = NewObject<USkillTaskMoveTo>(this);
     USkillTaskPlayMontage* TMont = NewObject<USkillTaskPlayMontage>(this);
 
+    TMont->Montage = Skill->Meta.Montage;
+    TMont->NotifyToWaitFor = Skill->Meta.HitNotifyName;
+
     TaskQueue.Add(TFace);
     TaskQueue.Add(TMove);
     TaskQueue.Add(TMont);

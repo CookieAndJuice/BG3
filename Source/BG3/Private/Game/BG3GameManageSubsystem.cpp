@@ -75,6 +75,7 @@ void UBG3GameManageSubsystem::SpawnEnemies()
 			int32 order = GM->CalcInitiative(5);
 			PRINTLOG(TEXT("Enemy %d"), order);
 			FTurnData data = {order, enemy};
+			//enemy->SpawnDefaultController();
 			CombatPawns.Add(data);
 		}
 	}
@@ -91,6 +92,7 @@ void UBG3GameManageSubsystem::SpawnPlayers()
 			int32 order = GM->CalcInitiative(10);
 			PRINTLOG(TEXT("Player %d"), order);
 			FTurnData data = {order, player};
+			//player->SpawnDefaultController();
 			CombatPawns.Add(data);
 		}
 	}
@@ -124,6 +126,7 @@ void UBG3GameManageSubsystem::BeginNextTurn()
 	// Get and Possess Next Character
 	ABaseCharacter* nextCharacter = Cast<ABaseCharacter>(GetCurrentPawn());
 	GMPlayerController->SwitchToPawn(nextCharacter);
+	
 }
 
 ABaseCharacter* UBG3GameManageSubsystem::GetCurrentPawn()

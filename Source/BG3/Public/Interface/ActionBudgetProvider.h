@@ -30,4 +30,7 @@ public:
 	// 취소/실패 시 환불
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="ActionBudget")
 	void RefundActionSlot(EActionCost Cost);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="ActionBudget")
+	void BeginTurnReset();
 };

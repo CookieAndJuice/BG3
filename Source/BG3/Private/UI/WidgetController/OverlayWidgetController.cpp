@@ -4,12 +4,23 @@
 #include "Character/BaseCharacter.h"
 #include "Component/SkillBookComponent.h"
 #include "Component/CharacterStatsComponent.h"
+#include "Components/Overlay.h"
+#include "Controller/BG3GameModePlayerController.h"
 #include "Data/SkillDefinition.h"
 #include "UI/Widget/ActionSlotEntry.h"
 #include "Game/SkillExecutionSubsystem.h"
 
-void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter)
+void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter, ABG3GameModePlayerController* PC)
 {
+    PRINTLOG(TEXT("[UI] Initialize: Char=%s"), InCharacter ? *InCharacter->GetName() : TEXT("null"));
+
+    // Unbind previous delegates if reinitializing
+    if (SkillBook)
+    {
+        SkillBook->OnCooldownChanged.RemoveDynamic(this, &UOverlayWidgetController::HandleCooldownChanged);
+        SkillBook->OnUsabilityChanged.RemoveDynamic(this, &UOverlayWidgetController::HandleUsabilityChanged);
+    }
+
     OwningCharacter = InCharacter;
     SkillBook = InCharacter ? InCharacter->SkillBook : nullptr;
     Stats = InCharacter ? InCharacter->FindComponentByClass<UCharacterStatsComponent>() : nullptr;
@@ -18,6 +29,7 @@ void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter)
     {
         SkillBook->OnCooldownChanged.AddDynamic(this, &UOverlayWidgetController::HandleCooldownChanged);
         SkillBook->OnUsabilityChanged.AddDynamic(this, &UOverlayWidgetController::HandleUsabilityChanged);
+        PRINTLOG(TEXT("[UI] Bound SkillBook delegates: %s"), *OwningCharacter->GetName());
     }
 
     if (Stats)
@@ -31,6 +43,13 @@ void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter)
         OnStatsInitialized.Broadcast();
     }
 
+    if (PC && !PC->CurrentCharacterChanged.IsBound())
+    {
+        PC->CurrentCharacterChanged.BindUObject(this, &UOverlayWidgetController::Initialize, PC);
+        PRINTLOG(TEXT("[UI] Bound PC CurrentCharacterChanged"));
+    }
+
+    
     RefreshSlots();
 }
 
@@ -113,6 +132,8 @@ void UOverlayWidgetController::BuildAndBroadcast()
         V.bUsable = bUsable;
 
         V.CooldownRemain = SkillBook->GetCooldownRemaining(Def);
+
+        PRINTLOG(TEXT("[UI] Slot %s usable=%d cd=%d"), *Def->Meta.DisplayName.ToString(), (int32)bUsable, V.CooldownRemain);
 
         Views.Add(V);
     }

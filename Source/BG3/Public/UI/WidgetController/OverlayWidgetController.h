@@ -10,6 +10,7 @@ class ABaseCharacter;
 class USkillBookComponent;
 class USkillDefinition;
 class UCharacterStatsComponent;
+class ABG3GameModePlayerController;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActionSlotsUpdated, const TArray<FActionSlotView>&, Slots);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStatsInitialized);
@@ -23,7 +24,7 @@ class BG3_API UOverlayWidgetController : public UObject
 
 public:
 	UFUNCTION(BlueprintCallable, Category="Combat|UI")
-	void Initialize(ABaseCharacter* InCharacter);
+	void Initialize(ABaseCharacter* InCharacter, ABG3GameModePlayerController* PC);
 
     UFUNCTION(BlueprintCallable, Category="Combat|UI")
     void RefreshSlots();

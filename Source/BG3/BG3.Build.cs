@@ -8,9 +8,9 @@ public class BG3 : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayTags", "UMG", "Slate", "SlateCore", "AIModule"  });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayTags", "UMG", "Slate", "SlateCore", "AIModule", "NavigationSystem"  });
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore"});
+		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "NavigationSystem"});
 
 		// Slate UI modules are required for FButtonStyle, etc.
 		

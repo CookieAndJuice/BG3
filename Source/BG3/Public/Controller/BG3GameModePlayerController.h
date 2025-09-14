@@ -10,6 +10,8 @@ class UOverlayWidget;
 class UCombatActionPanel;
 class UMouseInputComponent;
 
+DECLARE_DELEGATE_OneParam(FCurrentCharacterChanged, class ABaseCharacter*)
+
 UCLASS()
 class BG3_API ABG3GameModePlayerController : public APlayerController
 {
@@ -84,6 +86,10 @@ public:
     // 마우스 입력 컴포넌트(클릭/확정/취소 → SkillExecutionSubsystem 연동)
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Input")
     TObjectPtr<UMouseInputComponent> MouseInput;
+
+public:
+	/* Next Turn Delegate */
+	FCurrentCharacterChanged CurrentCharacterChanged;
 
 
 private:

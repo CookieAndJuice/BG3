@@ -6,8 +6,6 @@
 #include "BG3GameManageSubsystem.generated.h"
 
 
-DECLARE_DELEGATE_OneParam(FCurrentCharacterChanged, class ABaseCharacter*)
-
 USTRUCT(Atomic, BlueprintType)
 struct FTurnData
 {

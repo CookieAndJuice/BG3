@@ -13,9 +13,9 @@ ABaseCharacter::ABaseCharacter()
 {
 
     PrimaryActorTick.bCanEverTick = false;
-    
-    static ConstructorHelpers::FObjectFinder<USkillSet> TempSkillSet(TEXT("/Game/Blueprints/Data/DA_DefaultSkills.DA_DefaultSkills"));
 
+    // Set DefaultSkills
+    static ConstructorHelpers::FObjectFinder<USkillSet> TempSkillSet(TEXT("/Game/Blueprints/Data/DA_DefaultSkills.DA_DefaultSkills"));
     
 	if (TempSkillSet.Succeeded())
 	{
@@ -29,6 +29,13 @@ ABaseCharacter::ABaseCharacter()
     Stats = CreateDefaultSubobject<UCharacterStatsComponent>(TEXT("CharacterStats"));
 
     FSMComp = CreateDefaultSubobject<UFSMComponent>(TEXT("FSMComp"));
+}
+
+void ABaseCharacter::BeginTurnReset_Implementation()
+{
+    CurrentActions = ActionCount;
+    CurrentBonusActions = BonusActionCount;
+    CurrentReactions = ReactionCount;
 }
 
 void ABaseCharacter::BeginPlay()
@@ -52,6 +59,16 @@ void ABaseCharacter::GrantSkills()
     }
 
     for (USkillDefinition* Def : DefaultSkills->Skills)
+    {
+        if (Def)
+        {
+            SkillBook->AddSkill(Def);
+        }
+    }
+
+    if (!ClassSkills) return;
+
+    for (USkillDefinition* Def : ClassSkills->Skills)
     {
         if (Def)
         {
@@ -85,17 +102,17 @@ void ABaseCharacter::SpendActionSlot_Implementation(EActionCost Cost)
     switch (Cost)
     {
     case EActionCost::Action:
-        Actions--;
+        CurrentActions--;
         return;
     case EActionCost::Bonus:
-        BonusActions--;
+        CurrentBonusActions--;
         return;
     case EActionCost::Reaction:
-        Reactions--;
+        CurrentReactions--;
         return;
     }
 
-    PRINTLOG(TEXT("After SpendActionSlot : %d"), Actions);
+    PRINTLOG(TEXT("After Spend CurrentActionslot : %d"), CurrentActions);
 }
 
 bool ABaseCharacter::CanSpendActionSlot_Implementation(EActionCost Cost) const
@@ -103,11 +120,11 @@ bool ABaseCharacter::CanSpendActionSlot_Implementation(EActionCost Cost) const
     switch (Cost)
     {
     case EActionCost::Action:
-        return Actions > 0;
+        return CurrentActions > 0;
     case EActionCost::Bonus:
-        return BonusActions > 0;
+        return CurrentBonusActions > 0;
     case EActionCost::Reaction:
-        return Reactions > 0;
+        return CurrentReactions > 0;
     default:
         return false;
     }
@@ -118,15 +135,15 @@ void ABaseCharacter::RefundActionSlot_Implementation(EActionCost Cost)
     switch (Cost)
     {
     case EActionCost::Action:
-        Actions++;
+        CurrentActions++;
         return;
     case EActionCost::Bonus:
-        BonusActions++;
+        CurrentBonusActions++;
         return;
     case EActionCost::Reaction:
-        Reactions++;
+        CurrentReactions++;
         return;
     }
 
-    PRINTLOG(TEXT("After RefundActionSlot : %d"), Actions);
+    PRINTLOG(TEXT("After RefundActionSlot : %d"), CurrentActions);
 }
