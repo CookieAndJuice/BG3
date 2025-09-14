@@ -72,13 +72,15 @@ public:	// Camera
 
 	void InitializeCamera();
 
+	void SetCameraFocusMode();
+
     /* Widget */
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UOverlayWidget> OverlayWidgetClass;
 
     UPROPERTY(VisibleAnywhere)
-    TObjectPtr<UOverlayWidget> OverlayWidget; 
+    TObjectPtr<UOverlayWidget> OverlayWidget;
     
 public:
     // 마우스 입력 컴포넌트(클릭/확정/취소 → SkillExecutionSubsystem 연동)

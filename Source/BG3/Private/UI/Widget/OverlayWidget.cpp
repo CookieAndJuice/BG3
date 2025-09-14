@@ -6,6 +6,9 @@
 void UOverlayWidget::NativeConstruct()
 {
     Super::NativeConstruct();
+
+    // Init Turn UI
+    // TurnWidget->OnTurnEndDelegate.BindUFunction()
 }
 
 void UOverlayWidget::SetController(UOverlayWidgetController* InController)

@@ -9,9 +9,22 @@
 /**
  * 
  */
+
+DECLARE_DELEGATE(FOnTurnEndDelegate);
+
 UCLASS()
 class BG3_API UTurnEndWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	virtual void NativeConstruct() override;
 	
+	FOnTurnEndDelegate OnTurnEndDelegate;
+
+	UPROPERTY(meta=(BindWidgetOptional))
+	TObjectPtr<class UButton> TurnEndButton;
+	
+	UFUNCTION()
+	void OnTurnEndButtonClicked();
 };

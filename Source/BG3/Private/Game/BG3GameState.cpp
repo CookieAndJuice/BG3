@@ -3,7 +3,19 @@
 
 #include "Game/BG3GameState.h"
 
-void ABG3GameState::InitBG3GameState()
+void ABG3GameState::InitBG3GameState(int32 playerNum, int32 enemyNum)
 {
-	
+	Players = playerNum;
+	Enemies = enemyNum;
+}
+
+void ABG3GameState::UpdateTurn()
+{
+	++Turn;
+}
+
+void ABG3GameState::UpdateRound()
+{
+	Turn = 1;
+	++Round;
 }

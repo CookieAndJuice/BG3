@@ -7,6 +7,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Game/BG3GameManageSubsystem.h"
+#include "Character/BaseCharacter.h"
 
 
 // Sets default values
@@ -35,7 +37,8 @@ ABG3GameCamera::ABG3GameCamera()
 void ABG3GameCamera::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	GMSubsystem = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>();
 }
 
 // Called every frame
@@ -55,7 +58,7 @@ void ABG3GameCamera::Tick(float DeltaTime)
 	else
 	{
 		PRINTLOG(TEXT("dddddddddd"));
-		SetActorLocation(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)->GetActorLocation());
+		SetActorLocation(GMSubsystem->GetCurrentPawn()->GetActorLocation());
 	}
 }
 

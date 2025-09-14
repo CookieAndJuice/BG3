@@ -26,6 +26,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+	UPROPERTY()
+	TObjectPtr<class UBG3GameManageSubsystem> GMSubsystem;
+	
 private: // Root Component
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class USceneComponent> BG3RootComponent;

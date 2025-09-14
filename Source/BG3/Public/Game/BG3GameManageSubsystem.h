@@ -13,7 +13,7 @@ struct FTurnData
 {
 	GENERATED_USTRUCT_BODY()
 public:
-	int32 TurnIndex;
+	int32 TurnOrder;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<class ABaseCharacter> TurnCharacter;
@@ -29,17 +29,22 @@ public:
 	
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	
-public:	// Initialize Pawns
+public:	// Initialize
 	void SpawnEnemies();
 
 	void SpawnPlayers();
 
-	void SortCombatPawns();
+	void InitializeGameState();
 
 public:	// Every Turn
+	UFUNCTION()
 	void BeginNextTurn();
 
 private:
+	UPROPERTY()
+	bool bIsInAction = true;
+	
+private:// Initial Variables
 	UPROPERTY()
 	TObjectPtr<class UInitialCharacterInfo> PlayerDataAsset;
 
@@ -48,6 +53,12 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<class ABG3GameMode> GM;
+
+	UPROPERTY()
+	TObjectPtr<class ABG3GameState> GState;
+
+	UPROPERTY()
+	TObjectPtr<class ABG3GameModePlayerController> GMPlayerController;
 	
 public: // Find Pawns
 	UFUNCTION(BlueprintCallable)

@@ -7,6 +7,7 @@
 
 class UCombatActionPanel;
 class UOverlayWidgetController;
+class UTurnEndWidget;
 
 UCLASS()
 class BG3_API UOverlayWidget : public UUserWidget
@@ -26,4 +27,7 @@ protected:
     // Optional binding to the combat action panel within this overlay
     UPROPERTY(meta=(BindWidgetOptional), BlueprintReadOnly)
     UCombatActionPanel* ActionPanel = nullptr;
+
+    UPROPERTY(meta=(BindWidgetOptional), BlueprintReadOnly)
+    UTurnEndWidget* TurnWidget = nullptr;
 };

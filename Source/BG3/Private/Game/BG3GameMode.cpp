@@ -4,12 +4,24 @@
 #include "BG3/BG3.h"
 #include "GameFramework/SpectatorPawn.h"
 #include "Manager/BG3DiceManager.h"
+#include "GameFramework/GameStateBase.h"
 
+class ABG3GameModePlayerController;
 struct FStatModifierData;
 
 ABG3GameMode::ABG3GameMode()
 {
-	DefaultPawnClass = ASpectatorPawn::StaticClass();
+	DefaultPawnClass = nullptr;
+	ConstructorHelpers::FClassFinder<APlayerController> pcRef(TEXT("/Game/Blueprints/Game/BP_GamePlayerController.BP_GamePlayerController_C"));
+	if (pcRef.Succeeded())
+	{
+		PlayerControllerClass = pcRef.Class;
+	}
+	ConstructorHelpers::FClassFinder<AGameStateBase> gsRef(TEXT("/Script/CoreUObject.Class'/Script/BG3.BG3GameState'"));
+	if (gsRef.Succeeded())
+	{
+		GameStateClass = gsRef.Class;
+	}
 	
 	Dice = CreateDefaultSubobject<UBG3DiceManager>(TEXT("Dice"));
 
