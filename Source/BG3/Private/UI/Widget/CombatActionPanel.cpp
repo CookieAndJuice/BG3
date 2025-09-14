@@ -43,7 +43,7 @@ void UCombatActionPanel::RebuildSlots(const TArray<FActionSlotView>& Slots)
         if (UGridSlot* GridSlot = Panel_Root->AddChildToGrid(Entry, Row, Col))
         {
             GridSlot->SetHorizontalAlignment(HAlign_Left);                                                                               
-            GridSlot->SetVerticalAlignment(VAlign_Top);  
+            GridSlot->SetVerticalAlignment(VAlign_Top);
         }
     }
 }

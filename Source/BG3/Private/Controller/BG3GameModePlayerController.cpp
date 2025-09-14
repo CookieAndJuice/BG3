@@ -18,6 +18,7 @@
 #include "EnhancedInput/Public/InputMappingContext.h"
 #include "Game/BG3GameMode.h"
 #include "Component/MouseInputComponent.h"
+#include "UI/Widget/TurnEndWidget.h"
 
 ABG3GameModePlayerController::ABG3GameModePlayerController()
 {
@@ -176,6 +177,8 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
 	PossessedCharacter->EnableInput(this);
 
 	// Switch Camera Target
+	SetCameraFocusMode();
+	
 	// Change UI Skill Info
 }
 
@@ -198,5 +201,11 @@ void ABG3GameModePlayerController::InitializeCamera()
 	FVector location = PossessedCharacter->GetActorLocation();
 	BG3Camera->SetActorLocation(location);
 	BG3Camera->SetFreeCameraMode(true);
+}
+
+void ABG3GameModePlayerController::SetCameraFocusMode()
+{
+	BG3Camera->SetFreeCameraMode(true);
+	BG3Camera->FocusCamera(GMSubsystem->GetCurrentPawn()->GetActorLocation());
 }
 

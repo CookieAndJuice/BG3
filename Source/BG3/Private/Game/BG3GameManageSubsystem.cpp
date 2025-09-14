@@ -7,8 +7,10 @@
 #include "Character/BaseCharacter.h"
 #include "Character/BG3EnemyCharacter.h"
 #include "Character/BG3PlayerCharacter.h"
+#include "Controller/BG3GameModePlayerController.h"
 #include "Data/InitialCharacterInfo.h"
 #include "Game/BG3GameMode.h"
+#include "Game/BG3GameState.h"
 
 UBG3GameManageSubsystem::UBG3GameManageSubsystem()
 {
@@ -28,12 +30,37 @@ void UBG3GameManageSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
 
-	GM = Cast<ABG3GameMode>(GetWorld()->GetAuthGameMode());
+	GM = Cast<ABG3GameMode>(InWorld.GetAuthGameMode());
+	GState = Cast<ABG3GameState>(InWorld.GetGameState());
+	GMPlayerController = Cast<ABG3GameModePlayerController>(InWorld.GetFirstPlayerController());
 	
 	// Init Pawns
 	SpawnPlayers();
 	SpawnEnemies();
-	SortCombatPawns();
+	CombatPawns.StableSort([](FTurnData a, FTurnData b)->bool
+	{
+		if (a.TurnOrder != b.TurnOrder)
+		{
+			return a.TurnOrder < b.TurnOrder;
+		}
+		const bool bAIsPlayer = a.TurnCharacter->IsA(ABG3PlayerCharacter::StaticClass());
+		const bool bBIsPlayer = b.TurnCharacter->IsA(ABG3PlayerCharacter::StaticClass());
+		
+		if (bAIsPlayer != bBIsPlayer)
+		{
+			return bAIsPlayer;
+		}
+		
+		return false;
+	});
+
+	for (const auto& cp : CombatPawns)
+	{
+		PRINTLOG(TEXT("%s : %d"), *cp.TurnCharacter.GetName(), cp.TurnOrder);
+	}
+
+	// Init Round
+	InitializeGameState();
 }
 
 void UBG3GameManageSubsystem::SpawnEnemies()
@@ -68,22 +95,36 @@ void UBG3GameManageSubsystem::SpawnPlayers()
 	}
 }
 
-void UBG3GameManageSubsystem::SortCombatPawns()
+void UBG3GameManageSubsystem::InitializeGameState()
 {
-	// Sort 기준 함수를 별도 구현해야 할 듯
-	
-	// 선제권 값이 같을 경우
-	// 다를 경우
+	int playerNum = PlayerDataAsset->CharInfos.Num();
+	int enemyNum = EnemyDataAsset->CharInfos.Num();
+	GState->InitBG3GameState(playerNum, enemyNum);
 }
 
 void UBG3GameManageSubsystem::BeginNextTurn()
 {
+	// If Current Character is In Action, Cannot Begin Next Turn
+	if (bIsInAction) return;
+	PRINTLOG(TEXT("Next Turn!!!!"));
 	
+	// Next Turn or Round
+	if (CombatPawns.Num() > ++Index)
+	{
+		GState->UpdateTurn();
+	}
+	else
+	{
+		Index = 0;
+		GState->UpdateRound();
+	}
+	// Get and Possess Next Character
+	ABaseCharacter* nextCharacter = Cast<ABaseCharacter>(GetCurrentPawn());
+	GMPlayerController->SwitchToPawn(nextCharacter);
 }
 
 ABaseCharacter* UBG3GameManageSubsystem::GetCurrentPawn()
 {
 	ABaseCharacter* pawn = CastChecked<ABaseCharacter>(CombatPawns[Index].TurnCharacter);
-	Index += Index % CombatPawns.Num();
 	return pawn;
 }
