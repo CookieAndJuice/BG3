@@ -18,6 +18,7 @@
 #include "EnhancedInput/Public/InputMappingContext.h"
 #include "Game/BG3GameMode.h"
 #include "Component/MouseInputComponent.h"
+#include "Component/SkillBookComponent.h"
 #include "UI/Widget/TurnEndWidget.h"
 
 ABG3GameModePlayerController::ABG3GameModePlayerController()
@@ -168,17 +169,32 @@ void ABG3GameModePlayerController::OnRotateCamera(const FInputActionValue& value
 
 void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
 {
-	if (!NewCharacter) return;
+    if (!NewCharacter) return;
 
-	//Possess(NewCharacter);
-	PossessedCharacter = NewCharacter;
+    //Possess(NewCharacter);
+    PossessedCharacter = NewCharacter;
 
-	// Switch Camera Target
-	FVector location = PossessedCharacter->GetActorLocation();
-	BG3Camera->FocusCamera(location);
-	
-	// Change UI Skill Info
-	CurrentCharacterChanged.ExecuteIfBound(NewCharacter);
+    // Switch Camera Target
+    FVector location = PossessedCharacter->GetActorLocation();
+    BG3Camera->FocusCamera(location);
+
+    // Reset Actions Budget 
+    if (NewCharacter->GetClass()->ImplementsInterface(UActionBudgetProvider::StaticClass()))
+    {
+        PRINTLOG(TEXT("[SwitchToPawn] BeginTurnReset for %s"), *NewCharacter->GetName());
+        IActionBudgetProvider::Execute_BeginTurnReset(NewCharacter);
+        bool bA = IActionBudgetProvider::Execute_CanSpendActionSlot(NewCharacter, EActionCost::Action);
+        bool bB = IActionBudgetProvider::Execute_CanSpendActionSlot(NewCharacter, EActionCost::Bonus);
+        PRINTLOG(TEXT("[SwitchToPawn] After Reset CanSpend: Action=%d Bonus=%d"), bA, bB);
+    }
+
+    // Reset Turn Variables
+    PRINTLOG(TEXT("[SwitchToPawn] Call OnOwnerTurnStart"));
+    NewCharacter->SkillBook->OnOwnerTurnStart(); 
+    
+    // Change UI Skill Info
+    PRINTLOG(TEXT("[SwitchToPawn] Broadcast CurrentCharacterChanged"));
+    CurrentCharacterChanged.ExecuteIfBound(NewCharacter);
 }
 
 void ABG3GameModePlayerController::SpawnCamera()

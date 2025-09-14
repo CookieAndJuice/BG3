@@ -35,9 +35,19 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     TObjectPtr<UCharacterStatsComponent> Stats;
 	
-    
-
 	/* 행동력 */
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Actions")
+	int32 ActionCount = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Actions")
+	int32 BonusActionCount = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Actions")
+	int32 ReactionCount = 1;
+
+	bool bIsInAction;
+	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="ActionBudget")
 	bool CanSpendActionSlot(EActionCost Cost) const;
 
@@ -47,17 +57,20 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="ActionBudget")
 	void RefundActionSlot(EActionCost Cost);
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="ActionBudget")
+	void BeginTurnReset();
+	
+
 protected:
 	virtual void BeginPlay() override;
 	void GrantSkills();
 
 private:
 
-	/* 행동력 */
-	int32 Actions = 1;
-	int32 BonusActions = 1;
-	int32 Reactions = 1;
-	
+	/* 현재 행동력 */
+	int32 CurrentActions = 1;
+	int32 CurrentBonusActions = 1;
+	int32 CurrentReactions = 1;
 	
 	
 };

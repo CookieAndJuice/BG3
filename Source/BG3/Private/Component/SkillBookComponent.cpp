@@ -147,6 +147,7 @@ void USkillBookComponent::CancelReservation(USkillDefinition* Def)
 void USkillBookComponent::OnOwnerTurnStart()
 {
 	// 턴 시작: 쿨다운 -1, 턴 카운터 리셋
+	//PRINTLOG(TEXT("Action : %d / Bonus : %d / Reaction : %d"), )
 	for (auto& Pair : Runtime)
 	{
 		USkillDefinition* Def = Pair.Key;

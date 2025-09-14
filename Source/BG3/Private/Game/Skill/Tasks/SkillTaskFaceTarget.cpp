@@ -3,6 +3,7 @@
 #include "BG3/BG3.h"
 #include "GameFramework/Actor.h"
 
+// 즉시 회전 후 곧바로 완료 콜백을 호출합니다.
 void USkillTaskFaceTarget::Start(UObject* /*WorldContext*/, AActor* Caster, const USkillDefinition* /*Skill*/, const TArray<AActor*>& Targets)
 {
     if (!Caster || Targets.Num() == 0 || !IsValid(Targets[0]))
