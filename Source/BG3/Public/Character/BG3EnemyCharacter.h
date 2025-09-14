@@ -25,4 +25,12 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+protected:	// FSM
+	virtual void SetMyTurn();
+
+private:// Attack Target
+	UPROPERTY()
+	TObjectPtr<class ABaseCharacter> AttackTarget;
+	
 };

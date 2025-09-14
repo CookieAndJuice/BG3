@@ -28,7 +28,7 @@ ABaseCharacter::ABaseCharacter()
     // Basic stats (HP/MP)
     Stats = CreateDefaultSubobject<UCharacterStatsComponent>(TEXT("CharacterStats"));
 
-    // CharacterFSM = CreateDefaultSubobject<UFSMComponent>(TEXT("FSM"));
+    FSMComp = CreateDefaultSubobject<UFSMComponent>(TEXT("FSMComp"));
 }
 
 void ABaseCharacter::BeginPlay()
@@ -60,21 +60,14 @@ void ABaseCharacter::GrantSkills()
     }
 }
 
-void ABaseCharacter::ChangeState(ECharacterState state)
-{
-    
-}
-
-void ABaseCharacter::UpdateBehavior()
-{
-    CurrentFSMState->UpdateBehavior();
-}
-
 void ABaseCharacter::BuildFSM()
 {
-    UIdleState* idle = NewObject<UIdleState>(this);
-    StateMap.Add(ECharacterState::Idle, idle);
-    CurrentFSMState = idle;
+    // Init FSM StateMap
+    if (FSMComp)
+    {
+        FSMComp->StateClasses.Add(ECharacterState::Idle, UIdleState::StaticClass());
+        FSMComp->ChangeState(*this, ECharacterState::Idle);
+    }
 }
 
 void ABaseCharacter::Tick(float DeltaTime)

@@ -25,11 +25,24 @@ void ABG3EnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	CurrentFSMState->UpdateBehavior();
+	FSMComp->UpdateBehavior();
+
+	// 1. Get Attack Target
+	// 2. Move
+	// 3. Attack
+	
 }
 
 // Called to bind functionality to input
 void ABG3EnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void ABG3EnemyCharacter::SetMyTurn()
+{
+	// 1. Get Attack Target
+	
+	// 2. Move
+	FSMComp->ChangeState(*this, ECharacterState::Move);
 }

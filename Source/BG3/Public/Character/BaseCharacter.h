@@ -14,6 +14,7 @@ class UCharacterStatsComponent;
 UENUM(BlueprintType)
 enum class ECharacterState : uint8
 {
+	None,
 	Idle, Move,
 	Action, BonusAction, ReAction,
 	OpportunityAttack,
@@ -64,18 +65,9 @@ private:
 	int32 Reactions = 1;
 	
 public: // FSM
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = FSM)
-	TObjectPtr<class UFSMComponent> CurrentFSMState;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FSM")
+	TObjectPtr<class UFSMComponent> FSMComp;
 
-	UPROPERTY()
-	TMap<ECharacterState, class UFSMComponent*> StateMap;
-
-	void ChangeState(ECharacterState state);
-
-	void UpdateBehavior();
-
+protected:
 	void BuildFSM();
-private:
-	UPROPERTY()
-	ECharacterState CurrentState = ECharacterState::Idle;
 };

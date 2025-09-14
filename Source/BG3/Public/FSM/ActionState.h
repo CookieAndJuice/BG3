@@ -1,31 +1,19 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Action state as UObject
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FSMComponent.h"
+#include "FSM/FSMStateObject.h"
 #include "ActionState.generated.h"
 
-
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class BG3_API UActionState : public UFSMComponent
+UCLASS(BlueprintType)
+class BG3_API UActionState : public UFSMStateObject
 {
-	GENERATED_BODY()
-
+    GENERATED_BODY()
 public:
-	// Sets default values for this component's properties
-	UActionState();
+    virtual void Enter(class ABaseCharacter& Character) override {}
+    virtual void Exit(class ABaseCharacter& Character) override {}
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
-
-	virtual void ChangeState(ABaseCharacter& character, ECharacterState state) override;
-
-	virtual void UpdateBehavior() override;
+    virtual void UpdateBehavior() override;
 };
+

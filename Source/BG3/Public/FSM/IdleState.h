@@ -1,29 +1,20 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Idle state implemented as UObject state
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FSMComponent.h"
+#include "FSM/FSMStateObject.h"
 #include "IdleState.generated.h"
 
-
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class BG3_API UIdleState : public UFSMComponent
+UCLASS(BlueprintType)
+class BG3_API UIdleState : public UFSMStateObject
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
-	UIdleState();
+    virtual void Enter(class ABaseCharacter& Character) override {}
+    virtual void Exit(class ABaseCharacter& Character) override {}
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
-
-	virtual void UpdateBehavior() override;
+    virtual void UpdateBehavior() override;
 };
+
