@@ -47,18 +47,21 @@ void ABG3GameCamera::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	if (bIsFreeCameraMode)
-	{		
+	{
 		FVector desiredDir(GetActorForwardVector() * Dx + GetActorRightVector() * Dy);
-		desiredDir = FMath::VInterpTo(PreDirection, desiredDir, DeltaTime, MoveSpeed);
-		FVector target(GetActorLocation() + desiredDir * MoveSpeed * DeltaTime);
+		PreDirection = FMath::VInterpTo(PreDirection, desiredDir, DeltaTime, FreeDirMoveSpeed);
+		
+		FVector target(GetActorLocation() + PreDirection * FreeLocMoveSpeed * DeltaTime);
 		SetActorLocation(target);
 
 		Dx = 0; Dy = 0;
 	}
 	else
 	{
-		PRINTLOG(TEXT("dddddddddd"));
-		SetActorLocation(GMSubsystem->GetCurrentPawn()->GetActorLocation());
+		FVector targetLoc = GMSubsystem->GetCurrentPawn()->GetActorLocation();
+		
+		FVector NextLoc = FMath::VInterpTo(GetActorLocation(), targetLoc, DeltaTime, FocusMoveSpeed);
+		SetActorLocation(NextLoc);
 	}
 }
 
@@ -68,15 +71,9 @@ void ABG3GameCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void ABG3GameCamera::SetFreeCameraMode(bool val)
-{
-	bIsFreeCameraMode = val;
-}
-
 void ABG3GameCamera::FocusCamera(FVector location)
 {
 	bIsFreeCameraMode = false;
-	SetActorLocation(location);
 }
 
 void ABG3GameCamera::FreeCamera(FVector2D direction)
@@ -84,7 +81,7 @@ void ABG3GameCamera::FreeCamera(FVector2D direction)
 	bIsFreeCameraMode = true;
 	direction.Normalize();
 	Dx = direction.X;
-	Dy = direction.Y;	
+	Dy = direction.Y;
 }
 
 void ABG3GameCamera::Zoom(float input)

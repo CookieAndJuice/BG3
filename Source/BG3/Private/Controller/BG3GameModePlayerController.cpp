@@ -149,6 +149,7 @@ void ABG3GameModePlayerController::OnLMBClick(const FInputActionValue& value)
 
 void ABG3GameModePlayerController::OnMoveCamera(const FInputActionValue& value)
 {
+	
 	FVector2D inputVec = value.Get<FVector2D>();
 	BG3Camera->FreeCamera(inputVec);
 }
@@ -169,15 +170,12 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
 {
 	if (!NewCharacter) return;
 
-	// Possess New Character
-	PossessedCharacter->DisableInput(this);
-
-	Possess(NewCharacter);
+	//Possess(NewCharacter);
 	PossessedCharacter = NewCharacter;
-	PossessedCharacter->EnableInput(this);
 
 	// Switch Camera Target
-	SetCameraFocusMode();
+	FVector location = PossessedCharacter->GetActorLocation();
+	BG3Camera->FocusCamera(location);
 	
 	// Change UI Skill Info
 }
@@ -199,13 +197,6 @@ void ABG3GameModePlayerController::InitializeCamera()
 
 	// Set Follow Mode
 	FVector location = PossessedCharacter->GetActorLocation();
-	BG3Camera->SetActorLocation(location);
-	BG3Camera->SetFreeCameraMode(true);
-}
-
-void ABG3GameModePlayerController::SetCameraFocusMode()
-{
-	BG3Camera->SetFreeCameraMode(true);
-	BG3Camera->FocusCamera(GMSubsystem->GetCurrentPawn()->GetActorLocation());
+	BG3Camera->FocusCamera(location);
 }
 

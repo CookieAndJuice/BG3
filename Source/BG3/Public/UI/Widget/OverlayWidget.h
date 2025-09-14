@@ -29,5 +29,5 @@ protected:
     UCombatActionPanel* ActionPanel = nullptr;
 
     UPROPERTY(meta=(BindWidgetOptional), BlueprintReadOnly)
-    UTurnEndWidget* TurnWidget = nullptr;
+    UTurnEndWidget* TurnEndWidget = nullptr;
 };
