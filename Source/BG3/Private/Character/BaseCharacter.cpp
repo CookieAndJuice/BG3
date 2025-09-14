@@ -10,9 +10,9 @@ ABaseCharacter::ABaseCharacter()
 {
 
     PrimaryActorTick.bCanEverTick = false;
-    
-    static ConstructorHelpers::FObjectFinder<USkillSet> TempSkillSet(TEXT("/Game/Blueprints/Data/DA_DefaultSkills.DA_DefaultSkills"));
 
+    // Set DefaultSkills
+    static ConstructorHelpers::FObjectFinder<USkillSet> TempSkillSet(TEXT("/Game/Blueprints/Data/DA_DefaultSkills.DA_DefaultSkills"));
     
 	if (TempSkillSet.Succeeded())
 	{
@@ -47,6 +47,16 @@ void ABaseCharacter::GrantSkills()
     }
 
     for (USkillDefinition* Def : DefaultSkills->Skills)
+    {
+        if (Def)
+        {
+            SkillBook->AddSkill(Def);
+        }
+    }
+
+    if (!ClassSkills) return;
+
+    for (USkillDefinition* Def : ClassSkills->Skills)
     {
         if (Def)
         {

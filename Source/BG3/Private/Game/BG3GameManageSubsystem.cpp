@@ -124,6 +124,7 @@ void UBG3GameManageSubsystem::BeginNextTurn()
 	// Get and Possess Next Character
 	ABaseCharacter* nextCharacter = Cast<ABaseCharacter>(GetCurrentPawn());
 	GMPlayerController->SwitchToPawn(nextCharacter);
+	
 }
 
 ABaseCharacter* UBG3GameManageSubsystem::GetCurrentPawn()

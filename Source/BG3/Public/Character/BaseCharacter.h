@@ -26,11 +26,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skills|Defaults")
 	TObjectPtr<USkillSet> DefaultSkills;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skills|Defaults")
+	TObjectPtr<USkillSet> ClassSkills;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     TObjectPtr<USkillBookComponent> SkillBook;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     TObjectPtr<UCharacterStatsComponent> Stats;
+	
     
 
 	/* 행동력 */

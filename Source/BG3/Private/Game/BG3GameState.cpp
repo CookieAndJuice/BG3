@@ -30,6 +30,7 @@ int32 ABG3GameState::GetCurrentRound()
 int32 ABG3GameState::GetCurrentTurn()
 {
 	return Turn;
+}
 void ABG3GameState::PrintCurrentState()
 {
 	PRINTLOG(TEXT("Round %d | Turn %d"), Round , Turn);

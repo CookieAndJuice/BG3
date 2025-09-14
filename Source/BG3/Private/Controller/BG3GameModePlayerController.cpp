@@ -93,7 +93,7 @@ void ABG3GameModePlayerController::BeginPlay()
 	{
 		if (ABaseCharacter* PCharacter = Cast<ABaseCharacter>(GMSubsystem->GetCurrentPawn()))
 		{
-			WC->Initialize(PCharacter);
+			WC->Initialize(PCharacter, this);
 		}
 		OverlayWidget->SetController(WC);
 	}
@@ -178,6 +178,7 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
 	BG3Camera->FocusCamera(location);
 	
 	// Change UI Skill Info
+	CurrentCharacterChanged.ExecuteIfBound(NewCharacter);
 }
 
 void ABG3GameModePlayerController::SpawnCamera()
