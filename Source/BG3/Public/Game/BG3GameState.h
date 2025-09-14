@@ -21,6 +21,9 @@ public:
 
 	void UpdateRound();
 
+	int32 GetCurrentRound();
+	int32 GetCurrentTurn();
+
 private:
 	// round
 	int32 Round = 1;

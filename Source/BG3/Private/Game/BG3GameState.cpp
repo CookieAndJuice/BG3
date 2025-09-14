@@ -19,3 +19,13 @@ void ABG3GameState::UpdateRound()
 	Turn = 1;
 	++Round;
 }
+
+int32 ABG3GameState::GetCurrentRound()
+{
+	return Round;
+}
+
+int32 ABG3GameState::GetCurrentTurn()
+{
+	return Turn;
+}
