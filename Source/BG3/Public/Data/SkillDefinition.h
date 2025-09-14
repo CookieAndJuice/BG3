@@ -94,8 +94,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
 	FGameplayTagContainer Tags;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Rules")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
 	ESkillKind SkillKind = ESkillKind::NonCombat;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
+	UAnimMontage* Montage = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
+	FName HitNotifyName;
 };
 
 USTRUCT(BlueprintType)
