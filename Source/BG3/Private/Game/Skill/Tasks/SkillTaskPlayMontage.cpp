@@ -2,39 +2,108 @@
 
 #include "BG3/BG3.h"
 #include "Animation/AnimInstance.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Character/BaseCharacter.h"
-#include "Character/Animation/BaseAnimInstance.h"
-#include "GameFramework/Character.h"
+#include "Game/SkillExecutionSubsystem.h"
 
-void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, const USkillDefinition* /*Skill*/, const TArray<AActor*>& /*Targets*/)
+void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, const USkillDefinition* /*Skill*/, const TArray<AActor*>& Targets)
 {
-    if (!Caster)
+    CasterCharacter = Cast<ABaseCharacter>(Caster);
+    WeakTargets.Reset();
+    for (AActor* T : Targets)
     {
-        if (OnFailed.IsBound()) OnFailed.Execute(TEXT("NoCaster"));
+        WeakTargets.Add(T);
+    }
+
+    if (!CasterCharacter.IsValid() || Montage == nullptr)
+    {
+        if (OnFailed.IsBound()) OnFailed.Execute(TEXT("NoCasterOrMontage"));
         return;
     }
 
-    auto Character = Cast<ABaseCharacter>(Caster);
-    auto AnimInst = Cast<UBaseAnimInstance>(Character->GetMesh()->GetAnimInstance());
-    if (!AnimInst) return;
-
-    PRINTLOG(TEXT("[Task] PlayMontage (skeleton) for %s"), *Caster->GetName());
-
-    if (Montage)
+    USkeletalMeshComponent* Mesh = CasterCharacter->GetMesh();
+    UAnimInstance* AI = Mesh ? Mesh->GetAnimInstance() : nullptr;
+    if (!AI)
     {
-        AnimInst->Montage_Play(Montage.Get());
-        AnimInst->OnHitNotifyBegin.AddUObject(this, &USkillTaskPlayMontage::OnNotifyBegin);
+        if (OnFailed.IsBound()) OnFailed.Execute(TEXT("NoAnimInstance"));
+        return;
     }
-    
-    // Skeleton: no real montage; immediately finish as if notify arrived
-    if (OnFinished.IsBound()) OnFinished.Execute();
+    AnimInst = AI;
+
+    AI->OnMontageEnded.AddDynamic(this, &USkillTaskPlayMontage::OnMontageEnded);
+    AI->OnPlayMontageNotifyBegin.AddDynamic(this, &USkillTaskPlayMontage::OnNotifyBegin);
+
+    const float Len = AI->Montage_Play(Montage, 1.0f);
+    if (Len <= 0.f)
+    {
+        AI->OnMontageEnded.RemoveAll(this);
+        AI->OnPlayMontageNotifyBegin.RemoveAll(this);
+        if (OnFailed.IsBound()) OnFailed.Execute(TEXT("PlayFailed"));
+        return;
+    }
+
+    PRINTLOG(TEXT("[MontageTask] Play %s on %s"), *Montage->GetName(), *CasterCharacter->GetName());
 }
 
 void USkillTaskPlayMontage::Cancel()
 {
+    if (AnimInst.IsValid() && Montage)
+    {
+        AnimInst->Montage_Stop(0.2f, Montage);
+        AnimInst->OnMontageEnded.RemoveAll(this);
+        AnimInst->OnPlayMontageNotifyBegin.RemoveAll(this);
+    }
 }
 
-void USkillTaskPlayMontage::OnNotifyBegin()
+void USkillTaskPlayMontage::OnMontageEnded(UAnimMontage* InMontage, bool bInterrupted)
 {
-    PRINTLOG(TEXT("Hit Notify Received"));
+    if (!AnimInst.IsValid()) return;
+
+    AnimInst->OnMontageEnded.RemoveAll(this);
+    AnimInst->OnPlayMontageNotifyBegin.RemoveAll(this);
+
+    if (bInterrupted && !bHitApplied)
+    {
+        if (OnFailed.IsBound()) OnFailed.Execute(TEXT("Interrupted"));
+        return;
+    }
+
+    if (!bHitApplied && OnFinished.IsBound())
+    {
+        OnFinished.Execute();
+    }
+}
+
+void USkillTaskPlayMontage::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& Payload)
+{
+    if (bHitApplied) return;
+    //if (!Payload.MontageInstance) return;
+    //if (Payload.MontageInstance->Montage != Montage) return;
+    if (NotifyName != HitNotifyName) return;
+
+    PRINTLOG(TEXT("[MontageTask] Notify %s on %s"), *NotifyName.ToString(), *CasterCharacter->GetName());
+
+    if (CasterCharacter.IsValid())
+    {
+        if (UWorld* World = CasterCharacter->GetWorld())
+        {
+            if (USkillExecutionSubsystem* SES = World->GetSubsystem<USkillExecutionSubsystem>())
+            {
+                TArray<AActor*> StrongTargets;
+                StrongTargets.Reserve(WeakTargets.Num());
+                for (const TWeakObjectPtr<AActor>& W : WeakTargets)
+                {
+                    if (W.IsValid()) StrongTargets.Add(W.Get());
+                }
+                SES->FinalizeCastAfterExecutor(StrongTargets, Round);
+            }
+        }
+    }
+
+    bHitApplied = true;
+
+    if (OnFinished.IsBound())
+    {
+        OnFinished.Execute();
+    }
 }

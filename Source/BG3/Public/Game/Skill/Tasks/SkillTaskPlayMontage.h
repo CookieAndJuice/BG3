@@ -14,18 +14,46 @@
 #include "Animation/AnimMontage.h"
 #include "SkillTaskPlayMontage.generated.h"
 
+class ABaseCharacter;
+
 UCLASS()
 class BG3_API USkillTaskPlayMontage : public USkillTaskBase
 {
     GENERATED_BODY()
 public:
+    // 재생할 몽타주(필수)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Montage")
-    TObjectPtr<UAnimMontage> Montage;
+    UAnimMontage* Montage = nullptr;
 
+    // 맞는 시점으로 사용할 AnimNotify 이름(기본: "Hit")
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Montage")
-    FName NotifyToWaitFor = NAME_None; // Optional: wait specific notify
+    FName HitNotifyName = FName(TEXT("Hit"));
+
+    UFUNCTION(BlueprintCallable, Category="Montage")
+    void SetRound(int32 InRound) { Round = InRound; }
 
     virtual void Start(UObject* WorldContext, AActor* Caster, const class USkillDefinition* Skill, const TArray<AActor*>& Targets) override;
     virtual void Cancel() override;
-    void OnNotifyBegin();
+
+private:
+    UFUNCTION()
+    void OnMontageEnded(UAnimMontage* InMontage, bool bInterrupted);
+
+    UFUNCTION()
+    void OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& Payload);
+
+private:
+    UPROPERTY()
+    TWeakObjectPtr<ABaseCharacter> CasterCharacter;
+
+    UPROPERTY()
+    TWeakObjectPtr<UAnimInstance> AnimInst;
+
+    UPROPERTY()
+    TArray<TWeakObjectPtr<AActor>> WeakTargets;
+
+    UPROPERTY()
+    int32 Round = 0;
+
+    bool bHitApplied = false;
 };

@@ -11,6 +11,7 @@ ABaseCharacter::ABaseCharacter()
 
     PrimaryActorTick.bCanEverTick = false;
 
+    
     // Set DefaultSkills
     static ConstructorHelpers::FObjectFinder<USkillSet> TempSkillSet(TEXT("/Game/Blueprints/Data/DA_DefaultSkills.DA_DefaultSkills"));
     
