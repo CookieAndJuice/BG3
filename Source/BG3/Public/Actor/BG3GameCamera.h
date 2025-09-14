@@ -43,9 +43,6 @@ public:	// Camera
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	TObjectPtr<class UCameraComponent> CameraComponent;
-
-public: // Camerae State
-	void SetFreeCameraMode(bool val);
 	
 private:// Camera State
 	bool bIsFreeCameraMode = false;
@@ -58,7 +55,13 @@ private:// Camera Movement
 
 public:	// Camera Movement
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
-	float MoveSpeed = 1000.f;
+	float FreeDirMoveSpeed = 10.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	float FreeLocMoveSpeed = 800.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	float FocusMoveSpeed = 10.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
 	float RotateSpeed = 75.f;

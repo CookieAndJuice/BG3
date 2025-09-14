@@ -72,8 +72,6 @@ public:	// Camera
 
 	void InitializeCamera();
 
-	void SetCameraFocusMode();
-
     /* Widget */
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

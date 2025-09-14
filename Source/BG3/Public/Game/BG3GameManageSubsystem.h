@@ -42,7 +42,7 @@ public:	// Every Turn
 
 private:
 	UPROPERTY()
-	bool bIsInAction = true;
+	bool bIsInAction = false;
 	
 private:// Initial Variables
 	UPROPERTY()

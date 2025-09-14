@@ -21,6 +21,8 @@ public:
 
 	void UpdateRound();
 
+	void PrintCurrentState();
+
 private:
 	// round
 	int32 Round = 1;

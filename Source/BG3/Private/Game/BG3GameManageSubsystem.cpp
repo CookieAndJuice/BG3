@@ -61,6 +61,7 @@ void UBG3GameManageSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 
 	// Init Round
 	InitializeGameState();
+	GState->PrintCurrentState();
 }
 
 void UBG3GameManageSubsystem::SpawnEnemies()
@@ -118,6 +119,8 @@ void UBG3GameManageSubsystem::BeginNextTurn()
 		Index = 0;
 		GState->UpdateRound();
 	}
+	GState->PrintCurrentState();
+	
 	// Get and Possess Next Character
 	ABaseCharacter* nextCharacter = Cast<ABaseCharacter>(GetCurrentPawn());
 	GMPlayerController->SwitchToPawn(nextCharacter);
