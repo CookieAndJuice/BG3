@@ -3,7 +3,7 @@
 
 #include "Character/BG3EnemyCharacter.h"
 
-#include "FSM/FSMComponent.h"
+#include "FSM/EnemyFSMComponent.h"
 
 
 // Sets default values
@@ -27,9 +27,13 @@ void ABG3EnemyCharacter::Tick(float DeltaTime)
 
 	FSMComp->UpdateBehavior();
 
-	// 1. Get Attack Target
-	// 2. Move
-	// 3. Attack
+	if (bIsMyTurn)
+	{
+		// 1. Get Attack Target
+		// 2. Move
+		// 3. Attack
+		
+	}
 	
 }
 
@@ -41,8 +45,9 @@ void ABG3EnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 void ABG3EnemyCharacter::SetMyTurn()
 {
+	bIsMyTurn = true;
 	// 1. Get Attack Target
 	
-	// 2. Move
-	FSMComp->ChangeState(*this, ECharacterState::Move);
+	// 2. Start
+	FSMComp->StartFSM();
 }

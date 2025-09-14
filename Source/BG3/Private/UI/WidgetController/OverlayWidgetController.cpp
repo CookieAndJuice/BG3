@@ -34,8 +34,8 @@ void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter, ABG3GameM
 
     if (Stats)
     {
-        Stats->OnHealthChanged.AddDynamic(this, &UOverlayWidgetController::HandleHealthChanged);
-        Stats->OnManaChanged.AddDynamic(this, &UOverlayWidgetController::HandleManaChanged);
+        // Stats->OnHealthChanged.AddDynamic(this, &UOverlayWidgetController::HandleHealthChanged);
+        // Stats->OnManaChanged.AddDynamic(this, &UOverlayWidgetController::HandleManaChanged);
 
         // Initial push for UI
         HandleHealthChanged(Stats->GetHealth(), Stats->GetMaxHealth());

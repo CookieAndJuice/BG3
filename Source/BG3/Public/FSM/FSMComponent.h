@@ -8,6 +8,16 @@
 #include "FSM/FSMStateObject.h"
 #include "FSMComponent.generated.h"
 
+UENUM(BlueprintType)
+enum class ECharacterState : uint8
+{
+    None,
+    Idle, Move,
+    Action, BonusAction, ReAction,
+    OpportunityAttack,
+    Hit, Die
+};
+
 // 전방 선언
 class UFSMStateObject;
 class ABaseCharacter;
@@ -24,6 +34,8 @@ protected:
     virtual void BeginPlay() override;
 
 public: // Change State & Update Behavior
+    void BuildFSM();
+    
     virtual void ChangeState(ABaseCharacter& character, ECharacterState state);
 
     virtual void UpdateBehavior();

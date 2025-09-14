@@ -11,16 +11,6 @@ class USkillSet;
 class USkillBookComponent;
 class UCharacterStatsComponent;
 
-UENUM(BlueprintType)
-enum class ECharacterState : uint8
-{
-	None,
-	Idle, Move,
-	Action, BonusAction, ReAction,
-	OpportunityAttack,
-	Hit, Die
-};
-
 UCLASS()
 class BG3_API ABaseCharacter : public ACharacter, public IActionBudgetProvider
 {
@@ -81,11 +71,4 @@ private:
 	int32 CurrentActions = 1;
 	int32 CurrentBonusActions = 1;
 	int32 CurrentReactions = 1;
-	
-public: // FSM
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FSM")
-	TObjectPtr<class UFSMComponent> FSMComp;
-
-protected:
-	void BuildFSM();
 };

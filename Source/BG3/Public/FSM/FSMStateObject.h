@@ -23,5 +23,8 @@ public:
     virtual bool CanEnter(const ABaseCharacter& Character) const { return true; }
     virtual bool CanExit(const ABaseCharacter& Character) const { return true; }
     virtual void OnEvent(FName /*EventId*/, ABaseCharacter& /*Character*/) {}
+
+protected:
+    bool bCanUpdateBehavior = false;
 };
 

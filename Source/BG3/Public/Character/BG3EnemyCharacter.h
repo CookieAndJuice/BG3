@@ -26,8 +26,13 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-protected:	// FSM
+public:	// FSM
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FSM")
+	TObjectPtr<class UEnemyFSMComponent> FSMComp;
+	
 	virtual void SetMyTurn();
+
+	bool bIsMyTurn = false;
 
 private:// Attack Target
 	UPROPERTY()

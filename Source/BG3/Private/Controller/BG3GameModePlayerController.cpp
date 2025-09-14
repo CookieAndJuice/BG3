@@ -14,6 +14,7 @@
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "EnhancedInputSubsystems.h"
 #include "BG3/BG3.h"
+#include "Character/BG3EnemyCharacter.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
 #include "EnhancedInput/Public/InputMappingContext.h"
 #include "Game/BG3GameMode.h"
@@ -191,10 +192,17 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
     // Reset Turn Variables
     PRINTLOG(TEXT("[SwitchToPawn] Call OnOwnerTurnStart"));
     NewCharacter->SkillBook->OnOwnerTurnStart(); 
-    
-    // Change UI Skill Info
-    PRINTLOG(TEXT("[SwitchToPawn] Broadcast CurrentCharacterChanged"));
-    CurrentCharacterChanged.ExecuteIfBound(NewCharacter);
+	
+	if (auto* enemy = Cast<ABG3EnemyCharacter>(PossessedCharacter))
+	{
+		enemy->SetMyTurn();
+	}
+	else
+	{
+		// Change UI Skill Info
+    	PRINTLOG(TEXT("[SwitchToPawn] Broadcast CurrentCharacterChanged"));
+    	CurrentCharacterChanged.ExecuteIfBound(NewCharacter);
+	}
 }
 
 void ABG3GameModePlayerController::SpawnCamera()

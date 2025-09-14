@@ -4,12 +4,14 @@
 #include "FSM/FSMComponent.h"
 #include "FSM/FSMStateObject.h"
 #include "Character/BG3EnemyCharacter.h"
+#include "FSM/ActionState.h"
+#include "FSM/IdleState.h"
+#include "FSM/MoveState.h"
 
 
 // Sets default values for this component's properties
 UFSMComponent::UFSMComponent()
 {
-	// 상태 업데이트는 매니저가 수동으로 디스패치합니다.
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
@@ -18,6 +20,19 @@ UFSMComponent::UFSMComponent()
 void UFSMComponent::BeginPlay()
 {
     Super::BeginPlay();
+
+    BuildFSM();
+}
+
+void UFSMComponent::BuildFSM()
+{
+    // Init FSM StateMap
+    StateClasses.Add(ECharacterState::Idle, UIdleState::StaticClass());
+    StateClasses.Add(ECharacterState::Move, UMoveState::StaticClass());
+    StateClasses.Add(ECharacterState::Action, UActionState::StaticClass());
+
+    auto* character = Cast<ABaseCharacter>(GetOwner());
+    ChangeState(*character, ECharacterState::Idle);
 }
 
 UFSMStateObject* UFSMComponent::GetOrCreateState(ECharacterState State)
@@ -63,12 +78,12 @@ bool UFSMComponent::TryTransition(ABaseCharacter& Character, ECharacterState Nex
 
     // Try Transition
     bIsTransitioning = true;
-    // if (CurObject)
-    // {
-    //     CurObject->Exit(Character);
-    // }
+    if (CurObject)
+    {
+        CurObject->Exit(Character);
+    }
     CurrentState = Next;
-    // NextObject->Enter(Character);
+    NextObject->Enter(Character);
     bIsTransitioning = false;
     return true;
 }
