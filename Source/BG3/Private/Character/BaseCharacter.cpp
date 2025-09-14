@@ -6,6 +6,9 @@
 #include "Data/SkillDefinition.h"
 #include "Component/SkillBookComponent.h"
 #include "Component/CharacterStatsComponent.h"
+#include "FSM/FSMComponent.h"
+#include "FSM/IdleState.h"
+
 ABaseCharacter::ABaseCharacter()
 {
 
@@ -24,7 +27,8 @@ ABaseCharacter::ABaseCharacter()
 
     // Basic stats (HP/MP)
     Stats = CreateDefaultSubobject<UCharacterStatsComponent>(TEXT("CharacterStats"));
-    
+
+    // CharacterFSM = CreateDefaultSubobject<UFSMComponent>(TEXT("FSM"));
 }
 
 void ABaseCharacter::BeginPlay()
@@ -32,6 +36,7 @@ void ABaseCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	GrantSkills();
+    BuildFSM();
 }
 
 void ABaseCharacter::GrantSkills()
@@ -53,7 +58,24 @@ void ABaseCharacter::GrantSkills()
             SkillBook->AddSkill(Def);
         }
     }
-} 
+}
+
+void ABaseCharacter::ChangeState(ECharacterState state)
+{
+    
+}
+
+void ABaseCharacter::UpdateBehavior()
+{
+    CurrentFSMState->UpdateBehavior();
+}
+
+void ABaseCharacter::BuildFSM()
+{
+    UIdleState* idle = NewObject<UIdleState>(this);
+    StateMap.Add(ECharacterState::Idle, idle);
+    CurrentFSMState = idle;
+}
 
 void ABaseCharacter::Tick(float DeltaTime)
 {

@@ -58,7 +58,7 @@ public:	// Camera Movement
 	float FreeDirMoveSpeed = 10.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
-	float FreeLocMoveSpeed = 800.f;
+	float FreeLocMoveSpeed = 1000.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
 	float FocusMoveSpeed = 10.f;

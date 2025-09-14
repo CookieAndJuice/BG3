@@ -3,6 +3,8 @@
 
 #include "Character/BG3EnemyCharacter.h"
 
+#include "FSM/FSMComponent.h"
+
 
 // Sets default values
 ABG3EnemyCharacter::ABG3EnemyCharacter()
@@ -22,6 +24,8 @@ void ABG3EnemyCharacter::BeginPlay()
 void ABG3EnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	CurrentFSMState->UpdateBehavior();
 }
 
 // Called to bind functionality to input
@@ -29,4 +33,3 @@ void ABG3EnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
-
