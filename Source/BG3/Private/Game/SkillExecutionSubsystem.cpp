@@ -184,7 +184,7 @@ bool USkillExecutionSubsystem::ConfirmAndExecute(int32 CurrentRound)
     CurrentSkillResult.TotalDamage = 0;
     CurrentSkillResult.Affected.Reset();
 
-    // Copy strong refs for Apply loop
+    // Copy strong refs for executor/Apply loop
     TArray<AActor*> Targets;
     for (const TWeakObjectPtr<AActor>& Weak : CurrentTargets)
     {
@@ -192,6 +192,14 @@ bool USkillExecutionSubsystem::ConfirmAndExecute(int32 CurrentRound)
         {
             Targets.Add(Weak.Get());
         }
+    }
+    // Notify executor just before executing
+    CastConfirmed.ExecuteIfBound(Caster, Skill, Targets, CurrentRound);
+
+    // If melee, let executor orchestrate damage timing at AnimNotify
+    if (Skill->Meta.SkillKind == ESkillKind::Melee)
+    {
+        return true;
     }
 
     for (AActor* Target : Targets)
@@ -251,4 +259,72 @@ void USkillExecutionSubsystem::ResetCast()
     CurrentSkill = nullptr;
     CurrentTargets.Reset();
     CurrentSkillResult = FSkillResult{};
+}
+
+void USkillExecutionSubsystem::FinalizeCastAfterExecutor(const TArray<AActor*>& InTargets, int32 CurrentRound)
+{
+    // Must be in an executing phase
+    if (!CurrentCaster.IsValid() || !CurrentSkill.IsValid())
+    {
+        PRINTLOG(TEXT("FinalizeCastAfterExecutor: Invalid context"));
+        ResetCast();
+        CastState = ECastState::Idle;
+        return;
+    }
+
+    ABG3GameMode* GM = GetWorld() ? Cast<ABG3GameMode>(GetWorld()->GetAuthGameMode()) : nullptr;
+    if (!GM)
+    {
+        PRINTLOG(TEXT("FinalizeCastAfterExecutor: NoGameMode"));
+        ResetCast();
+        CastState = ECastState::Idle;
+        return;
+    }
+
+    USkillDefinition* Skill = CurrentSkill.Get();
+    ABaseCharacter* Caster = CurrentCaster.Get();
+
+    const int32 DiceNum = Skill->Damage.Dice.Num > 0 ? Skill->Damage.Dice.Num : 1;
+    const int32 DiceSides = Skill->Damage.Dice.Sides > 0 ? Skill->Damage.Dice.Sides : 6;
+
+    // Build targets: prefer provided list; fallback to CurrentTargets
+    TArray<AActor*> Targets;
+    if (InTargets.Num() > 0)
+    {
+        Targets = InTargets;
+    }
+    else
+    {
+        for (const TWeakObjectPtr<AActor>& Weak : CurrentTargets)
+        {
+            if (Weak.IsValid())
+            {
+                Targets.Add(Weak.Get());
+            }
+        }
+    }
+
+    CurrentSkillResult = FSkillResult{};
+    CurrentSkillResult.bSuccess = true;
+    CurrentSkillResult.TotalDamage = 0;
+    CurrentSkillResult.Affected.Reset();
+
+    for (AActor* Target : Targets)
+    {
+        const int32 Damage = GM->Dice ? GM->Dice->RollDice(DiceNum, DiceSides) : FMath::RandRange(DiceNum, DiceNum * DiceSides);
+        CurrentSkillResult.TotalDamage += Damage;
+        CurrentSkillResult.Affected.Add(Target);
+        UGameplayStatics::ApplyDamage(Target, Damage, nullptr, Caster, UDamageType::StaticClass());
+    }
+
+    if (USkillBookComponent* SkillBook = Caster->SkillBook)
+    {
+        SkillBook->CommitUse(Skill, CurrentRound);
+    }
+
+    CastState = ECastState::Completed;
+    SkillResolved.ExecuteIfBound(CurrentSkillResult);
+
+    ResetCast();
+    CastState = ECastState::Idle;
 }

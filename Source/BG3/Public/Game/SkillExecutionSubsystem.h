@@ -45,6 +45,8 @@ DECLARE_DELEGATE_TwoParams(FOnCastingStarted, ABaseCharacter* /*Caster*/, const 
 DECLARE_DELEGATE_OneParam(FOnTargetsUpdated, const TArray<AActor*>& /*Targets*/);
 DECLARE_DELEGATE_OneParam(FOnSkillResolved, const FSkillResult& /*Result*/);
 DECLARE_DELEGATE(FOnCastingCanceled);
+// Fired right before executing (after targets are set, at Confirm step)
+DECLARE_DELEGATE_FourParams(FOnCastConfirmed, ABaseCharacter* /*Caster*/, const USkillDefinition* /*Skill*/, const TArray<AActor*>& /*Targets*/, int32 /*CurrentRound*/);
 
 /**
  * USkillExecutionSubsystem
@@ -93,6 +95,7 @@ public:
     FOnTargetsUpdated TargetsUpdated;
     FOnSkillResolved SkillResolved;
     FOnCastingCanceled CastingCanceled;
+    FOnCastConfirmed CastConfirmed;
 
 private:
     // 현재 시전자(약참조)
@@ -124,4 +127,8 @@ private:
 
     // 내부 상태 초기화(참조/결과 클리어)
     void ResetCast();
+
+public:
+    // Called by executor (e.g., after melee montage hit) to apply damage, commit, resolve and reset
+    void FinalizeCastAfterExecutor(const TArray<AActor*>& Targets, int32 CurrentRound);
 };

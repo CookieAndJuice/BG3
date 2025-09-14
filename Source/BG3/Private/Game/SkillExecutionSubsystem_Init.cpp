@@ -14,6 +14,8 @@ void USkillExecutionSubsystem::Initialize(FSubsystemCollectionBase& Collection)
     {
         CastingStarted.Unbind();
         CastingStarted.BindUObject(SkillExecutor, &USkillCastExecutor::OnCastingStarted);
+        CastConfirmed.Unbind();
+        CastConfirmed.BindUObject(SkillExecutor, &USkillCastExecutor::OnCastConfirmed);
     }
 }
 
@@ -23,4 +25,3 @@ void USkillExecutionSubsystem::Deinitialize()
     SkillExecutor = nullptr;
     Super::Deinitialize();
 }
-

@@ -9,6 +9,14 @@
 class UTexture2D;
 
 UENUM(BlueprintType)
+enum class EDeliveryMethod : uint8
+{
+	Instant,
+	Projectile
+};
+
+
+UENUM(BlueprintType)
 enum class ETargetingMode : uint8
 {
 	None,
@@ -111,6 +119,10 @@ struct FTargeting
 	// ex] 스킬 선택 후 타게팅 중일 때 액터 선택하여 타겟 지정할지, 목표 지점을 타겟 위치로 설정할지 결정
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	ETargetingMode TargetingMode;
+
+	// 스킬 대상 선택 후 데미지 바로 적용 시킬지 or 발사체 충돌 후 데미지 적용인지
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	EDeliveryMethod DeliveryMethod;
 
 	// 자기 자신을 타겟으로 설정할 수 있는지 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
