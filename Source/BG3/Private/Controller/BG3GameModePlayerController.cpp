@@ -21,6 +21,7 @@
 #include "Component/MouseInputComponent.h"
 #include "Component/SkillBookComponent.h"
 #include "UI/Widget/TurnEndWidget.h"
+#include "Game/SkillExecutionSubsystem.h"
 
 ABG3GameModePlayerController::ABG3GameModePlayerController()
 {
@@ -171,6 +172,19 @@ void ABG3GameModePlayerController::OnRotateCamera(const FInputActionValue& value
 void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
 {
     if (!NewCharacter) return;
+
+    // Clear any lingering cast when switching turns/characters
+    if (UWorld* World = GetWorld())
+    {
+        if (USkillExecutionSubsystem* SES = World->GetSubsystem<USkillExecutionSubsystem>())
+        {
+            if (SES->IsBusy())
+            {
+                PRINTLOG(TEXT("[SwitchToPawn] Cancel lingering cast"));
+                SES->CancelCast();
+            }
+        }
+    }
 
     //Possess(NewCharacter);
     PossessedCharacter = NewCharacter;

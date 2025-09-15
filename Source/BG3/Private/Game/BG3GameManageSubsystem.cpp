@@ -11,6 +11,7 @@
 #include "Data/InitialCharacterInfo.h"
 #include "Game/BG3GameMode.h"
 #include "Game/BG3GameState.h"
+#include "Game/SkillExecutionSubsystem.h"
 
 UBG3GameManageSubsystem::UBG3GameManageSubsystem()
 {
@@ -109,6 +110,19 @@ void UBG3GameManageSubsystem::BeginNextTurn()
 {
 	// If Current Character is In Action, Cannot Begin Next Turn
 	if (bIsInAction) return;
+
+	// Defensive: ensure no lingering cast carries into next turn
+	if (UWorld* World = GetWorld())
+	{
+		if (USkillExecutionSubsystem* SES = World->GetSubsystem<USkillExecutionSubsystem>())
+		{
+			if (SES->IsBusy())
+			{
+				PRINTLOG(TEXT("[BeginNextTurn] SES busy; cancel cast before advancing turn"));
+				SES->CancelCast();
+			}
+		}
+	}
 	PRINTLOG(TEXT("Next Turn!!!!"));
 	
 	// Next Turn or Round

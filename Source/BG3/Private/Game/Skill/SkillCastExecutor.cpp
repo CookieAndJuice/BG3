@@ -86,6 +86,21 @@ void USkillCastExecutor::StartNext(UObject* WorldContext, AActor* Caster, const 
     {
         PRINTLOG(TEXT("Task failed: %s"), *Reason.ToString());
         TaskQueue.Reset();
+        // Ensure subsystem state is released on failure to avoid Busy lock
+        if (CachedCaster.IsValid())
+        {
+            if (UWorld* World = CachedCaster->GetWorld())
+            {
+                if (USkillExecutionSubsystem* SES = World->GetSubsystem<USkillExecutionSubsystem>())
+                {
+                    if (SES->IsBusy())
+                    {
+                        PRINTLOG(TEXT("[Executor] Cancel cast due to task failure"));
+                        SES->CancelCast();
+                    }
+                }
+            }
+        }
     });
 
     Task->Bind(OnNext, OnFail);

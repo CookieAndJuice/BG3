@@ -24,5 +24,5 @@ void UMoveState::Exit(class ABaseCharacter& Character)
 void UMoveState::UpdateBehavior()
 {
     if (bCanUpdateBehavior)
-        PRINTLOG(TEXT("Move Move Move State"));
+        PRINTSTATELOG(TEXT("Move Move Move State"));
 }
