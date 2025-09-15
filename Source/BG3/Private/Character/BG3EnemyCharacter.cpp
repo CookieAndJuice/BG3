@@ -11,12 +11,15 @@ ABG3EnemyCharacter::ABG3EnemyCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	FSMComp = CreateDefaultSubobject<UEnemyFSMComponent>(TEXT("FSMComp"));
 }
 
 // Called when the game starts or when spawned
 void ABG3EnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
 	
 }
 
