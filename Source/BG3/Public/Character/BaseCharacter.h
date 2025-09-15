@@ -59,6 +59,12 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="ActionBudget")
 	void BeginTurnReset();
+
+	
+	/* 애님 몽타주 */
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void PlayAttackAnimation(UAnimMontage* MontageToPlay);
 	
 
 protected:

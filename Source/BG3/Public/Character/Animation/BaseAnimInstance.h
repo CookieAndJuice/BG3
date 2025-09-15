@@ -27,9 +27,6 @@ public:
 	// 몽타주
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PlayerAnim)
 	class UAnimMontage* AttackMontage;
-	
-	// 공격 애니메이션 재생 함수
-	void PlayAttackAnimation();
 
 	// 애님 노티파이
 	FOnHitNotifyBegin OnHitNotifyBegin;
