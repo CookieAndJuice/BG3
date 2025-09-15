@@ -26,6 +26,6 @@ void UIdleState::UpdateBehavior()
 	// Idle State Update
 	if (bCanUpdateBehavior)
 	{
-		PRINTLOG(TEXT("Idle Idle Idle State"));
+		PRINTSTATELOG(TEXT("Idle Idle Idle State"));
 	}
 }
