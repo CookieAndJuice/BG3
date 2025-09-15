@@ -51,6 +51,8 @@ private:// Camera Movement
 	float Dx;
 	float Dy;
 	FVector PreDirection;
+	float ZoomDirection;
+	float ZoomTarget;
 	bool bDoesCameraMove = false;
 
 public:	// Camera Movement
@@ -67,7 +69,10 @@ public:	// Camera Movement
 	float RotateSpeed = 75.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
-	float ZoomSpeed = 50.f;
+	float ZoomDistance = 100.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	float ZoomSpeed = 20.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
 	float MaxTargetArmLength = 1000.f;

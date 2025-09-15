@@ -39,6 +39,7 @@ void ABG3GameCamera::BeginPlay()
 	Super::BeginPlay();
 
 	GMSubsystem = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>();
+	ZoomTarget = SpringArmComponent->TargetArmLength;
 }
 
 // Called every frame
@@ -63,6 +64,19 @@ void ABG3GameCamera::Tick(float DeltaTime)
 		FVector NextLoc = FMath::VInterpTo(GetActorLocation(), targetLoc, DeltaTime, FocusMoveSpeed);
 		SetActorLocation(NextLoc);
 	}
+
+	if (ZoomDirection != 0)
+	{
+		float cur = SpringArmComponent->TargetArmLength;
+		
+		float length = FMath::FInterpTo(cur, ZoomTarget, DeltaTime, ZoomSpeed);
+		SpringArmComponent->TargetArmLength = length;
+		if (FMath::Abs(ZoomTarget - cur) < 0.05)
+		{
+			cur = ZoomTarget;
+			ZoomDirection = 0;
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -86,23 +100,9 @@ void ABG3GameCamera::FreeCamera(FVector2D direction)
 
 void ABG3GameCamera::Zoom(float input)
 {
-	// Scaling
-	if (input > 0.01)
-	{
-		// ZoomSpeed가 너무 커지면 min, max에서 이상해 짐.
-		// zoom의 다른 방법이 있을 수도
-		if (SpringArmComponent->TargetArmLength > MinTargetArmLength)
-			SpringArmComponent->TargetArmLength -= ZoomSpeed;
-		else if (SpringArmComponent->TargetArmLength < MinTargetArmLength)
-			SpringArmComponent->TargetArmLength = MinTargetArmLength;
-	}
-	else if (input < -0.01)
-	{
-		if (SpringArmComponent->TargetArmLength < MaxTargetArmLength)
-			SpringArmComponent->TargetArmLength += ZoomSpeed;
-		else if (SpringArmComponent->TargetArmLength > MaxTargetArmLength)
-			SpringArmComponent->TargetArmLength = MaxTargetArmLength;
-	}
+	ZoomDirection = -input;
+	ZoomTarget += ZoomDirection * ZoomDistance;
+	ZoomTarget = FMath::Clamp(ZoomTarget, MinTargetArmLength, MaxTargetArmLength);
 }
 
 void ABG3GameCamera::RotateCamera(float input)
