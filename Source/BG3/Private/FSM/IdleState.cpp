@@ -3,7 +3,6 @@
 #include "FSM/IdleState.h"
 #include "BG3/BG3.h"
 #include "Character/BG3EnemyCharacter.h"
-#include "FSM/FSMComponent.h"
 
 void UIdleState::Enter(class ABaseCharacter& Character)
 {

@@ -3,12 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FSMComponent.h"
 #include "EnemyFSMComponent.generated.h"
 
+UENUM(BlueprintType)
+enum class ECharacterState : uint8
+{
+	None, Idle, Plan, Move, Execute,
+	Hit, Die
+};
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class BG3_API UEnemyFSMComponent : public UFSMComponent
+class BG3_API UEnemyFSMComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -21,7 +26,27 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	void StartFSM();
+	// Current Enum State
+	UPROPERTY(VisibleInstanceOnly, Category = "FSM")
+	ECharacterState CurrentState = ECharacterState::None;
+	
+public: // Change State & Update Behavior    
+	virtual void ChangeState(ECharacterState state);
 
-	void EndFSM();
+	virtual void UpdateBehavior();
+	
+	void StartMyTurn();
+
+	void EndMyTurn();
+
+public:	// FSM
+	void IdleState();
+	void PlanState();
+	void MoveState();
+	void ExecuteState();
+	void HitState();
+	void DieState();
+
+protected:
+	bool bIsMyTurn = false;
 };
