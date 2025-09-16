@@ -77,5 +77,9 @@ private:
 	UFUNCTION()
 	void HandleClick();
 
-	
+	UFUNCTION()
+	void OnSlotPressed();
+
+	UFUNCTION()
+	void OnSlotReleased();
 };
