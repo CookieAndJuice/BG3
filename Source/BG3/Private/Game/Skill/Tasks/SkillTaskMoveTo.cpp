@@ -17,7 +17,7 @@ void USkillTaskMoveTo::Start(UObject* /*WorldContext*/, AActor* Caster, const US
     }
 
     // 스킬 사거리(m)를 cm로 변환하여 수용 반경으로 사용. 값이 없으면 AcceptRadius 기본값 사용
-    const float RangeCm = (Skill && Skill->Targeting.RangeMeters > 0.f) ? Skill->Targeting.RangeMeters * 100.f : AcceptRadius;
+    const float RangeCm = (Skill && Skill->Targeting.RangeMeters > 0.f) ? Skill->Targeting.RangeMeters * 50.f : AcceptRadius;
 
     const FVector From = Caster->GetActorLocation();
     const FVector To = Targets[0]->GetActorLocation();

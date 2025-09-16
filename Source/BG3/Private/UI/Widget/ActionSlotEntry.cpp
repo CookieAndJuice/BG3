@@ -41,9 +41,9 @@ void UActionSlotEntry::Setup(const FActionSlotView& InView)
         Btn_Use->SetStyle(NewStyle);
     }
 
-    if (Overlay_Disalbed)
+    if (Overlay_Disabled)
     {
-        Overlay_Disalbed->SetVisibility(View.bUsable ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
+        Overlay_Disabled->SetVisibility(View.bUsable ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
     }
 }
 

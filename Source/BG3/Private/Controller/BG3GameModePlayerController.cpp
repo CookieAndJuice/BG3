@@ -201,7 +201,7 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
         bool bA = IActionBudgetProvider::Execute_CanSpendActionSlot(NewCharacter, EActionCost::Action);
         bool bB = IActionBudgetProvider::Execute_CanSpendActionSlot(NewCharacter, EActionCost::Bonus);
         PRINTLOG(TEXT("[SwitchToPawn] After Reset CanSpend: Action=%d Bonus=%d"), bA, bB);
-    }
+    }	
 
     // Reset Turn Variables
     PRINTLOG(TEXT("[SwitchToPawn] Call OnOwnerTurnStart"));

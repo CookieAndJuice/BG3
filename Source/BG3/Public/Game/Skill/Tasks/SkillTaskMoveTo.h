@@ -23,7 +23,7 @@ class BG3_API USkillTaskMoveTo : public USkillTaskBase
     GENERATED_BODY()
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Move")
-    float AcceptRadius = 150.f; // cm
+    float AcceptRadius = 70.f; // cm
 
     // WorldContext: 보통 Caster 또는 Subsystem
     // Caster: 이동 주체
