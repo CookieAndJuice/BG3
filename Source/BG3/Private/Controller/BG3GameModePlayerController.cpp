@@ -211,12 +211,8 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
 	{
 		enemy->SetMyTurn();
 	}
-	else
-	{
-		// Change UI Skill Info
-    	PRINTLOG(TEXT("[SwitchToPawn] Broadcast CurrentCharacterChanged"));
-    	CurrentCharacterChanged.ExecuteIfBound(NewCharacter);
-	}
+	
+	CurrentCharacterChanged.ExecuteIfBound(NewCharacter);
 }
 
 void ABG3GameModePlayerController::SpawnCamera()
