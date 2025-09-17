@@ -1,8 +1,11 @@
 #include "Component/MouseInputComponent.h"
 
 #include "BG3/BG3.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "Character/BaseCharacter.h"
 #include "Game/SkillExecutionSubsystem.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
+#include "Game/BG3GameManageSubsystem.h"
 #include "GameFramework/PlayerController.h"
 
 UMouseInputComponent::UMouseInputComponent()
@@ -30,33 +33,46 @@ void UMouseInputComponent::BindInput(UEnhancedInputComponent* EIC)
 
 void UMouseInputComponent::OnClick(const FInputActionValue& /*Value*/)
 {
-    if (!IsTargeting()) return;
-    
+    const APlayerController* PC = Cast<APlayerController>(GetOwner());
+    if (!PC) return;
+    FHitResult Hit;
+    const bool bHit = PC->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
 
-    if (UWorld* World = GetWorld())
+    // 타겟팅 중일 때
+    if (!IsIdle())
     {
-        if (USkillExecutionSubsystem* SES = World->GetSubsystem<USkillExecutionSubsystem>())
+        if (USkillExecutionSubsystem* SES = GetWorld()->GetSubsystem<USkillExecutionSubsystem>())
         {
-            const APlayerController* PC = Cast<APlayerController>(GetOwner());
-            if (!PC) return;
-            
-            FHitResult Hit;
-            const bool bHit = PC->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
             SES->OnClickInTargeting(Hit);
-
-            /*
-            if (AActor* HitActor = GetActorUnderCursor())
-            {
-                TArray<AActor*> Targets;
-                Targets.Add(HitActor);
-                SES->SetTargets(Targets);
-                PRINTLOG(TEXT("Target Set : %s"), *HitActor->GetName());
-                // TODO: CurrentRound 입력하기
-                SES->ConfirmAndExecute( 0);
-            }
-            */
+            
         }
     }
+    else // 타겟팅 중이 아닐 때 (이동)
+    {
+        if (UBG3GameManageSubsystem* Sub = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>())
+        {
+            if (ABaseCharacter* Character = Sub->GetCurrentPawn())
+            {
+                FTransform T;
+                FVector loc = Hit.ImpactPoint;
+                loc.Z += 60.f;
+                T.SetLocation(loc);
+                FActorSpawnParameters Params;
+                Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+                if (ActiveMoveIndicator.IsValid())
+                {
+                    ActiveMoveIndicator->Destroy();
+                    ActiveMoveIndicator = nullptr;
+                }
+                
+                ActiveMoveIndicator = GetWorld()->SpawnActor<AActor>(MoveIndicatorClass, T, Params);
+                UAIBlueprintHelperLibrary::SimpleMoveToLocation(Character->GetController(), Hit.Location);
+            }
+        }
+       
+    }
+    
 }
 
 void UMouseInputComponent::OnConfirm(const FInputActionValue& /*Value*/)
@@ -112,6 +128,18 @@ bool UMouseInputComponent::IsTargeting() const
         if (const USkillExecutionSubsystem* SES = World->GetSubsystem<USkillExecutionSubsystem>())
         {
             return SES->GetCastState() == ECastState::Targeting;
+        }
+    }
+    return false;
+}
+
+bool UMouseInputComponent::IsIdle() const
+{
+    if (const UWorld* World = GetWorld())
+    {
+        if (const USkillExecutionSubsystem* SES = World->GetSubsystem<USkillExecutionSubsystem>())
+        {
+            return SES->GetCastState() == ECastState::Idle;
         }
     }
     return false;

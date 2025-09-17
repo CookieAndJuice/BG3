@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -6,30 +5,36 @@
 #include "BaseAnimInstance.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnHitNotifyBegin);
+class USkillTaskPlayMontage;
 
 UCLASS()
 class BG3_API UBaseAnimInstance : public UAnimInstance
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PlayerAnim)
-	float Speed = 0;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PlayerAnim)
-	float Direction = 0;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PlayerAnim)
-	bool IsInAir = false;
-	
-	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PlayerAnim)
+    float Speed = 0;
 
-	// 몽타주
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PlayerAnim)
-	class UAnimMontage* AttackMontage;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PlayerAnim)
+    float Direction = 0;
 
-	// 애님 노티파이
-	FOnHitNotifyBegin OnHitNotifyBegin;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PlayerAnim)
+    bool IsInAir = false;
 
-	void AnimNotify_Hit();
+    virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PlayerAnim)
+    class UAnimMontage* AttackMontage;
+
+    FOnHitNotifyBegin OnHitNotifyBegin;
+
+    void SetActiveMontageTask(USkillTaskPlayMontage* Task);
+    USkillTaskPlayMontage* GetActiveMontageTask() const;
+
+    void AnimNotify_Hit();
+
+private:
+    UPROPERTY()
+    TWeakObjectPtr<USkillTaskPlayMontage> ActiveMontageTask;
 };

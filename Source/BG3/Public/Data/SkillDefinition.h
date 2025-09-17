@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "SkillDefinition.generated.h"
 
+class USkillTaskBase;
 class UTexture2D;
 class USkeleton;
 class UAnimMontage;
@@ -121,6 +122,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
 	FName HitNotifyName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
+	TArray<TSubclassOf<USkillTaskBase>> Tasks;
 };
 
 USTRUCT(BlueprintType)

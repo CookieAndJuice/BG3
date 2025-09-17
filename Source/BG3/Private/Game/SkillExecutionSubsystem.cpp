@@ -194,6 +194,7 @@ bool USkillExecutionSubsystem::ConfirmAndExecute(int32 CurrentRound)
             Targets.Add(Weak.Get());
         }
     }
+    
     // Notify executor just before executing
     CastConfirmed.ExecuteIfBound(Caster, Skill, Targets, CurrentRound);
 
@@ -240,6 +241,7 @@ ECastState USkillExecutionSubsystem::GetCastState() const
 
 void USkillExecutionSubsystem::OnClickInTargeting(FHitResult Hit)
 {
+    if (!CurrentSkill.IsValid()) return;
     ETargetingMode Mode = CurrentSkill->Targeting.TargetingMode;
 
     if (Mode == ETargetingMode::Actor)

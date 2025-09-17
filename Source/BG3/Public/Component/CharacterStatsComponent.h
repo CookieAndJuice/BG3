@@ -7,11 +7,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSig, float, NewHealth, float, MaxHealth);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnManaChangedSig, float, NewMana, float, MaxMana);
 
-/**
- * Minimal stats component for HP/MP management.
- * - Handles ApplyDamage via AActor::OnTakeAnyDamage
- * - Exposes current/max values for UI
- */
+
 UCLASS(ClassGroup=(BG3), BlueprintType, Blueprintable, meta=(BlueprintSpawnableComponent))
 class BG3_API UCharacterStatsComponent : public UActorComponent
 {
@@ -33,6 +29,14 @@ public:
 
     UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Stats|Mana")
     float Mana = 0.f;
+
+    // Move
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Stats|Mana")
+    float MoveAllowanceCm = 750.f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Stats|Mana")
+    float RemainingMoveCm = 750.f;
+    
 
     // UI delegates
     UPROPERTY(BlueprintAssignable, Category="Stats|Events")

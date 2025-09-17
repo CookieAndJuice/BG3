@@ -34,21 +34,24 @@ void USkillCastExecutor::OnCastConfirmed(ABaseCharacter* Caster, const USkillDef
     CachedSkill = Skill;
     CachedRound = CurrentRound;
 
-    // Skeleton plan: just demonstrate task queue and sequencing.
-    // In future, branch by runtime context (distance, mode, etc.).
-    // Desired melee plan: Face -> MoveTo(in range) -> Montage(wait Hit)
-    USkillTaskFaceTarget* TFace = NewObject<USkillTaskFaceTarget>(this);
-    USkillTaskMoveTo*     TMove = NewObject<USkillTaskMoveTo>(this);
-    USkillTaskPlayMontage* TMont = NewObject<USkillTaskPlayMontage>(this);
+    for (auto TaskClass : Skill->Meta.Tasks)
+    {
+        if (!TaskClass) continue;
 
-    TMont->Montage = Skill->GetMontageForMesh(Caster->GetMesh());
-    TMont->HitNotifyName = Skill->Meta.HitNotifyName;
-    TMont->SetRound(CachedRound);
+        USkillTaskBase* NewTask = NewObject<USkillTaskBase>(this, TaskClass);
+        if (!NewTask) continue;
 
-    TaskQueue.Add(TFace);
-    TaskQueue.Add(TMove);
-    TaskQueue.Add(TMont);
+        // 태스크 타입 별 런타임 설정
+        if (USkillTaskPlayMontage* MontageTask = Cast<USkillTaskPlayMontage>(NewTask))
+        {
+            MontageTask->Montage = Skill->GetMontageForMesh(Caster->GetMesh());
+            MontageTask->HitNotifyName = Skill->Meta.HitNotifyName;
+            MontageTask->SetRound(CachedRound);
+        }
 
+        TaskQueue.Add(NewTask);
+    }
+    
     StartNext(Caster, Caster, Skill, Targets);
 }
 

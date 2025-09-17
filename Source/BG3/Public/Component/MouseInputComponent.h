@@ -32,6 +32,11 @@ public:
     /** 취소 키: CancelCast 호출 */
     void OnCancel(const FInputActionValue& Value);
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Move")
+    TSubclassOf<AActor> MoveIndicatorClass;
+
+    TWeakObjectPtr<AActor> ActiveMoveIndicator;
+
 public:
     // 입력 액션(에셋이 없으면 바인딩 생략)
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
@@ -49,5 +54,7 @@ private:
 
     /** 현재 Subsystem이 Targeting 상태인지 */
     bool IsTargeting() const;
+
+    bool IsIdle() const;
 };
 

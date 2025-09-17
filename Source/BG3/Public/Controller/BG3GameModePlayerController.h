@@ -81,6 +81,8 @@ public:	// Camera
 
     UPROPERTY(VisibleAnywhere)
     TObjectPtr<UOverlayWidget> OverlayWidget;
+
+	TWeakObjectPtr<AActor> ActiveMoveIndicator;
     
 public:
     // 마우스 입력 컴포넌트(클릭/확정/취소 → SkillExecutionSubsystem 연동)

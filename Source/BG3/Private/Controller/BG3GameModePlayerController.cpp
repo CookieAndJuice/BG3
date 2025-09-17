@@ -137,17 +137,24 @@ void ABG3GameModePlayerController::SetupInputComponent()
 
 void ABG3GameModePlayerController::OnLMBClick(const FInputActionValue& value)
 {
+	bool bIsClicked = value.Get<bool>();
+	
 	if (auto* PC = GetWorld()->GetFirstPlayerController())
 	{
-		bool bIsClicked = value.Get<bool>();
 		if (bIsClicked)
+		{
+			PRINTLOG(TEXT("bIsClicked true"));
 			PC->CurrentMouseCursor = EMouseCursor::GrabHand;
+			MouseInput->OnClick(value);	
+		}
 		else
+		{
+			PRINTLOG(TEXT("bIsClicked false"));
 			PC->CurrentMouseCursor = EMouseCursor::Default;
+		}
 	}
 
-	// SkillExecutionSubsystem의 CastState가 ECastState::Targeting 일 때만 동작 (스킬 타겟팅 중일 때만) 
-	MouseInput->OnClick(value);
+	// SkillExecutionSubsystem의 CastState가 ECastState::Targeting 일 때만 동작 (스킬 타겟팅 중일 때만)
 }
 
 void ABG3GameModePlayerController::OnMoveCamera(const FInputActionValue& value)

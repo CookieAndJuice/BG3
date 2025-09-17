@@ -67,30 +67,30 @@ void UEnemyFSMComponent::EndMyTurn()
 
 void UEnemyFSMComponent::IdleState()
 {
-	PRINTLOG(TEXT("Idle Idle Idle"));
+	PRINTSTATELOG(TEXT("Idle Idle Idle"));
 }
 
 void UEnemyFSMComponent::PlanState()
 {
-	PRINTLOG(TEXT("Plan Plan Plan"));
+	PRINTSTATELOG(TEXT("Plan Plan Plan"));
 }
 
 void UEnemyFSMComponent::MoveState()
 {
-	PRINTLOG(TEXT("Move Move Move"));
+	PRINTSTATELOG(TEXT("Move Move Move"));
 }
 
 void UEnemyFSMComponent::ExecuteState()
 {
-	PRINTLOG(TEXT("Execute Execute Execute"));
+	PRINTSTATELOG(TEXT("Execute Execute Execute"));
 }
 
 void UEnemyFSMComponent::HitState()
 {
-	PRINTLOG(TEXT("Hit Hit Hit"));
+	PRINTSTATELOG(TEXT("Hit Hit Hit"));
 }
 
 void UEnemyFSMComponent::DieState()
 {
-	PRINTLOG(TEXT("Die Die Die"));
+	PRINTSTATELOG(TEXT("Die Die Die"));
 }
