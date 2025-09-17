@@ -28,7 +28,7 @@ protected:
 public:
 	// Current Enum State
 	UPROPERTY(VisibleInstanceOnly, Category = "FSM")
-	ECharacterState CurrentState = ECharacterState::None;
+	ECharacterState CurrentState = ECharacterState::Idle;
 	
 public: // Change State & Update Behavior    
 	virtual void ChangeState(ECharacterState state);
