@@ -1,6 +1,7 @@
 
 #include "BG3/Public/Game/BG3GameMode.h"
 
+#include "Actor/BG3GameCamera.h"
 #include "BG3/BG3.h"
 #include "GameFramework/SpectatorPawn.h"
 #include "Manager/BG3DiceManager.h"
@@ -11,7 +12,12 @@ struct FStatModifierData;
 
 ABG3GameMode::ABG3GameMode()
 {
-	DefaultPawnClass = nullptr;
+	ConstructorHelpers::FClassFinder<ABG3GameCamera> cameraRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprints/Actor/BP_GameCamera.BP_GameCamera_C'"));
+	if (cameraRef.Succeeded())
+	{
+		DefaultPawnClass = cameraRef.Class;
+	}
+	
 	ConstructorHelpers::FClassFinder<APlayerController> pcRef(TEXT("/Game/Blueprints/Game/BP_GamePlayerController.BP_GamePlayerController_C"));
 	if (pcRef.Succeeded())
 	{

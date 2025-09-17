@@ -3,6 +3,7 @@
 
 #include "Game/BG3GameManageSubsystem.h"
 
+#include "Actor/BG3GameCamera.h"
 #include "BG3/BG3.h"
 #include "Character/BaseCharacter.h"
 #include "Character/BG3EnemyCharacter.h"
@@ -12,6 +13,7 @@
 #include "Game/BG3GameMode.h"
 #include "Game/BG3GameState.h"
 #include "Game/SkillExecutionSubsystem.h"
+#include "Kismet/GameplayStatics.h"
 
 UBG3GameManageSubsystem::UBG3GameManageSubsystem()
 {
@@ -62,7 +64,9 @@ void UBG3GameManageSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 
 	// Init Round
 	InitializeGameState();
+	InitializeCamera();
 	GState->PrintCurrentState();
+	BeginNextTurn();
 }
 
 void UBG3GameManageSubsystem::SpawnEnemies()
@@ -106,6 +110,14 @@ void UBG3GameManageSubsystem::InitializeGameState()
 	GState->InitBG3GameState(playerNum, enemyNum);
 }
 
+void UBG3GameManageSubsystem::InitializeCamera()
+{
+	// Set Follow Mode
+	BG3Camera = Cast<ABG3GameCamera>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	FVector location = GetCurrentPawn()->GetActorLocation();
+	BG3Camera->FocusCamera(location);
+}
+
 void UBG3GameManageSubsystem::BeginNextTurn()
 {
 	// If Current Character is In Action, Cannot Begin Next Turn
@@ -138,7 +150,7 @@ void UBG3GameManageSubsystem::BeginNextTurn()
 	GState->PrintCurrentState();
 	
 	// Get and Possess Next Character
-	ABaseCharacter* nextCharacter = Cast<ABaseCharacter>(GetCurrentPawn());
+	ABaseCharacter* nextCharacter = GetCurrentPawn();
 	GMPlayerController->SwitchToPawn(nextCharacter);
 	
 }

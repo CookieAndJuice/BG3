@@ -34,6 +34,12 @@ public:	// Initialize
 
 	void InitializeGameState();
 
+public:	// Camera
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+	TObjectPtr<class ABG3GameCamera> BG3Camera;
+
+	void InitializeCamera();
+
 public:	// Every Turn
 	UFUNCTION()
 	void BeginNextTurn();

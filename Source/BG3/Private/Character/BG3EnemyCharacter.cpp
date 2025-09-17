@@ -37,9 +37,5 @@ void ABG3EnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 void ABG3EnemyCharacter::SetMyTurn()
 {
-	bIsMyTurn = true;
-	// 1. Get Attack Target
-	
-	// 2. Start
 	FSMComp->StartMyTurn();
 }

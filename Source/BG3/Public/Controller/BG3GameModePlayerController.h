@@ -62,18 +62,12 @@ public:	// Pawn
 	TObjectPtr<class ABaseCharacter> PossessedCharacter;
 	
 	void SwitchToPawn(class ABaseCharacter* NewCharacter);
-	
-public:	// Camera
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Camera")
-	TSubclassOf<class ABG3GameCamera> BG3CameraClass;
 
+public:	// Camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	TObjectPtr<class ABG3GameCamera> BG3Camera;
 	
-	void SpawnCamera();
-
-	void InitializeCamera();
-
+public:
     /* Widget */
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

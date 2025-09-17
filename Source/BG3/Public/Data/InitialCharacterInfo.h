@@ -18,6 +18,8 @@ public:
 	TSubclassOf<class ABaseCharacter> Character;
 	UPROPERTY(EditAnywhere)
 	FTransform SpawnTransform;
+	UPROPERTY(EditAnywhere)
+	class UTexture2D* Portrait;
 };
 
 UCLASS()
