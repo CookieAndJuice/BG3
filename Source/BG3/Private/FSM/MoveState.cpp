@@ -3,7 +3,6 @@
 #include "FSM/MoveState.h"
 #include "BG3/BG3.h"
 #include "Character/BG3EnemyCharacter.h"
-#include "FSM/FSMComponent.h"
 
 void UMoveState::Enter(class ABaseCharacter& Character)
 {

@@ -19,8 +19,6 @@ ABG3EnemyCharacter::ABG3EnemyCharacter()
 void ABG3EnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	
 }
 
 // Called every frame
@@ -28,16 +26,7 @@ void ABG3EnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	FSMComp->UpdateBehavior();
-
-	if (bIsMyTurn)
-	{
-		// 1. Get Attack Target
-		// 2. Move
-		// 3. Attack
-		
-	}
-	
+	FSMComp->UpdateBehavior();	
 }
 
 // Called to bind functionality to input
@@ -52,5 +41,5 @@ void ABG3EnemyCharacter::SetMyTurn()
 	// 1. Get Attack Target
 	
 	// 2. Start
-	FSMComp->StartFSM();
+	FSMComp->StartMyTurn();
 }

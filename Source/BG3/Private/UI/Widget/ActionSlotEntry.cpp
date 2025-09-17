@@ -53,10 +53,22 @@ void UActionSlotEntry::NativeOnInitialized()
     if (Btn_Use)
     {
         Btn_Use->OnClicked.AddDynamic(this, &UActionSlotEntry::HandleClick);
+        Btn_Use->OnPressed.AddDynamic(this, &UActionSlotEntry::OnSlotPressed);
+        Btn_Use->OnReleased.AddDynamic(this, &UActionSlotEntry::OnSlotReleased);
     }
 }
 
 void UActionSlotEntry::HandleClick()
 {
     OnClicked.Broadcast(View.SkillID);
+}
+
+void UActionSlotEntry::OnSlotPressed()
+{
+    Btn_Use->SetCursor(EMouseCursor::Type::GrabHand);
+}
+
+void UActionSlotEntry::OnSlotReleased()
+{
+    Btn_Use->SetCursor(EMouseCursor::Type::Default);
 }

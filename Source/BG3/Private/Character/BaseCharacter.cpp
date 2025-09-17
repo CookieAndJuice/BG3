@@ -6,10 +6,6 @@
 #include "Data/SkillDefinition.h"
 #include "Component/SkillBookComponent.h"
 #include "Component/CharacterStatsComponent.h"
-#include "FSM/ActionState.h"
-#include "FSM/FSMComponent.h"
-#include "FSM/IdleState.h"
-#include "FSM/MoveState.h"
 
 ABaseCharacter::ABaseCharacter()
 {

@@ -22,8 +22,17 @@ public:
 	
 	FOnTurnEndDelegate OnTurnEndDelegate;
 
-	UPROPERTY(meta=(BindWidgetOptional))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidgetOptional))
 	TObjectPtr<class UButton> TurnEndButton;
+
+	UFUNCTION()
+	void OnTurnEndButtonHovered();
+
+	UFUNCTION()
+	void OnTurnEndButtonPressed();
+
+	UFUNCTION()
+	void OnTurnEndButtonReleased();
 	
 	UFUNCTION()
 	void OnTurnEndButtonClicked();
