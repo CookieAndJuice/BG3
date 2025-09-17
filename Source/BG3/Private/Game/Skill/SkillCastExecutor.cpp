@@ -41,7 +41,7 @@ void USkillCastExecutor::OnCastConfirmed(ABaseCharacter* Caster, const USkillDef
     USkillTaskMoveTo*     TMove = NewObject<USkillTaskMoveTo>(this);
     USkillTaskPlayMontage* TMont = NewObject<USkillTaskPlayMontage>(this);
 
-    TMont->Montage = Skill->Meta.Montage;
+    TMont->Montage = Skill->GetMontageForMesh(Caster->GetMesh());
     TMont->HitNotifyName = Skill->Meta.HitNotifyName;
     TMont->SetRound(CachedRound);
 

@@ -4,9 +4,10 @@
 #include "Animation/AnimInstance.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Character/BaseCharacter.h"
+#include "Data/SkillDefinition.h"
 #include "Game/SkillExecutionSubsystem.h"
 
-void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, const USkillDefinition* /*Skill*/, const TArray<AActor*>& Targets)
+void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, const USkillDefinition* Skill, const TArray<AActor*>& Targets)
 {
     CasterCharacter = Cast<ABaseCharacter>(Caster);
     WeakTargets.Reset();
@@ -15,9 +16,9 @@ void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, con
         WeakTargets.Add(T);
     }
 
-    if (!CasterCharacter.IsValid() || Montage == nullptr)
+    if (!CasterCharacter.IsValid())
     {
-        if (OnFailed.IsBound()) OnFailed.Execute(TEXT("NoCasterOrMontage"));
+        if (OnFailed.IsBound()) OnFailed.Execute(TEXT("NoCaster"));
         return;
     }
 
@@ -30,10 +31,29 @@ void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, con
     }
     AnimInst = AI;
 
+    UAnimMontage* MontageToPlay = Montage;
+    if (!MontageToPlay && Skill)
+    {
+        MontageToPlay = Skill->GetMontageForMesh(Mesh);
+    }
+
+    if (!MontageToPlay)
+    {
+        if (OnFailed.IsBound()) OnFailed.Execute(TEXT("NoMontage"));
+        return;
+    }
+
+    Montage = MontageToPlay;
+
+    if (Skill && Skill->Meta.HitNotifyName != NAME_None)
+    {
+        HitNotifyName = Skill->Meta.HitNotifyName;
+    }
+
     AI->OnMontageEnded.AddDynamic(this, &USkillTaskPlayMontage::OnMontageEnded);
     AI->OnPlayMontageNotifyBegin.AddDynamic(this, &USkillTaskPlayMontage::OnNotifyBegin);
 
-    const float Len = AI->Montage_Play(Montage, 1.0f);
+    const float Len = AI->Montage_Play(MontageToPlay, 1.0f);
     if (Len <= 0.f)
     {
         AI->OnMontageEnded.RemoveAll(this);
@@ -42,7 +62,7 @@ void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, con
         return;
     }
 
-    PRINTLOG(TEXT("[MontageTask] Play %s on %s"), *Montage->GetName(), *CasterCharacter->GetName());
+    PRINTLOG(TEXT("[MontageTask] Play %s on %s"), *MontageToPlay->GetName(), *CasterCharacter->GetName());
 }
 
 void USkillTaskPlayMontage::Cancel()

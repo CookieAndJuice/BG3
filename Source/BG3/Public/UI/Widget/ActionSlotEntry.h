@@ -63,7 +63,7 @@ protected:
 	class UImage* Img_Icon = nullptr;
 
 	UPROPERTY(meta=(BindWidgetOptional))
-	class UBorder* Overlay_Disalbed = nullptr;
+	class UBorder* Overlay_Disabled = nullptr;
 
 
 private:

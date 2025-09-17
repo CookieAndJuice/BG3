@@ -8,6 +8,7 @@
 #include "Component/SkillBookComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Game/BG3GameMode.h"
+#include "Game/BG3GameState.h"
 #include "Manager/BG3DiceManager.h"
 
 USkillExecutionSubsystem::USkillExecutionSubsystem()
@@ -247,9 +248,13 @@ void USkillExecutionSubsystem::OnClickInTargeting(FHitResult Hit)
         //if (!CurrentSkill->Targeting.bAllowSelfTarget && Hit.GetActor() == CurrentCaster) return;
         PRINTLOG(TEXT("Hit Actor : %s"), *Hit.GetActor()->GetName());
         CurrentTargets.Add(Hit.GetActor());
-        ConfirmAndExecute(0);
+
+        ABG3GameState* GState = GetWorld()->GetGameState<ABG3GameState>();
+        if (GState)
+        {
+            ConfirmAndExecute(GState->GetCurrentRound());
+        }
     }
-    
 }
 
 void USkillExecutionSubsystem::ResetCast()

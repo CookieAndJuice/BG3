@@ -7,6 +7,9 @@
 #include "SkillDefinition.generated.h"
 
 class UTexture2D;
+class USkeleton;
+class UAnimMontage;
+class USkeletalMeshComponent;
 
 UENUM(BlueprintType)
 enum class EDeliveryMethod : uint8
@@ -59,6 +62,19 @@ enum class EActionCost : uint8
 };
 
 USTRUCT(BlueprintType)
+struct FSkillAnimEntry
+{
+	GENERATED_BODY();
+
+	UPROPERTY(EditAnywhere)
+	TSoftObjectPtr<USkeleton> Skeleton;
+
+	UPROPERTY(EditAnywhere)
+	TSoftObjectPtr<UAnimMontage> Montage;
+	
+};
+
+USTRUCT(BlueprintType)
 struct FDice
 {
 	GENERATED_BODY();
@@ -98,7 +114,10 @@ public:
 	ESkillKind SkillKind = ESkillKind::NonCombat;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
-	UAnimMontage* Montage = nullptr;
+	TArray<FSkillAnimEntry> AnimPerSkeleton;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
+	UAnimMontage* DefaultMontage = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
 	FName HitNotifyName;
@@ -196,5 +215,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Rules")
 	FDamagePackage Damage;
 
-	
+public:
+	UAnimMontage* GetMontageForSkeleton(const USkeleton* Skeleton) const;
+	UAnimMontage* GetMontageForMesh(const USkeletalMeshComponent* Mesh) const;
 };

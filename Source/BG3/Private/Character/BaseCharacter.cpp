@@ -30,9 +30,9 @@ ABaseCharacter::ABaseCharacter()
 
 void ABaseCharacter::BeginTurnReset_Implementation()
 {
-    CurrentActions = ActionCount;
-    CurrentBonusActions = BonusActionCount;
-    CurrentReactions = ReactionCount;
+    CurrentActions = 1;
+    CurrentBonusActions = 1;
+    CurrentReactions = 1;
 }
 
 void ABaseCharacter::BeginPlay()
