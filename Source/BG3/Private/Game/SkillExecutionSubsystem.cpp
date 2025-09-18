@@ -329,11 +329,16 @@ void USkillExecutionSubsystem::FinalizeCastAfterExecutor(const TArray<AActor*>& 
         SkillBook->CommitUse(Skill, CurrentRound);
     }
 
-    CastState = ECastState::Completed;
-    SkillResolved.ExecuteIfBound(CurrentSkillResult);
+    
 
-    ResetCast();
-    CastState = ECastState::Idle;
+    FTimerHandle Timer;
+    GetWorld()->GetTimerManager().SetTimer(Timer, [this]()
+    {
+        CastState = ECastState::Completed;
+        SkillResolved.ExecuteIfBound(CurrentSkillResult);
 
-    OnTurnEnd.Broadcast();
+        ResetCast();
+        CastState = ECastState::Idle;
+    }, 1.f, false);
+    
 }
