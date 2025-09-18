@@ -35,6 +35,26 @@ void ABaseCharacter::BeginTurnReset_Implementation()
     CurrentReactions = 1;
 }
 
+void ABaseCharacter::SetIsHit(bool bInHit)
+{
+    bIsHit = bInHit;
+}
+
+bool ABaseCharacter::GetIsHit()
+{
+    return bIsHit;
+}
+
+void ABaseCharacter::SetIsDead(bool bInDead)
+{
+    bIsDead = bInDead;
+}
+
+bool ABaseCharacter::GetIsDead()
+{
+    return bIsDead;
+}
+
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();

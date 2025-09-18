@@ -7,20 +7,28 @@ void UBaseAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
     Super::NativeUpdateAnimation(DeltaSeconds);
 
-    if (const ABaseCharacter* Character = Cast<ABaseCharacter>(TryGetPawnOwner()))
+    if (!Character) return;
+
+    const FVector Velocity = Character->GetVelocity();
+    const FVector Forward = Character->GetActorForwardVector();
+    const FVector Right = Character->GetActorRightVector();
+
+    Speed = FVector::DotProduct(Velocity, Forward);
+    Direction = FVector::DotProduct(Velocity, Right);
+    bIsHit = Character->GetIsHit();
+    bIsDead = Character->GetIsDead();
+
+    if (const UCharacterMovementComponent* MoveComp = Character->GetCharacterMovement())
     {
-        const FVector Velocity = Character->GetVelocity();
-        const FVector Forward = Character->GetActorForwardVector();
-        const FVector Right = Character->GetActorRightVector();
-
-        Speed = FVector::DotProduct(Velocity, Forward);
-        Direction = FVector::DotProduct(Velocity, Right);
-
-        if (const UCharacterMovementComponent* MoveComp = Character->GetCharacterMovement())
-        {
-            IsInAir = MoveComp->IsFalling();
-        }
+        IsInAir = MoveComp->IsFalling();
     }
+}
+
+void UBaseAnimInstance::NativeBeginPlay()
+{
+    Super::NativeBeginPlay();
+
+    Character = Cast<ABaseCharacter>(TryGetPawnOwner());
 }
 
 void UBaseAnimInstance::SetActiveMontageTask(USkillTaskPlayMontage* Task)
@@ -39,6 +47,12 @@ void UBaseAnimInstance::AnimNotify_Hit()
 
     if (ActiveMontageTask.IsValid())
     {
-        ActiveMontageTask->HandleHitNotify();
+        ActiveMontageTask->HandleHitNotify(FName(TEXT("Hit")));
     }
+}
+
+void UBaseAnimInstance::AnimNotify_HitEnd()
+{
+    Character->SetIsHit(false);
+    bIsHit = false;
 }

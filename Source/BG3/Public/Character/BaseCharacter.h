@@ -65,8 +65,14 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void PlayAttackAnimation(UAnimMontage* MontageToPlay);
-	
 
+
+	void SetIsHit(bool bInHit);
+	bool GetIsHit();
+	void SetIsDead(bool bInDead);
+	bool GetIsDead();
+
+	
 protected:
 	virtual void BeginPlay() override;
 	void GrantSkills();
@@ -77,4 +83,10 @@ private:
 	int32 CurrentActions = 1;
 	int32 CurrentBonusActions = 1;
 	int32 CurrentReactions = 1;
+
+	/* 애니메이션 */
+	
+	bool bIsHit = false;
+	bool bIsDead = false;
+
 };

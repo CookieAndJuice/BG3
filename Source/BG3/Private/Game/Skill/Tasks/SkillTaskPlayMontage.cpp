@@ -122,6 +122,10 @@ void USkillTaskPlayMontage::HandleHitNotify(FName TriggeredNotify)
                     if (WeakTarget.IsValid())
                     {
                         StrongTargets.Add(WeakTarget.Get());
+                        if (ABaseCharacter* Character = Cast<ABaseCharacter>(WeakTarget))
+                        {
+                            Character->SetIsHit(true);
+                        }
                     }
                 }
                 SES->FinalizeCastAfterExecutor(StrongTargets, Round);
@@ -187,3 +191,4 @@ void USkillTaskPlayMontage::ClearActiveTaskBinding()
         }
     }
 }
+

@@ -6,6 +6,7 @@
 #include "Game/SkillExecutionSubsystem.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
 #include "Game/BG3GameManageSubsystem.h"
+#include "Game/BG3GameState.h"
 #include "GameFramework/PlayerController.h"
 
 UMouseInputComponent::UMouseInputComponent()
@@ -86,8 +87,9 @@ void UMouseInputComponent::OnConfirm(const FInputActionValue& /*Value*/)
     {
         if (USkillExecutionSubsystem* SES = World->GetSubsystem<USkillExecutionSubsystem>())
         {
-            // TODO: 턴 시스템 완성 시 실제 CurrentRound 값 전달
-            SES->ConfirmAndExecute(/*CurrentRound*/ 0);
+            ABG3GameState* GState = GetWorld()->GetGameState<ABG3GameState>();
+            if (!GState) return;
+            SES->ConfirmAndExecute(GState->GetCurrentRound());
         }
     }
 }

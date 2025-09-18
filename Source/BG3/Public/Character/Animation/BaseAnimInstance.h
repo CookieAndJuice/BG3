@@ -6,6 +6,7 @@
 
 DECLARE_MULTICAST_DELEGATE(FOnHitNotifyBegin);
 class USkillTaskPlayMontage;
+class ABaseCharacter;
 
 UCLASS()
 class BG3_API UBaseAnimInstance : public UAnimInstance
@@ -23,6 +24,7 @@ public:
     bool IsInAir = false;
 
     virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+    virtual void NativeBeginPlay() override;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=PlayerAnim)
     class UAnimMontage* AttackMontage;
@@ -32,9 +34,21 @@ public:
     void SetActiveMontageTask(USkillTaskPlayMontage* Task);
     USkillTaskPlayMontage* GetActiveMontageTask() const;
 
+    UFUNCTION()
     void AnimNotify_Hit();
+
+    UFUNCTION()
+    void AnimNotify_HitEnd();
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    bool bIsHit = false;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    bool bIsDead = false;
 
 private:
     UPROPERTY()
     TWeakObjectPtr<USkillTaskPlayMontage> ActiveMontageTask;
+
+    ABaseCharacter* Character;
 };

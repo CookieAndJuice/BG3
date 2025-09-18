@@ -7,6 +7,8 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSig, float, NewHealth, float, MaxHealth);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnManaChangedSig, float, NewMana, float, MaxMana);
 
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnManaChangedSig, float, NewMana, float, MaxMana);
+
 
 UCLASS(ClassGroup=(BG3), BlueprintType, Blueprintable, meta=(BlueprintSpawnableComponent))
 class BG3_API UCharacterStatsComponent : public UActorComponent
@@ -18,14 +20,14 @@ public:
 
     // Current / Max Health
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Stats|Health")
-    float MaxHealth = 100.f;
+    float MaxHealth = 10.f;
 
     UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Stats|Health")
     float Health = 0.f;
 
     // Current / Max Mana (kept for future use)
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Stats|Mana")
-    float MaxMana = 50.f;
+    float MaxMana = 12.f;
 
     UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Stats|Mana")
     float Mana = 0.f;

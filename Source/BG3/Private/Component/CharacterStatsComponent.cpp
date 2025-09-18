@@ -48,6 +48,7 @@ void UCharacterStatsComponent::HandleTakeAnyDamage(AActor* DamagedActor, float D
 
     if (Health <= 0.f)
     {
-        PRINTLOG(TEXT("%s has died"), *DamagedActor->GetName());
+        //PRINTLOG(TEXT("%s has died"), *DamagedActor->GetName());
+        
     }
 }
