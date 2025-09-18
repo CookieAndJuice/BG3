@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "FSM/EnemyFSMComponent.h"
 
@@ -15,7 +13,6 @@
 #include "Game/Skill/Tasks/SkillTaskPlayMontage.h"
 
 
-// Sets default values for this component's properties
 UEnemyFSMComponent::UEnemyFSMComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
@@ -23,7 +20,6 @@ UEnemyFSMComponent::UEnemyFSMComponent()
 }
 
 
-// Called when the game starts
 void UEnemyFSMComponent::BeginPlay()
 {
 	Super::BeginPlay();
