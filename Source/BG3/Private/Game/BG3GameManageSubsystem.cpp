@@ -9,6 +9,7 @@
 #include "Character/BG3PlayerCharacter.h"
 #include "Controller/BG3GameModePlayerController.h"
 #include "Data/InitialCharacterInfo.h"
+#include "FSM/EnemyFSMComponent.h"
 #include "Game/BG3GameMode.h"
 #include "Game/BG3GameState.h"
 #include "Game/SkillExecutionSubsystem.h"
@@ -61,7 +62,7 @@ void UBG3GameManageSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	}
 
 	// Init Round
-	InitializeGameState();
+	InitializeGame();
 	GState->PrintCurrentState();
 }
 
@@ -99,11 +100,16 @@ void UBG3GameManageSubsystem::SpawnPlayers()
 	}
 }
 
-void UBG3GameManageSubsystem::InitializeGameState()
+void UBG3GameManageSubsystem::InitializeGame()
 {
 	int playerNum = PlayerDataAsset->CharInfos.Num();
 	int enemyNum = EnemyDataAsset->CharInfos.Num();
 	GState->InitBG3GameState(playerNum, enemyNum);
+
+	if (auto* enemy = Cast<ABG3EnemyCharacter>(GetCurrentPawn()))
+	{
+		enemy->SetMyTurn();
+	}
 }
 
 void UBG3GameManageSubsystem::BeginNextTurn()
@@ -147,4 +153,9 @@ ABaseCharacter* UBG3GameManageSubsystem::GetCurrentPawn()
 {
 	ABaseCharacter* pawn = CastChecked<ABaseCharacter>(CombatPawns[Index].TurnCharacter);
 	return pawn;
+}
+
+void UBG3GameManageSubsystem::RemoveCharacterFromCombatPawns()
+{
+	
 }
