@@ -23,7 +23,7 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
+	
 public:
 	// Current Enum State
 	UPROPERTY(VisibleInstanceOnly, Category = "FSM")
@@ -44,6 +44,9 @@ public:	// FSM
 	void ExecuteState();
 
 protected:
+	UPROPERTY()
+	TObjectPtr<class USkillExecutionSubsystem> SESubsys;
+	
 	bool bIsMyTurn = false;
 
 	// Max Move Distance

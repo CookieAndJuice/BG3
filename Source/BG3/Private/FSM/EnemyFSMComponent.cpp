@@ -8,7 +8,10 @@
 #include "Character/BG3PlayerCharacter.h"
 #include "Component/CharacterStatsComponent.h"
 #include "Game/BG3GameManageSubsystem.h"
+#include "Game/BG3GameMode.h"
+#include "Game/BG3GameState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Game/SkillExecutionSubsystem.h"
 
 
 // Sets default values for this component's properties
@@ -25,6 +28,8 @@ void UEnemyFSMComponent::BeginPlay()
 	Super::BeginPlay();
 
 	me = Cast<ABG3EnemyCharacter>(GetOwner());
+	SESubsys = GetWorld()->GetSubsystem<USkillExecutionSubsystem>();
+	// endmyturn을 델리게이트 구독 코드 추가 예정
 }
 
 void UEnemyFSMComponent::ChangeState(ECharacterState state)
@@ -82,20 +87,53 @@ void UEnemyFSMComponent::PlanState()
 		FVector dir = player->GetActorLocation() - me->GetActorLocation();
 		float distance = dir.Size();
 
+		if (nullptr == target)
+		{
+			target = player;
+			continue;
+		}
+		
 		if (distance > MaxDistance)
 			continue;
 
-		if (nullptr == target || Cast<ABG3PlayerCharacter>(player)->Stats->Health < Cast<ABG3PlayerCharacter>(target)->Stats->Health)
+		if (Cast<ABG3PlayerCharacter>(player)->Stats->Health < Cast<ABG3PlayerCharacter>(target)->Stats->Health)
 		{
-			if (Cast<ABG3PlayerCharacter>(player)->Stats->Health != 0)
-				target = player;
+			target = player;
 		}
 	}
 	
 	// target distance
+	float targetDistance = 0;
+	if (nullptr != target)
+	{
+		targetDistance = (target->GetActorLocation() - me->GetActorLocation()).Size();
+		PRINTSTATELOG(TEXT("%f"), targetDistance);
+
+		ABG3GameMode* gm= Cast<ABG3GameMode>(GetWorld()->GetAuthGameMode());
+		
+		// select action
+		//if (targetDistance <= MaxDistance)
+		{
+			// melee
+			bool reqSuccess = gm->RequestUseSkill(me, 1);
+			if (reqSuccess)
+			{
+				TArray<AActor*> tempTargetArray;
+				tempTargetArray.Add(target);
+				SESubsys->SetTargets(tempTargetArray);
+				
+				SESubsys->ConfirmAndExecute(Cast<ABG3GameState>(GetWorld()->GetGameState())->GetCurrentRound());
+			}
+		}
+		{
+			// ranged
+		}
+
+		// change state to ExecuteState
+		ChangeState(ECharacterState::Execute);
+	}
+	// if cannot do anything (cause of slots) -> EndMyTurn()
 	
-	// select action
-	// if cannot do anything -> EndMyTurn()
 }
 
 void UEnemyFSMComponent::ExecuteState()

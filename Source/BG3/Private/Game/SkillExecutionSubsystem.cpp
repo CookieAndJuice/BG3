@@ -121,8 +121,8 @@ void USkillExecutionSubsystem::SetTargets(const TArray<AActor*>& InTargets)
         }
 
         // 거리 제한 체크
-        const float Dist = FVector::Dist(Caster->GetActorLocation(), Target->GetActorLocation());
-        if (Dist <= RangeCm)
+        // const float Dist = FVector::Dist(Caster->GetActorLocation(), Target->GetActorLocation());
+        // if (Dist <= RangeCm)
         {
             Filtered.Add(Target);
             if (Filtered.Num() >= MaxTargets)

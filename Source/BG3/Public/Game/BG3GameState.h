@@ -27,8 +27,8 @@ public:
 
 private:
 	// round
-	int32 Round = 0;
-	int32 Turn = 0;
+	int32 Round = 1;
+	int32 Turn = 1;
 
 	// pawn numbers
 	int32 Players = 0;

@@ -26,4 +26,8 @@ public:	// Dice
 	TObjectPtr<class UBG3DiceManager> Dice;
 
 	int32 CalcInitiative(float Dex);
+
+public:
+	UFUNCTION(Category="Combat|UI")
+	bool RequestUseSkill(class ABaseCharacter* Caster, int32 SkillID);
 };
