@@ -58,7 +58,11 @@ void UEnemyFSMComponent::UpdateBehavior()
 void UEnemyFSMComponent::StartMyTurn()
 {
 	bIsMyTurn = true;
-	ChangeState(ECharacterState::Plan);
+	
+	// timer
+	FTimerHandle timerHandle;
+	FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &UEnemyFSMComponent::ChangeState, ECharacterState::Plan);
+	GetWorld()->GetTimerManager().SetTimer(timerHandle, timerDelegate, 0.7f, false);
 }
 
 void UEnemyFSMComponent::EndMyTurn()
@@ -76,6 +80,7 @@ void UEnemyFSMComponent::IdleState()
 void UEnemyFSMComponent::PlanState()
 {
 	PRINTSTATELOG(TEXT("Plan Plan Plan"));
+	
 	// select target
 
 	// 1. max distance
