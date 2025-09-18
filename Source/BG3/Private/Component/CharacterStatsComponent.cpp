@@ -1,5 +1,4 @@
 #include "Component/CharacterStatsComponent.h"
-
 #include "BG3/BG3.h"
 #include "GameFramework/Actor.h"
 
