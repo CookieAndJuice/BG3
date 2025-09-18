@@ -90,7 +90,7 @@ void UEnemyFSMComponent::PlanState()
 		ABG3PlayerCharacter* player = Cast<ABG3PlayerCharacter>(playerArray[i]);
 		FVector dir = player->GetActorLocation() - me->GetActorLocation();
 		float distance = dir.Size();
-
+		
 		if (nullptr == target)
 		{
 			target = player;

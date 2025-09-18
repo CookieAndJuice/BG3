@@ -32,7 +32,7 @@ public:	// Initialize
 
 	void SpawnPlayers();
 
-	void InitializeGameState();
+	void InitializeGame();
 
 public:	// Every Turn
 	UFUNCTION()
@@ -67,4 +67,8 @@ public: // Find Pawns
 
 private:	// Find Pawns
 	int Index = 0;
+
+public: // Remove Pawns
+	UFUNCTION()
+	void RemoveCharacterFromCombatPawns();
 };
