@@ -334,4 +334,6 @@ void USkillExecutionSubsystem::FinalizeCastAfterExecutor(const TArray<AActor*>& 
 
     ResetCast();
     CastState = ECastState::Idle;
+
+    OnTurnEnd.Broadcast();
 }

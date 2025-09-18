@@ -30,6 +30,7 @@ void UEnemyFSMComponent::BeginPlay()
 	me = Cast<ABG3EnemyCharacter>(GetOwner());
 	SESubsys = GetWorld()->GetSubsystem<USkillExecutionSubsystem>();
 	// endmyturn을 델리게이트 구독 코드 추가 예정
+	SESubsys->OnTurnEnd.AddUObject(this, &UEnemyFSMComponent::EndMyTurn);
 }
 
 void UEnemyFSMComponent::ChangeState(ECharacterState state)
@@ -42,6 +43,7 @@ void UEnemyFSMComponent::UpdateBehavior()
 	switch (CurrentState)
 	{
 	case ECharacterState::Idle:
+		
 		IdleState();
 		break;
 	case ECharacterState::Plan:

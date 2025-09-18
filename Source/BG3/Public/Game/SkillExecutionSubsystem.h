@@ -47,6 +47,7 @@ DECLARE_DELEGATE_OneParam(FOnSkillResolved, const FSkillResult& /*Result*/);
 DECLARE_DELEGATE(FOnCastingCanceled);
 // Fired right before executing (after targets are set, at Confirm step)
 DECLARE_DELEGATE_FourParams(FOnCastConfirmed, ABaseCharacter* /*Caster*/, const USkillDefinition* /*Skill*/, const TArray<AActor*>& /*Targets*/, int32 /*CurrentRound*/);
+DECLARE_MULTICAST_DELEGATE(FOnTurnEnd)
 
 /**
  * USkillExecutionSubsystem
@@ -96,6 +97,7 @@ public:
     FOnSkillResolved SkillResolved;
     FOnCastingCanceled CastingCanceled;
     FOnCastConfirmed CastConfirmed;
+	FOnTurnEnd OnTurnEnd;
 
 private:
     // 현재 시전자(약참조)
