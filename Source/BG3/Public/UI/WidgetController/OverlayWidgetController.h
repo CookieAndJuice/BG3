@@ -11,10 +11,12 @@ class USkillBookComponent;
 class USkillDefinition;
 class UCharacterStatsComponent;
 class ABG3GameModePlayerController;
+enum class EResultState : uint8; 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActionSlotsUpdated, const TArray<FActionSlotView>&, Slots);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStatsInitialized);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStatChangedUI, float, Current, float, Max);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFadeOutAnimationStart, EResultState, result);
 
 
 UCLASS()
@@ -42,6 +44,8 @@ public:
     UPROPERTY(BlueprintAssignable, Category="Stats|UI")
     FOnStatChangedUI OnManaChanged;
 
+	FOnFadeOutAnimationStart OnFadeOutAnimationStart;
+
     UFUNCTION(Category="Combat|UI")
     void RequestUseSkill(int32 SkillID);
 
@@ -61,6 +65,9 @@ public:
 
     UFUNCTION()
     void HandleUsabilityChanged(const USkillDefinition* Skill, bool bUsable);
+
+	UFUNCTION()
+	void HandleFadeOut(EResultState result);
 
     // Stats handlers
     UFUNCTION()

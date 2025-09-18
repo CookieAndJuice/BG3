@@ -3,6 +3,7 @@
 
 #include "Character/BG3EnemyCharacter.h"
 
+#include "Components/CapsuleComponent.h"
 #include "FSM/EnemyFSMComponent.h"
 
 
@@ -13,6 +14,21 @@ ABG3EnemyCharacter::ABG3EnemyCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	FSMComp = CreateDefaultSubobject<UEnemyFSMComponent>(TEXT("FSMComp"));
+
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> TempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Assets/Character/Enemy/Zombie/Mesh/SKM_Zombie.SKM_Zombie'"));
+
+	// Rotating Mesh
+	FRotator Rotation = FRotator(0.f, -90.f, 0.f);
+	GetMesh()->SetRelativeRotation(Rotation);
+
+	// Locating Mesh
+	FVector Location = FVector(0.000000,0.000000,-40.000000);
+	GetMesh()->SetRelativeLocation(Location);
+
+	// Resize Capsule Component
+	GetCapsuleComponent()->SetCapsuleHalfHeight(42.f);
+	GetCapsuleComponent()->SetCapsuleRadius(34.0);
+    
 }
 
 // Called when the game starts or when spawned

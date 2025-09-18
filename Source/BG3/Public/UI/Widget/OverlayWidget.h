@@ -18,6 +18,12 @@ public:
     UFUNCTION(BlueprintCallable, Category="Combat|UI")
     void SetController(UOverlayWidgetController* InController);
 
+    UFUNCTION()
+    void FadeOutAnimationStart(EResultState result);
+
+    UPROPERTY(meta=(BindWidgetAnim), Transient)
+    UWidgetAnimation* FadeOut;
+
 protected:
     virtual void NativeConstruct() override;
     

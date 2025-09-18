@@ -5,6 +5,14 @@
 #include "GameFramework/GameModeBase.h"
 #include "BG3GameMode.generated.h"
 
+UENUM(BlueprintType)
+enum class EResultState : uint8
+{
+	None,
+	Player,
+	Enemy
+};
+
 UCLASS()
 class BG3_API ABG3GameMode : public AGameModeBase
 {
@@ -30,4 +38,6 @@ public:	// Dice
 public:
 	UFUNCTION(Category="Combat|UI")
 	bool RequestUseSkill(class ABaseCharacter* Caster, int32 SkillID);
+
+	EResultState DecideWhoWin();
 };

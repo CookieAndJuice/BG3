@@ -6,6 +6,7 @@
 #include "Data/SkillDefinition.h"
 #include "Component/SkillBookComponent.h"
 #include "Component/CharacterStatsComponent.h"
+#include "Components/CapsuleComponent.h"
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -26,6 +27,12 @@ ABaseCharacter::ABaseCharacter()
 
     // Basic stats (HP/MP)
     Stats = CreateDefaultSubobject<UCharacterStatsComponent>(TEXT("CharacterStats"));
+
+    // Weapon
+    Weapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon"));
+    Weapon->SetupAttachment(GetMesh(), FName("RightHandSocket"));
+
+   
 }
 
 void ABaseCharacter::BeginTurnReset_Implementation()

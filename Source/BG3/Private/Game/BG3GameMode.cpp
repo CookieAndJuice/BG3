@@ -7,7 +7,10 @@
 #include "Manager/BG3DiceManager.h"
 #include "GameFramework/GameStateBase.h"
 #include "Character/BaseCharacter.h"
+#include "Character/BG3EnemyCharacter.h"
+#include "Character/BG3PlayerCharacter.h"
 #include "Component/SkillBookComponent.h"
+#include "Game/BG3GameManageSubsystem.h"
 
 class ABG3GameModePlayerController;
 struct FStatModifierData;
@@ -88,4 +91,31 @@ bool ABG3GameMode::RequestUseSkill(ABaseCharacter* Caster, int32 SkillID)
 	}
 
 	return false;
+}
+
+EResultState ABG3GameMode::DecideWhoWin()
+{
+	EResultState result = EResultState::None;
+
+	UBG3GameManageSubsystem* Subsystem = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>();
+	if (!Subsystem) return result;
+
+	int playerCnt = 0, enemyCnt = 0;
+	
+	for (auto character : Subsystem->CombatPawns)
+	{
+		if (character.TurnCharacter->IsA(ABG3EnemyCharacter::StaticClass()))
+		{
+			enemyCnt++;
+		}
+		else if (character.TurnCharacter->IsA(ABG3PlayerCharacter::StaticClass()))
+		{
+			playerCnt++;
+		}
+	}
+
+	if (enemyCnt == 0) return EResultState::Player;
+	else if (playerCnt == 0) return EResultState::Enemy;
+	
+	return result;
 }

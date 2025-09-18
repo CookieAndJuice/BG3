@@ -1,10 +1,13 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
+﻿
 #pragma once
 
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
 #include "BG3EnemyCharacter.generated.h"
+
+
+class UEnemyFSMComponent;
+
 
 UCLASS()
 class BG3_API ABG3EnemyCharacter : public ABaseCharacter
@@ -27,13 +30,17 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:	// FSM
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FSM")
-	TObjectPtr<class UEnemyFSMComponent> FSMComp;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FSM")
+	UEnemyFSMComponent* FSMComp;
 	
 	virtual void SetMyTurn();
+
+	
 
 private:// Attack Target
 	UPROPERTY()
 	TObjectPtr<class ABaseCharacter> AttackTarget;
+
+	
 	
 };

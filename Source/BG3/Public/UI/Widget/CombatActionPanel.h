@@ -24,7 +24,6 @@ public:
     UFUNCTION(BlueprintCallable, Category="Combat|UI")
     void SetController(UOverlayWidgetController* InController);
 
-
 protected:
     UPROPERTY(meta=(BindWidgetOptional), BlueprintReadWrite)
     UGridPanel* Panel_Root = nullptr;
@@ -44,6 +43,9 @@ protected:
     UFUNCTION()
     void OnSkillButtonClicked(int32 SkillID);
 
+ 
+    
+    
 private:
     
 };

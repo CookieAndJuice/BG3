@@ -6,9 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "TurnEndWidget.generated.h"
 
-/**
- * 
- */
+class UOverlayWidgetController;
 
 DECLARE_DELEGATE(FOnTurnEndDelegate);
 
@@ -36,4 +34,5 @@ public:
 	
 	UFUNCTION()
 	void OnTurnEndButtonClicked();
+	
 };

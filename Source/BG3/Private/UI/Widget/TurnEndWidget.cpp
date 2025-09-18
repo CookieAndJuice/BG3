@@ -4,6 +4,7 @@
 #include "UI/Widget/TurnEndWidget.h"
 
 #include "Components/Button.h"
+#include "UI/WidgetController/OverlayWidgetController.h"
 
 void UTurnEndWidget::NativeConstruct()
 {
@@ -34,3 +35,5 @@ void UTurnEndWidget::OnTurnEndButtonClicked()
 {
 	OnTurnEndDelegate.ExecuteIfBound();
 }
+
+

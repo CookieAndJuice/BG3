@@ -7,6 +7,7 @@
 // For MakeBrushFromTexture and texture size
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Engine/Texture2D.h"
+#include "UI/Widget/CombatActionPanel.h"
 
 void UActionSlotEntry::Setup(const FActionSlotView& InView)
 {
@@ -56,6 +57,8 @@ void UActionSlotEntry::NativeOnInitialized()
         Btn_Use->OnPressed.AddDynamic(this, &UActionSlotEntry::OnSlotPressed);
         Btn_Use->OnReleased.AddDynamic(this, &UActionSlotEntry::OnSlotReleased);
     }
+
+    
 }
 
 void UActionSlotEntry::HandleClick()
@@ -72,3 +75,4 @@ void UActionSlotEntry::OnSlotReleased()
 {
     Btn_Use->SetCursor(EMouseCursor::Type::Default);
 }
+

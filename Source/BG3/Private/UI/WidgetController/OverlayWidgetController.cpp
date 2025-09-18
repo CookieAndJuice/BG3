@@ -41,6 +41,7 @@ void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter, ABG3GameM
         HandleHealthChanged(Stats->GetHealth(), Stats->GetMaxHealth());
         HandleManaChanged(Stats->GetMana(), Stats->GetMaxMana());
         OnStatsInitialized.Broadcast();
+        Stats->OnFadeOut.AddUObject(this, &UOverlayWidgetController::HandleFadeOut);
     }
 
     if (PC && !PC->CurrentCharacterChanged.IsBound())
@@ -94,6 +95,16 @@ void UOverlayWidgetController::HandleCooldownChanged(const USkillDefinition* /*S
 void UOverlayWidgetController::HandleUsabilityChanged(const USkillDefinition* /*Skill*/, bool /*bUsable*/)
 {
     BuildAndBroadcast();
+}
+
+void UOverlayWidgetController::HandleFadeOut(EResultState result)
+{
+    // 오버레이의 모든 위젯들 Fade Out
+    OnFadeOutAnimationStart.Broadcast(result);
+
+    PRINTDELEGATELOG(TEXT("FadeOut 2"));
+    // 승리 or 패배 위젯 띄우기
+    
 }
 
 void UOverlayWidgetController::HandleHealthChanged(float NewHealth, float MaxHealth)

@@ -7,6 +7,7 @@
 #include "ActionSlotEntry.generated.h"
 
 class UTexture2D;
+class UCombatActionPanel;
 
 enum class EActionCost : uint8;
 
@@ -53,6 +54,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnSlotClicked OnClicked;
 
+
 protected:
 	virtual void NativeOnInitialized() override;
 
@@ -64,6 +66,8 @@ protected:
 
 	UPROPERTY(meta=(BindWidgetOptional))
 	class UBorder* Overlay_Disabled = nullptr;
+
+	
 
 
 private:
@@ -82,4 +86,6 @@ private:
 
 	UFUNCTION()
 	void OnSlotReleased();
+	
+	
 };

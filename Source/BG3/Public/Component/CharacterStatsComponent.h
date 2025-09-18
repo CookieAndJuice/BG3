@@ -2,12 +2,14 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Game/BG3GameMode.h"
 #include "CharacterStatsComponent.generated.h"
+
+class ABaseCharacter;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSig, float, NewHealth, float, MaxHealth);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnManaChangedSig, float, NewMana, float, MaxMana);
-
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnManaChangedSig, float, NewMana, float, MaxMana);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnFadeOutDelegate, EResultState);
 
 
 UCLASS(ClassGroup=(BG3), BlueprintType, Blueprintable, meta=(BlueprintSpawnableComponent))
@@ -47,6 +49,9 @@ public:
     UPROPERTY(BlueprintAssignable, Category="Stats|Events")
     FOnManaChangedSig OnManaChanged;
 
+    FOnFadeOutDelegate OnFadeOut;
+    
+
 public:
     UFUNCTION(BlueprintCallable, Category="Stats|Health")
     FORCEINLINE float GetHealth() const { return Health; }
@@ -67,5 +72,6 @@ protected:
     void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
     
 private:
-    
+    UPROPERTY()
+    ABaseCharacter* Character;
 };

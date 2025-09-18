@@ -77,6 +77,10 @@ protected:
 	virtual void BeginPlay() override;
 	void GrantSkills();
 
+	// Component
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* Weapon;
+
 private:
 
 	/* 현재 행동력 */

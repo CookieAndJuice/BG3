@@ -1,5 +1,7 @@
 #include "Component/CharacterStatsComponent.h"
 #include "BG3/BG3.h"
+#include "Character/BaseCharacter.h"
+#include "Game/BG3GameMode.h"
 #include "GameFramework/Actor.h"
 
 UCharacterStatsComponent::UCharacterStatsComponent()
@@ -24,6 +26,8 @@ void UCharacterStatsComponent::BeginPlay()
     // Push initial values to UI
     OnHealthChanged.Broadcast(Health, MaxHealth);
     OnManaChanged.Broadcast(Mana, MaxMana);
+
+    Character = Cast<ABaseCharacter>(GetOwner());
 }
 
 void UCharacterStatsComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
@@ -47,7 +51,25 @@ void UCharacterStatsComponent::HandleTakeAnyDamage(AActor* DamagedActor, float D
 
     if (Health <= 0.f)
     {
-        //PRINTLOG(TEXT("%s has died"), *DamagedActor->GetName());
+        PRINTLOG(TEXT("%s has died"), *DamagedActor->GetName());
+        Character->SetIsDead(true);
+
+        // 누가 이겼는지 판단
+        ABG3GameMode* GM = Cast<ABG3GameMode>(GetWorld()->GetAuthGameMode());
+        EResultState result = GM->DecideWhoWin();
+        
+        // Enemy가 이겼을 때
+        if (result == EResultState::Enemy)
+        {
+            OnFadeOut.Broadcast(result);
+            PRINTDELEGATELOG(TEXT("Enemy Win 1"));
+        } // Player가 이겼을 때
+        else if (result == EResultState::Player)
+        {
+            OnFadeOut.Broadcast(result);
+            PRINTDELEGATELOG(TEXT("Player Win 1"));
+        }
+
         
     }
 }
