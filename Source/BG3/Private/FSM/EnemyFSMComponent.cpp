@@ -12,6 +12,7 @@
 #include "Game/BG3GameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Game/SkillExecutionSubsystem.h"
+#include "Game/Skill/Tasks/SkillTaskPlayMontage.h"
 
 
 // Sets default values for this component's properties
@@ -146,4 +147,12 @@ void UEnemyFSMComponent::PlanState()
 void UEnemyFSMComponent::ExecuteState()
 {
 	PRINTSTATELOG(TEXT("Execute Execute Execute"));
+}
+
+void UEnemyFSMComponent::BindingMontageTask(USkillTaskPlayMontage* InTask)
+{
+	if (!InTask) return;
+	MontageTask = InTask;
+
+	MontageTask->OnAnimEnded.AddUObject(this, &UEnemyFSMComponent::EndMyTurn);
 }

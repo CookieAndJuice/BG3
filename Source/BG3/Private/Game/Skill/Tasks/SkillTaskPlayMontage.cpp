@@ -4,8 +4,10 @@
 #include "Animation/AnimInstance.h"
 #include "Character/Animation/BaseAnimInstance.h"
 #include "Character/BaseCharacter.h"
+#include "Character/BG3EnemyCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Data/SkillDefinition.h"
+#include "FSM/EnemyFSMComponent.h"
 #include "Game/SkillExecutionSubsystem.h"
 
 void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, const USkillDefinition* Skill, const TArray<AActor*>& Targets)
@@ -61,9 +63,17 @@ void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, con
         HitNotifyName = Skill->Meta.HitNotifyName;
     }
 
+    // 애님 인스턴스에 Montage Task 바인딩
+    // Hit Notify 시에 AnimInst에서 HandleHitNotify 호출
     if (UBaseAnimInstance* BaseAnim = Cast<UBaseAnimInstance>(AnimInstance))
     {
         BaseAnim->SetActiveMontageTask(this);
+    }
+
+    //
+    if (ABG3EnemyCharacter* Enemy = Cast<ABG3EnemyCharacter>(Caster))
+    {
+        Enemy->FSMComp->BindingMontageTask(this);
     }
 
     AnimInstance->OnMontageEnded.AddDynamic(this, &USkillTaskPlayMontage::OnMontageEnded);
@@ -96,19 +106,8 @@ void USkillTaskPlayMontage::Cancel()
     }
 }
 
-void USkillTaskPlayMontage::HandleHitNotify(FName TriggeredNotify)
+void USkillTaskPlayMontage::FinalizeCast()
 {
-    if (bHitApplied)
-    {
-        return;
-    }
-
-    const FName NotifyToLog = TriggeredNotify.IsNone() ? HitNotifyName : TriggeredNotify;
-    if (!NotifyToLog.IsNone() && CasterCharacter.IsValid())
-    {
-        PRINTLOG(TEXT("[MontageTask] Notify %s on %s"), *NotifyToLog.ToString(), *CasterCharacter->GetName());
-    }
-
     if (CasterCharacter.IsValid())
     {
         if (UWorld* World = CasterCharacter->GetWorld())
@@ -132,6 +131,22 @@ void USkillTaskPlayMontage::HandleHitNotify(FName TriggeredNotify)
             }
         }
     }
+}
+
+void USkillTaskPlayMontage::HandleHitNotify(FName TriggeredNotify)
+{
+    if (bHitApplied)
+    {
+        return;
+    }
+
+    const FName NotifyToLog = TriggeredNotify.IsNone() ? HitNotifyName : TriggeredNotify;
+    if (!NotifyToLog.IsNone() && CasterCharacter.IsValid())
+    {
+        PRINTLOG(TEXT("[MontageTask] Notify %s on %s"), *NotifyToLog.ToString(), *CasterCharacter->GetName());
+    }
+
+    FinalizeCast();
 
     bHitApplied = true;
 
@@ -166,6 +181,20 @@ void USkillTaskPlayMontage::OnMontageEnded(UAnimMontage* InMontage, bool bInterr
     {
         OnFinished.Execute();
     }
+
+    // 만약 Caster가 Enemy이면 애니메이션 몽타주 재생 끝나고 타겟에게 데미지 입히기
+    if (Cast<ABG3EnemyCharacter>(CasterCharacter))
+    {
+        FinalizeCast();
+
+        FTimerHandle Timer;
+        GetWorld()->GetTimerManager().SetTimer(Timer, [this]()
+        {
+            OnAnimEnded.Broadcast();
+        }, 1.f, false);
+    
+    }
+    
 }
 
 void USkillTaskPlayMontage::OnNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& /*Payload*/)

@@ -9,6 +9,8 @@ class ABaseCharacter;
 class UBaseAnimInstance;
 class USkillDefinition;
 
+DECLARE_MULTICAST_DELEGATE(FOnAnimEnded);
+
 UCLASS()
 class BG3_API USkillTaskPlayMontage : public USkillTaskBase
 {
@@ -28,6 +30,9 @@ public:
 
     virtual void Start(UObject* WorldContext, AActor* Caster, const USkillDefinition* Skill, const TArray<AActor*>& Targets) override;
     virtual void Cancel() override;
+    void FinalizeCast();
+
+    FOnAnimEnded OnAnimEnded;
 
 private:
     void ClearActiveTaskBinding();
@@ -48,6 +53,7 @@ private:
     UPROPERTY()
     TArray<TWeakObjectPtr<AActor>> WeakTargets;
 
+    
     UPROPERTY()
     int32 Round = 0;
 

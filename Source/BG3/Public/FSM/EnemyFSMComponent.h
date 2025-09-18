@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "EnemyFSMComponent.generated.h"
 
+class USkillTaskPlayMontage;
+
 UENUM(BlueprintType)
 enum class ECharacterState : uint8
 {
@@ -45,6 +47,12 @@ public:	// FSM
 	void IdleState();
 	void PlanState();
 	void ExecuteState();
+
+public: // Montage Task
+	void BindingMontageTask(USkillTaskPlayMontage* InTask);
+	
+	UPROPERTY()
+	USkillTaskPlayMontage* MontageTask;
 
 protected:
 	UPROPERTY()
