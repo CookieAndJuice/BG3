@@ -51,18 +51,13 @@ ABG3GameModePlayerController::ABG3GameModePlayerController()
 		LMBClickAction = LMBClickRef.Object;
 	}
 	ConstructorHelpers::FClassFinder<ABG3GameCamera> CameraClassRef(TEXT("'/Game/Blueprints/Actor/BP_GameCamera.BP_GameCamera_C'"));
-    if (CameraClassRef.Succeeded())
-    {
-        BG3CameraClass = CameraClassRef.Class;
-    }
-
-    // 마우스 입력 컴포넌트 생성(입력 바인딩은 SetupInputComponent에서 수행)
-    MouseInput = CreateDefaultSubobject<UMouseInputComponent>(TEXT("MouseInputComponent"));
 	if (CameraClassRef.Succeeded())
 	{
 		BG3CameraClass = CameraClassRef.Class;
 	}
-	
+
+    // 마우스 입력 컴포넌트 생성(입력 바인딩은 SetupInputComponent에서 수행)
+    MouseInput = CreateDefaultSubobject<UMouseInputComponent>(TEXT("MouseInputComponent"));
 }
 
 void ABG3GameModePlayerController::BeginPlay()
@@ -80,8 +75,6 @@ void ABG3GameModePlayerController::BeginPlay()
 	// Initialize Character
 	GMSubsystem = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>();
 	PossessedCharacter = GMSubsystem->GetCurrentPawn();
-	//Possess(PossessedCharacter);
-	//PossessedCharacter->EnableInput(this);
 
 	// Initialize Camera Setting
 	InitializeCamera();
@@ -102,6 +95,26 @@ void ABG3GameModePlayerController::BeginPlay()
 	}
 	
 	SetShowMouseCursor(true);
+}
+
+void ABG3GameModePlayerController::SpawnCamera()
+{
+	FRotator spawnRotation = FRotator(0, 0, 0);
+	// FVector spawnLocation = UGameplayStatics::GetPlayerPawn(GetWorld(), 0)->GetActorLocation();
+	FVector spawnLocation = GMSubsystem->GetCurrentPawn()->GetActorLocation();
+	FTransform spawnTransform(spawnRotation, spawnLocation);
+
+	BG3Camera = GetWorld()->SpawnActor<ABG3GameCamera>(BG3CameraClass, spawnTransform);
+}
+
+void ABG3GameModePlayerController::InitializeCamera()
+{
+	SpawnCamera();
+	SetViewTargetWithBlend(BG3Camera);
+
+	// Set Follow Mode
+	FVector location = PossessedCharacter->GetActorLocation();
+	BG3Camera->FocusCamera(location);
 }
 
 void ABG3GameModePlayerController::UseSkill(int32 SkillID)
@@ -222,23 +235,4 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
 	CurrentCharacterChanged.ExecuteIfBound(NewCharacter);
 }
 
-void ABG3GameModePlayerController::SpawnCamera()
-{
-	FRotator spawnRotation = FRotator(0, 0, 0);
-	// FVector spawnLocation = UGameplayStatics::GetPlayerPawn(GetWorld(), 0)->GetActorLocation();
-	FVector spawnLocation = GMSubsystem->GetCurrentPawn()->GetActorLocation();
-	FTransform spawnTransform(spawnRotation, spawnLocation);
-
-	BG3Camera = GetWorld()->SpawnActor<ABG3GameCamera>(BG3CameraClass, spawnTransform);
-}
-
-void ABG3GameModePlayerController::InitializeCamera()
-{
-	SpawnCamera();
-	SetViewTargetWithBlend(BG3Camera);
-
-	// Set Follow Mode
-	FVector location = PossessedCharacter->GetActorLocation();
-	BG3Camera->FocusCamera(location);
-}
 

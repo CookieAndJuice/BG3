@@ -32,8 +32,6 @@ public:	// FSM
 	
 	virtual void SetMyTurn();
 
-	bool bIsMyTurn = false;
-
 private:// Attack Target
 	UPROPERTY()
 	TObjectPtr<class ABaseCharacter> AttackTarget;

@@ -2,16 +2,25 @@
 #include "BG3/Public/Game/BG3GameMode.h"
 
 #include "BG3/BG3.h"
-#include "GameFramework/SpectatorPawn.h"
+#include "Data/SkillDefinition.h"
+#include "Game/SkillExecutionSubsystem.h"
 #include "Manager/BG3DiceManager.h"
 #include "GameFramework/GameStateBase.h"
+#include "Character/BaseCharacter.h"
+#include "Component/SkillBookComponent.h"
 
 class ABG3GameModePlayerController;
 struct FStatModifierData;
 
 ABG3GameMode::ABG3GameMode()
 {
+	// ConstructorHelpers::FClassFinder<ABG3GameCamera> cameraRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprints/Actor/BP_GameCamera.BP_GameCamera_C'"));
+	// if (cameraRef.Succeeded())
+	// {
+	// 	DefaultPawnClass = cameraRef.Class;
+	// }
 	DefaultPawnClass = nullptr;
+	
 	ConstructorHelpers::FClassFinder<APlayerController> pcRef(TEXT("/Game/Blueprints/Game/BP_GamePlayerController.BP_GamePlayerController_C"));
 	if (pcRef.Succeeded())
 	{
@@ -49,4 +58,34 @@ int32 ABG3GameMode::CalcInitiative(float Dex)
 	return initiativeResult;
 }
 
+bool ABG3GameMode::RequestUseSkill(ABaseCharacter* Caster, int32 SkillID)
+{
+	if (!Caster->SkillBook)
+	{
+		return false;
+	}
+	for (USkillDefinition* Def : Caster->SkillBook->Skills)
+	{
+		if (Def && Def->Meta.ID == SkillID)
+		{
+			if (UWorld* World = GetWorld())
+			{
+				if (USkillExecutionSubsystem* SES = World->GetSubsystem<USkillExecutionSubsystem>())
+				{
+					if (SES->RequestCast(Caster, Def))
+					{
+						PRINTLOG(TEXT("Skill cast started (targeting)"));
+						return true;
+					}
+					else
+					{
+						PRINTLOG(TEXT("Skill cast request failed"));
+						return false;
+					}
+				}
+			}
+		}
+	}
 
+	return false;
+}

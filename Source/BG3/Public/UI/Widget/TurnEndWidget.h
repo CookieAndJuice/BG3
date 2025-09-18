@@ -22,7 +22,7 @@ public:
 	
 	FOnTurnEndDelegate OnTurnEndDelegate;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(BindWidgetOptional))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidgetOptional))
 	TObjectPtr<class UButton> TurnEndButton;
 
 	UFUNCTION()

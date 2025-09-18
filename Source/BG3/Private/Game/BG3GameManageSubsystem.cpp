@@ -128,7 +128,7 @@ void UBG3GameManageSubsystem::BeginNextTurn()
 	// Next Turn or Round
 	if (CombatPawns.Num() > ++Index)
 	{
-		GState->UpdateTurn();
+		GState->UpdateTurn(); 
 	}
 	else
 	{
@@ -138,7 +138,7 @@ void UBG3GameManageSubsystem::BeginNextTurn()
 	GState->PrintCurrentState();
 	
 	// Get and Possess Next Character
-	ABaseCharacter* nextCharacter = Cast<ABaseCharacter>(GetCurrentPawn());
+	ABaseCharacter* nextCharacter = GetCurrentPawn();
 	GMPlayerController->SwitchToPawn(nextCharacter);
 	
 }

@@ -8,8 +8,7 @@
 UENUM(BlueprintType)
 enum class ECharacterState : uint8
 {
-	None, Idle, Plan, Move, Execute,
-	Hit, Die
+	None, Idle, Plan, Execute
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -24,7 +23,7 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
+	
 public:
 	// Current Enum State
 	UPROPERTY(VisibleInstanceOnly, Category = "FSM")
@@ -42,11 +41,20 @@ public: // Change State & Update Behavior
 public:	// FSM
 	void IdleState();
 	void PlanState();
-	void MoveState();
 	void ExecuteState();
-	void HitState();
-	void DieState();
 
 protected:
+	UPROPERTY()
+	TObjectPtr<class USkillExecutionSubsystem> SESubsys;
+	
 	bool bIsMyTurn = false;
+
+	// Max Move Distance
+	float MaxDistance = 0;
+
+	UPROPERTY()
+	TObjectPtr<class ABG3PlayerCharacter> target = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<class ABG3EnemyCharacter> me;
 };
