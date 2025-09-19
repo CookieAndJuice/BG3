@@ -166,9 +166,13 @@ ABaseCharacter* UBG3GameManageSubsystem::GetCurrentPawn()
 
 void UBG3GameManageSubsystem::RemoveCharacterFromCombatPawns(ABaseCharacter* InCharacter)
 {
-	int index = GetCombatPawnsIndex(InCharacter);
-	if (index != -1)
-		CombatPawns.RemoveAt(index);
+	int removeIndex = GetCombatPawnsIndex(InCharacter);
+	if (removeIndex != -1)
+	{
+		if (removeIndex < Index)
+			Index--;
+		CombatPawns.RemoveAt(removeIndex);
+	}
 }
 
 int UBG3GameManageSubsystem::GetCombatPawnsIndex(ABaseCharacter* InCharacter)
