@@ -155,7 +155,22 @@ ABaseCharacter* UBG3GameManageSubsystem::GetCurrentPawn()
 	return pawn;
 }
 
-void UBG3GameManageSubsystem::RemoveCharacterFromCombatPawns()
+void UBG3GameManageSubsystem::RemoveCharacterFromCombatPawns(ABaseCharacter* InCharacter)
 {
-	
+	int index = GetCombatPawnsIndex(InCharacter);
+	if (index != -1)
+		CombatPawns.RemoveAt(index);
+}
+
+int UBG3GameManageSubsystem::GetCombatPawnsIndex(ABaseCharacter* InCharacter)
+{
+	for (int i=0; i<CombatPawns.Num(); i++)
+	{
+		if (CombatPawns[i].TurnCharacter == InCharacter)
+		{
+			return i;
+		}
+	}
+
+	return -1;
 }

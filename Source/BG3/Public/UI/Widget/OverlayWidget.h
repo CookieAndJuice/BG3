@@ -8,6 +8,7 @@
 class UCombatActionPanel;
 class UOverlayWidgetController;
 class UTurnEndWidget;
+class UTextBlock;
 
 UCLASS()
 class BG3_API UOverlayWidget : public UUserWidget
@@ -22,7 +23,14 @@ public:
     void FadeOutAnimationStart(EResultState result);
 
     UPROPERTY(meta=(BindWidgetAnim), Transient)
-    UWidgetAnimation* FadeOut;
+    UWidgetAnimation* FadeOut1;
+
+    UPROPERTY(meta=(BindWidgetAnim), Transient)
+    UWidgetAnimation* FadeOut2;
+
+    UPROPERTY(meta=(BindWidgetAnim), Transient)
+    UWidgetAnimation* FadeOut3;
+
 
 protected:
     virtual void NativeConstruct() override;
@@ -36,4 +44,10 @@ protected:
 
     UPROPERTY(meta=(BindWidgetOptional), BlueprintReadOnly)
     UTurnEndWidget* TurnEndWidget = nullptr;
+
+    UPROPERTY(meta=(BindWidgetOptional), BlueprintReadOnly)
+    UTextBlock* Text_Win;
+
+    UPROPERTY(meta=(BindWidgetOptional), BlueprintReadOnly)
+    UTextBlock* Text_Lose;
 };

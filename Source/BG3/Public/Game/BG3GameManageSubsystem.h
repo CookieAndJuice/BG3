@@ -70,5 +70,7 @@ private:	// Find Pawns
 
 public: // Remove Pawns
 	UFUNCTION()
-	void RemoveCharacterFromCombatPawns();
+	void RemoveCharacterFromCombatPawns(ABaseCharacter* InCharacter);
+
+	int GetCombatPawnsIndex(ABaseCharacter* InCharacter);
 };

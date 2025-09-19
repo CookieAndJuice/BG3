@@ -82,9 +82,12 @@ void UEnemyFSMComponent::PlanState()
 
 	// 1. max distance
 	// if same 2. hp
-
+	
 	TArray<AActor*> playerArray;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABG3PlayerCharacter::StaticClass(), playerArray);
+
+	int MaxDistance = (playerArray[0]->GetActorLocation() - me->GetActorLocation()).Size();
+	
 	for (int32 i = 0; i < playerArray.Num(); i++)
 	{
 		ABG3PlayerCharacter* player = Cast<ABG3PlayerCharacter>(playerArray[i]);
@@ -96,14 +99,21 @@ void UEnemyFSMComponent::PlanState()
 			target = player;
 			continue;
 		}
-		
-		if (distance > MaxDistance)
-			continue;
 
-		if (Cast<ABG3PlayerCharacter>(player)->Stats->Health < Cast<ABG3PlayerCharacter>(target)->Stats->Health)
-		{
-			target = player;
-		}
+		if (player->GetIsDead()) continue;
+		
+		// if (distance > MaxDistance)
+		// {
+		// 	distance = MaxDistance;
+		// 	continue;
+		// }
+
+		target = player;
+
+		// if (Cast<ABG3PlayerCharacter>(player)->Stats->Health < Cast<ABG3PlayerCharacter>(target)->Stats->Health)
+		// {
+		// 	target = player;
+		// }
 	}
 	
 	// target distance

@@ -59,9 +59,7 @@ protected:
 	TObjectPtr<class USkillExecutionSubsystem> SESubsys;
 	
 	bool bIsMyTurn = false;
-
-	// Max Move Distance
-	float MaxDistance = 0;
+	
 
 	UPROPERTY()
 	TObjectPtr<class ABG3PlayerCharacter> target = nullptr;

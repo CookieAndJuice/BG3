@@ -1,6 +1,9 @@
 #include "Component/CharacterStatsComponent.h"
 #include "BG3/BG3.h"
 #include "Character/BaseCharacter.h"
+#include "Character/BG3EnemyCharacter.h"
+#include "FSM/EnemyFSMComponent.h"
+#include "Game/BG3GameManageSubsystem.h"
 #include "Game/BG3GameMode.h"
 #include "GameFramework/Actor.h"
 
@@ -54,6 +57,16 @@ void UCharacterStatsComponent::HandleTakeAnyDamage(AActor* DamagedActor, float D
         PRINTLOG(TEXT("%s has died"), *DamagedActor->GetName());
         Character->SetIsDead(true);
 
+        // // Enemy이면 Idle State로 전환
+        // if (auto* enemy = Cast<ABG3EnemyCharacter>(Character))
+        // {
+        //     enemy->FSMComp->ChangeState(ECharacterState::Idle);
+        // }
+        
+        // CombatPawns에서 제거
+        auto* Subsystem = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>();
+        Subsystem->RemoveCharacterFromCombatPawns(Character);
+
         // 누가 이겼는지 판단
         ABG3GameMode* GM = Cast<ABG3GameMode>(GetWorld()->GetAuthGameMode());
         EResultState result = GM->DecideWhoWin();
@@ -62,14 +75,18 @@ void UCharacterStatsComponent::HandleTakeAnyDamage(AActor* DamagedActor, float D
         if (result == EResultState::Enemy)
         {
             OnFadeOut.Broadcast(result);
+            GM->StopEnemies();
             PRINTDELEGATELOG(TEXT("Enemy Win 1"));
         } // Player가 이겼을 때
         else if (result == EResultState::Player)
         {
             OnFadeOut.Broadcast(result);
+            GM->StopEnemies();
             PRINTDELEGATELOG(TEXT("Player Win 1"));
         }
 
+        
+        
         
     }
 }

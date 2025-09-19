@@ -10,6 +10,7 @@
 #include "Character/BG3EnemyCharacter.h"
 #include "Character/BG3PlayerCharacter.h"
 #include "Component/SkillBookComponent.h"
+#include "FSM/EnemyFSMComponent.h"
 #include "Game/BG3GameManageSubsystem.h"
 
 class ABG3GameModePlayerController;
@@ -90,6 +91,27 @@ bool ABG3GameMode::RequestUseSkill(ABaseCharacter* Caster, int32 SkillID)
 		}
 	}
 
+	return false;
+}
+
+void ABG3GameMode::StopEnemies()
+{
+	UBG3GameManageSubsystem* Subsystem = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>();
+	if (!Subsystem) return;
+
+	for (auto turnData : Subsystem->CombatPawns)
+	{
+		if (auto* enemy = Cast<ABG3EnemyCharacter>(turnData.TurnCharacter))
+		{
+			enemy->FSMComp->ChangeState(ECharacterState::Idle);
+		}
+	}
+}
+
+bool ABG3GameMode::IsEnemyWin()
+{
+	if (DecideWhoWin() == EResultState::Enemy)
+		return true;
 	return false;
 }
 

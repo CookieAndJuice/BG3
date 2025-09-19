@@ -38,6 +38,8 @@ public:	// Dice
 public:
 	UFUNCTION(Category="Combat|UI")
 	bool RequestUseSkill(class ABaseCharacter* Caster, int32 SkillID);
-
+	void StopEnemies();
+	bool IsEnemyWin();
+	
 	EResultState DecideWhoWin();
 };

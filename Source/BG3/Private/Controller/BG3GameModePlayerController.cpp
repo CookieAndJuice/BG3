@@ -229,6 +229,8 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
 	
 	if (auto* enemy = Cast<ABG3EnemyCharacter>(PossessedCharacter))
 	{
+		ABG3GameMode* GM = Cast<ABG3GameMode>(GetWorld()->GetAuthGameMode());
+		if (GM->IsEnemyWin()) return;
 		enemy->SetMyTurn();
 	}
 	
