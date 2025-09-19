@@ -6,7 +6,7 @@
 #include "BG3EnemyCharacter.generated.h"
 
 
-class UEnemyFSMComponent;
+class USimpleEnemyFSMComponent;
 
 
 UCLASS()
@@ -31,7 +31,7 @@ public:
 
 public:	// FSM
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FSM")
-	UEnemyFSMComponent* FSMComp;
+	USimpleEnemyFSMComponent* EnemyFSMComp;
 	
 	virtual void SetMyTurn();
 

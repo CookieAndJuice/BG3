@@ -10,7 +10,7 @@
 #include "Character/BG3EnemyCharacter.h"
 #include "Character/BG3PlayerCharacter.h"
 #include "Component/SkillBookComponent.h"
-#include "FSM/EnemyFSMComponent.h"
+#include "Component/SimpleEnemyFSMComponent.h"
 #include "Game/BG3GameManageSubsystem.h"
 
 class ABG3GameModePlayerController;
@@ -103,7 +103,7 @@ void ABG3GameMode::StopEnemies()
 	{
 		if (auto* enemy = Cast<ABG3EnemyCharacter>(turnData.TurnCharacter))
 		{
-			enemy->FSMComp->ChangeState(ECharacterState::Idle);
+			enemy->EnemyFSMComp->ChangeState(ECharacterState::Idle);
 		}
 	}
 }

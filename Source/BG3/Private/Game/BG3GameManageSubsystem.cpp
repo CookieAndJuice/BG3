@@ -9,7 +9,7 @@
 #include "Character/BG3PlayerCharacter.h"
 #include "Controller/BG3GameModePlayerController.h"
 #include "Data/InitialCharacterInfo.h"
-#include "FSM/EnemyFSMComponent.h"
+#include "Component/SimpleEnemyFSMComponent.h"
 #include "Game/BG3GameMode.h"
 #include "Game/BG3GameState.h"
 #include "Game/SkillExecutionSubsystem.h"

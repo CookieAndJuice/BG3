@@ -1,5 +1,7 @@
+// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "FSM/EnemyFSMComponent.h"
+
+#include "Component/SimpleEnemyFSMComponent.h"
 
 #include "BG3/BG3.h"
 #include "Character/BG3EnemyCharacter.h"
@@ -12,30 +14,33 @@
 #include "Game/SkillExecutionSubsystem.h"
 #include "Game/Skill/Tasks/SkillTaskPlayMontage.h"
 
-
-UEnemyFSMComponent::UEnemyFSMComponent()
+// Sets default values for this component's properties
+USimpleEnemyFSMComponent::USimpleEnemyFSMComponent()
 {
+	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
+	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 
 }
 
 
-void UEnemyFSMComponent::BeginPlay()
+// Called when the game starts
+void USimpleEnemyFSMComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
 	me = Cast<ABG3EnemyCharacter>(GetOwner());
 	SESubsys = GetWorld()->GetSubsystem<USkillExecutionSubsystem>();
 	// endmyturn을 델리게이트 구독 코드 추가 예정
-	SESubsys->OnTurnEnd.AddUObject(this, &UEnemyFSMComponent::EndMyTurn);
+	SESubsys->OnTurnEnd.AddUObject(this, &USimpleEnemyFSMComponent::EndMyTurn);
 }
 
-void UEnemyFSMComponent::ChangeState(ECharacterState state)
+void USimpleEnemyFSMComponent::ChangeState(ECharacterState state)
 {
 	CurrentState = state;
 }
 
-void UEnemyFSMComponent::UpdateBehavior()
+void USimpleEnemyFSMComponent::UpdateBehavior()
 {
 	switch (CurrentState)
 	{
@@ -52,29 +57,29 @@ void UEnemyFSMComponent::UpdateBehavior()
 	}
 }
 
-void UEnemyFSMComponent::StartMyTurn()
+void USimpleEnemyFSMComponent::StartMyTurn()
 {
 	bIsMyTurn = true;
 	
 	// timer
 	FTimerHandle timerHandle;
-	FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &UEnemyFSMComponent::ChangeState, ECharacterState::Plan);
+	FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &USimpleEnemyFSMComponent::ChangeState, ECharacterState::Plan);
 	GetWorld()->GetTimerManager().SetTimer(timerHandle, timerDelegate, 0.7f, false);
 }
 
-void UEnemyFSMComponent::EndMyTurn()
+void USimpleEnemyFSMComponent::EndMyTurn()
 {
 	bIsMyTurn = false;
 	ChangeState(ECharacterState::Idle);
 	GetWorld()->GetSubsystem<UBG3GameManageSubsystem>()->BeginNextTurn();
 }
 
-void UEnemyFSMComponent::IdleState()
+void USimpleEnemyFSMComponent::IdleState()
 {
 	PRINTSTATELOG(TEXT("Idle Idle Idle"));
 }
 
-void UEnemyFSMComponent::PlanState()
+void USimpleEnemyFSMComponent::PlanState()
 {
 	PRINTSTATELOG(TEXT("Plan Plan Plan"));
 	
@@ -150,15 +155,15 @@ void UEnemyFSMComponent::PlanState()
 	
 }
 
-void UEnemyFSMComponent::ExecuteState()
+void USimpleEnemyFSMComponent::ExecuteState()
 {
 	PRINTSTATELOG(TEXT("Execute Execute Execute"));
 }
 
-void UEnemyFSMComponent::BindingMontageTask(USkillTaskPlayMontage* InTask)
+void USimpleEnemyFSMComponent::BindingMontageTask(USkillTaskPlayMontage* InTask)
 {
 	if (!InTask) return;
 	MontageTask = InTask;
 
-	MontageTask->OnAnimEnded.AddUObject(this, &UEnemyFSMComponent::EndMyTurn);
+	MontageTask->OnAnimEnded.AddUObject(this, &USimpleEnemyFSMComponent::EndMyTurn);
 }

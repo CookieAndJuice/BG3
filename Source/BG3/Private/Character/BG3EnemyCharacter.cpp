@@ -4,7 +4,7 @@
 #include "Character/BG3EnemyCharacter.h"
 
 #include "Components/CapsuleComponent.h"
-#include "FSM/EnemyFSMComponent.h"
+#include "Component/SimpleEnemyFSMComponent.h"
 
 
 // Sets default values
@@ -13,7 +13,7 @@ ABG3EnemyCharacter::ABG3EnemyCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	FSMComp = CreateDefaultSubobject<UEnemyFSMComponent>(TEXT("FSMComp"));
+	EnemyFSMComp = CreateDefaultSubobject<USimpleEnemyFSMComponent>(TEXT("EnemyFSMComp"));
 
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> TempMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Assets/Character/Enemy/Zombie/Mesh/SKM_Zombie.SKM_Zombie'"));
 
@@ -44,7 +44,7 @@ void ABG3EnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	FSMComp->UpdateBehavior();	
+	EnemyFSMComp->UpdateBehavior();	
 }
 
 // Called to bind functionality to input
@@ -55,5 +55,5 @@ void ABG3EnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 void ABG3EnemyCharacter::SetMyTurn()
 {
-	FSMComp->StartMyTurn();
+	EnemyFSMComp->StartMyTurn();
 }

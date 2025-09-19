@@ -2,7 +2,7 @@
 #include "BG3/BG3.h"
 #include "Character/BaseCharacter.h"
 #include "Character/BG3EnemyCharacter.h"
-#include "FSM/EnemyFSMComponent.h"
+#include "Component/SimpleEnemyFSMComponent.h"
 #include "Game/BG3GameManageSubsystem.h"
 #include "Game/BG3GameMode.h"
 #include "GameFramework/Actor.h"

@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EnemyFSMComponent.generated.h"
+#include "Components/ActorComponent.h"
+#include "SimpleEnemyFSMComponent.generated.h"
 
 class USkillTaskPlayMontage;
 
@@ -14,25 +15,23 @@ enum class ECharacterState : uint8
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class BG3_API UEnemyFSMComponent : public UActorComponent
+class BG3_API USimpleEnemyFSMComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
-	UEnemyFSMComponent();
+	USimpleEnemyFSMComponent();
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-	
+
 public:
 	// Current Enum State
 	UPROPERTY(VisibleInstanceOnly, Category = "FSM")
 	ECharacterState CurrentState = ECharacterState::Idle;
 
-	
-	
 public: // Change State & Update Behavior
 	UFUNCTION()
 	virtual void ChangeState(ECharacterState state);
@@ -42,7 +41,7 @@ public: // Change State & Update Behavior
 	void StartMyTurn();
 
 	void EndMyTurn();
-
+	
 public:	// FSM
 	void IdleState();
 	void PlanState();

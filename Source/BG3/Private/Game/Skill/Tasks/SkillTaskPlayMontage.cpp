@@ -7,7 +7,7 @@
 #include "Character/BG3EnemyCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Data/SkillDefinition.h"
-#include "FSM/EnemyFSMComponent.h"
+#include "Component/SimpleEnemyFSMComponent.h"
 #include "Game/SkillExecutionSubsystem.h"
 
 void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, const USkillDefinition* Skill, const TArray<AActor*>& Targets)
@@ -73,7 +73,7 @@ void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, con
     //
     if (ABG3EnemyCharacter* Enemy = Cast<ABG3EnemyCharacter>(Caster))
     {
-        Enemy->FSMComp->BindingMontageTask(this);
+        Enemy->EnemyFSMComp->BindingMontageTask(this);
     }
 
     AnimInstance->OnMontageEnded.AddDynamic(this, &USkillTaskPlayMontage::OnMontageEnded);
