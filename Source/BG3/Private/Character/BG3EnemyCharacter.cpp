@@ -28,7 +28,9 @@ ABG3EnemyCharacter::ABG3EnemyCharacter()
 	// Resize Capsule Component
 	GetCapsuleComponent()->SetCapsuleHalfHeight(42.f);
 	GetCapsuleComponent()->SetCapsuleRadius(34.0);
-    
+
+	// Auto AI Possess
+	AutoPossessAI(EAutoPossessAI::PlacedInWorldOrSpawned);
 }
 
 // Called when the game starts or when spawned
