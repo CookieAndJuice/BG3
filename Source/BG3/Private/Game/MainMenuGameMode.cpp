@@ -3,22 +3,13 @@
 
 #include "Game/MainMenuGameMode.h"
 
-#include "Blueprint/UserWidget.h"
-#include "UI/Widget/MainMenuWidget.h"
+#include "UI/WidgetController/MainMenuWidgetController.h"
 
 AMainMenuGameMode::AMainMenuGameMode()
 {
-	ConstructorHelpers::FClassFinder<UMainMenuWidget> mainMenuRef(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprints/UI/WBP_MainMenu.WBP_MainMenu_C'"));
-	if (mainMenuRef.Succeeded())
+	ConstructorHelpers::FClassFinder<AMainMenuWidgetController> mainMenuController(TEXT("/Script/CoreUObject.Class'/Script/BG3.MainMenuWidgetController'"));
+	if (mainMenuController.Succeeded())
 	{
-		MainMenuWidgetClass = mainMenuRef.Class;
+		PlayerControllerClass = mainMenuController.Class;
 	}
-}
-
-void AMainMenuGameMode::BeginPlay()
-{
-	Super::BeginPlay();
-
-	MainMenuWidget = CreateWidget<UMainMenuWidget>(GetWorld(), MainMenuWidgetClass);
-	MainMenuWidget->AddToViewport();
 }

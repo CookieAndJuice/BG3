@@ -30,7 +30,7 @@ ABG3EnemyCharacter::ABG3EnemyCharacter()
 	GetCapsuleComponent()->SetCapsuleRadius(34.0);
 
 	// Auto AI Possess
-	AutoPossessAI(EAutoPossessAI::PlacedInWorldOrSpawned);
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 // Called when the game starts or when spawned

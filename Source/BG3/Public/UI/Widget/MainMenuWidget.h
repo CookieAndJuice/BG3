@@ -13,4 +13,20 @@ UCLASS()
 class BG3_API UMainMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	virtual void NativeConstruct() override;
+
+	UFUNCTION()
+	void StartGame();
+
+	UFUNCTION()
+	void QuitGame();
+
+private:
+	UPROPERTY(meta=(BindWidget))
+	class UButton* NewGameBtn;
+	
+	UPROPERTY(meta=(BindWidget))
+	class UButton* QuitGameBtn;
 };
