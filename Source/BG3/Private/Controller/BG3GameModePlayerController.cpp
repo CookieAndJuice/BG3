@@ -81,7 +81,7 @@ void ABG3GameModePlayerController::BeginPlay()
 	Possess(BG3Camera);
 	BG3Camera->EnableInput(this);
 	
-	// Create Combat Action Panel
+	// Create Overlay Widget
 	OverlayWidget = CreateWidget<UOverlayWidget>(this, OverlayWidgetClass);
 	OverlayWidget->AddToViewport();
 	UOverlayWidgetController* WC = NewObject<UOverlayWidgetController>(GetWorld());

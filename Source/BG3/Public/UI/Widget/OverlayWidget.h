@@ -8,6 +8,7 @@
 class UCombatActionPanel;
 class UOverlayWidgetController;
 class UTurnEndWidget;
+class UPlayerHPWidget;
 class UTextBlock;
 
 UCLASS()
@@ -44,6 +45,9 @@ protected:
 
     UPROPERTY(meta=(BindWidgetOptional), BlueprintReadOnly)
     UTurnEndWidget* TurnEndWidget = nullptr;
+
+    UPROPERTY(meta=(BindWidgetOptional), BlueprintReadOnly)
+    UPlayerHPWidget* PlayerHP = nullptr;
 
     UPROPERTY(meta=(BindWidgetOptional), BlueprintReadOnly)
     UTextBlock* Text_Win;
