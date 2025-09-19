@@ -28,6 +28,15 @@ UBG3GameManageSubsystem::UBG3GameManageSubsystem()
 	}
 }
 
+bool UBG3GameManageSubsystem::ShouldCreateSubsystem(UObject* Outer) const
+{
+	const UWorld* World = Cast<UWorld>(Outer);
+	if (!World) return false;
+
+	// 월드 이름으로 필터링
+	return Super::ShouldCreateSubsystem(Outer) && (World->GetFName() == FName(TEXT("Dream_Island")));
+}
+
 void UBG3GameManageSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);

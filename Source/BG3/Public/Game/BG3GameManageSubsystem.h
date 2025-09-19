@@ -24,6 +24,8 @@ class BG3_API UBG3GameManageSubsystem : public UWorldSubsystem
 
 public:
 	UBG3GameManageSubsystem();
+
+	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 	
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	
