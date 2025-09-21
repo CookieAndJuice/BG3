@@ -1,5 +1,5 @@
-#include "Component/MouseInputComponent.h"
-
+﻿#include "Component/MouseInputComponent.h"
+#include "BG3/BG3.h"
 #include "AIController.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
@@ -61,7 +61,7 @@ void UMouseInputComponent::BindInput(UEnhancedInputComponent* EIC)
         return;
     }
 
-    // 액션 에셋이 설정된 경우에만 바인딩
+    // ?≪뀡 ?먯뀑???ㅼ젙??寃쎌슦?먮쭔 諛붿씤??
     if (ConfirmAction)
     {
         EIC->BindAction(ConfirmAction, ETriggerEvent::Triggered, this, &UMouseInputComponent::OnConfirm);
@@ -83,7 +83,7 @@ void UMouseInputComponent::OnClick(const FInputActionValue& /*Value*/)
     FHitResult Hit;
     const bool bHit = PC->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
 
-    // 타겟팅 중일 때
+    // ?寃잜똿 以묒씪 ??
     if (!IsIdle())
     {
         if (USkillExecutionSubsystem* SES = GetWorld()->GetSubsystem<USkillExecutionSubsystem>())
@@ -113,6 +113,7 @@ void UMouseInputComponent::OnClick(const FInputActionValue& /*Value*/)
 
             ActiveMoveIndicator = GetWorld()->SpawnActor<AActor>(MoveIndicatorClass, IndicatorTransform, Params);
 
+            PRINTLOG(TEXT("RemainingMoveDistance : %.1f"), Character->Stats->RemainingMoveDistance);
             IssueTurnMove(Hit.Location);
         }
     }
@@ -151,45 +152,17 @@ void UMouseInputComponent::OnCancel(const FInputActionValue& /*Value*/)
 void UMouseInputComponent::IssueTurnMove(const FVector& DesiredLocation)
 {
     ABG3GameModePlayerController* PC = Cast<ABG3GameModePlayerController>(GetOwner());
-    if (!PC)
-    {
-        return;
-    }
+    if (!PC) return;
 
     ABaseCharacter* Character = PC->PossessedCharacter;
-    if (!Character || !Character->Stats)
-    {
-        return;
-    }
+    if (!Character || !Character->Stats) return;
 
-    if (PendingTurnMove.bActive)
-    {
-        ApplyTravelledDistance(*Character);
-    }
+    ApplyTravelledDistance(*Character);
 
     const float RemainingDistance = Character->Stats->RemainingMoveDistance;
     const FTurnMoveResult MoveResult = GetClampedTurnDistance(GetWorld(), Character->GetActorLocation(), DesiredLocation, RemainingDistance);
-    if (MoveResult.ConsumedDistance <= KINDA_SMALL_NUMBER)
-    {
-        return;
-    }
-
+    if (MoveResult.ConsumedDistance <= 0) return;
     FVector Goal = MoveResult.TargetLocation;
-    if (UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld()))
-    {
-        FNavLocation Projected;
-        const FVector Extent(50.f, 50.f, 200.f);
-        if (NavSys->ProjectPointToNavigation(Goal, Projected, Extent))
-        {
-            Goal = Projected.Location;
-        }
-        else
-        {
-            PendingTurnMove.Reset();
-            SetComponentTickEnabled(false);
-            return;
-        }
-    }
 
     if (AAIController* AIController = Cast<AAIController>(Character->GetController()))
     {
@@ -210,37 +183,12 @@ void UMouseInputComponent::IssueTurnMove(const FVector& DesiredLocation)
             if (RequestResult.Code == EPathFollowingRequestResult::AlreadyAtGoal)
             {
                 Character->Stats->BroadcastMoveDistance();
+                Character->Stats->ConsumeMoveDistance(RemainingDistance);
             }
             return;
         }
 
-        const auto CalcHorizontalLength = [](const FNavPathSharedPtr& Path)
-        {
-            if (!Path.IsValid())
-            {
-                return 0.f;
-            }
-
-            float Length = 0.f;
-            const TArray<FNavPathPoint>& Points = Path->GetPathPoints();
-            for (int32 Index = 0; Index + 1 < Points.Num(); ++Index)
-            {
-                Length += FVector::Dist2D(Points[Index].Location, Points[Index + 1].Location);
-            }
-            return Length;
-        };
-
-        const float PathDistance = CalcHorizontalLength(OutPath);
-        const float TravelBudget = PathDistance > 0.f ? FMath::Min(MoveResult.ConsumedDistance, PathDistance) : MoveResult.ConsumedDistance;
-        if (TravelBudget <= KINDA_SMALL_NUMBER)
-        {
-            PendingTurnMove.Reset();
-            SetComponentTickEnabled(false);
-            Character->Stats->BroadcastMoveDistance();
-            return;
-        }
-
-        PendingTurnMove.Begin(Character->GetActorLocation(), MoveRequest.GetGoalLocation(), TravelBudget);
+        PendingTurnMove.Begin(Character->GetActorLocation(), MoveRequest.GetGoalLocation(), MoveResult.ConsumedDistance);
         SetComponentTickEnabled(true);
 
         if (UPathFollowingComponent* PathComp = AIController->GetPathFollowingComponent())
@@ -271,10 +219,20 @@ void UMouseInputComponent::ApplyTravelledDistance(ABaseCharacter& Character)
         return;
     }
 
+    const float PlannedDistance = PendingTurnMove.PlannedDistance;
     const float FinalDelta = PendingTurnMove.Flush(Character.GetActorLocation());
-    if (FinalDelta > KINDA_SMALL_NUMBER)
+    if (FinalDelta >= 0)
     {
         Character.Stats->ConsumeMoveDistance(FinalDelta);
+    }
+
+    const float ConsumedDistance = PlannedDistance - PendingTurnMove.RemainingBudget;
+    if (ConsumedDistance > 0)
+    {
+        const float RemainingMove = Character.Stats->GetRemainingMoveDistance();
+        const float MaxMove = Character.Stats->GetMaxMoveDistanceValue();
+        PRINTLOG(TEXT("[Move] %s travelled %.1f (planned %.1f). Remaining %.1f / %.1f"),
+            *Character.GetName(), ConsumedDistance, PlannedDistance, RemainingMove, MaxMove);
     }
 
     PendingTurnMove.Reset();

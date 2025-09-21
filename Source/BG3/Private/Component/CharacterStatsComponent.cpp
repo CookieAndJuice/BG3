@@ -20,7 +20,7 @@ void UCharacterStatsComponent::ResetRemainingMoveDistance()
 
 void UCharacterStatsComponent::ConsumeMoveDistance(float Distance)
 {
-    RemainingMoveDistance = FMath::Clamp(RemainingMoveDistance - Distance, 0.f, MaxMoveDistance);
+    RemainingMoveDistance = RemainingMoveDistance - Distance;
     BroadcastMoveDistance();
 }
 
