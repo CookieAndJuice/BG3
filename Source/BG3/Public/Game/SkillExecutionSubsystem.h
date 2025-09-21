@@ -41,10 +41,10 @@ struct FSkillResult
 };
 
 // 이벤트 델리게이트(선택적으로 바인딩)
-DECLARE_DELEGATE_TwoParams(FOnCastingStarted, ABaseCharacter* /*Caster*/, const USkillDefinition* /*Skill*/);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnCastingStarted, ABaseCharacter* /*Caster*/, const USkillDefinition* /*Skill*/);
 DECLARE_DELEGATE_OneParam(FOnTargetsUpdated, const TArray<AActor*>& /*Targets*/);
-DECLARE_DELEGATE_OneParam(FOnSkillResolved, const FSkillResult& /*Result*/);
-DECLARE_DELEGATE(FOnCastingCanceled);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSkillResolved, const FSkillResult& /*Result*/);
+DECLARE_MULTICAST_DELEGATE(FOnCastingCanceled);
 // Fired right before executing (after targets are set, at Confirm step)
 DECLARE_DELEGATE_FourParams(FOnCastConfirmed, ABaseCharacter* /*Caster*/, const USkillDefinition* /*Skill*/, const TArray<AActor*>& /*Targets*/, int32 /*CurrentRound*/);
 DECLARE_MULTICAST_DELEGATE(FOnTurnEnd)

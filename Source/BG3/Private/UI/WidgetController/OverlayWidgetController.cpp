@@ -21,6 +21,12 @@ void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter, ABG3GameM
         SkillBook->OnUsabilityChanged.RemoveDynamic(this, &UOverlayWidgetController::HandleUsabilityChanged);
     }
 
+    if (Stats)
+    {
+        Stats->OnMoveDistanceChanged.RemoveDynamic(this, &UOverlayWidgetController::HandleMoveDistanceChanged);
+        Stats->OnFadeOut.RemoveAll(this);
+    }
+
     OwningCharacter = InCharacter;
     SkillBook = InCharacter ? InCharacter->SkillBook : nullptr;
     Stats = InCharacter ? InCharacter->FindComponentByClass<UCharacterStatsComponent>() : nullptr;
@@ -34,14 +40,14 @@ void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter, ABG3GameM
 
     if (Stats)
     {
-        // Stats->OnHealthChanged.AddDynamic(this, &UOverlayWidgetController::HandleHealthChanged);
-        // Stats->OnManaChanged.AddDynamic(this, &UOverlayWidgetController::HandleManaChanged);
+        Stats->OnMoveDistanceChanged.AddDynamic(this, &UOverlayWidgetController::HandleMoveDistanceChanged);
+        Stats->OnFadeOut.AddUObject(this, &UOverlayWidgetController::HandleFadeOut);
 
-        // Initial push for UI
         HandleHealthChanged(Stats->GetHealth(), Stats->GetMaxHealth());
         HandleManaChanged(Stats->GetMana(), Stats->GetMaxMana());
+        HandleMoveDistanceChanged(Stats->GetRemainingMoveDistance(), Stats->GetMaxMoveDistanceValue());
+
         OnStatsInitialized.Broadcast();
-        Stats->OnFadeOut.AddUObject(this, &UOverlayWidgetController::HandleFadeOut);
     }
 
     if (PC && !PC->CurrentCharacterChanged.IsBound())
@@ -50,6 +56,12 @@ void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter, ABG3GameM
         PRINTLOG(TEXT("[UI] Bound PC CurrentCharacterChanged"));
     }
 
+    if (auto* SES = GetWorld()->GetSubsystem<USkillExecutionSubsystem>())
+    {
+        SES->CastingStarted.AddUObject(this, &UOverlayWidgetController::HandleCastStarted);
+        SES->CastingCanceled.AddUObject(this, &UOverlayWidgetController::HandleCastCanceled);
+        SES->SkillResolved.AddUObject(this, &UOverlayWidgetController::HandleCastResolved);
+    }
     
     RefreshSlots();
 }
@@ -99,12 +111,31 @@ void UOverlayWidgetController::HandleUsabilityChanged(const USkillDefinition* /*
 
 void UOverlayWidgetController::HandleFadeOut(EResultState result)
 {
-    // 오버레이의 모든 위젯들 Fade Out
     OnFadeOutAnimationStart.Broadcast(result);
+}
 
-    PRINTDELEGATELOG(TEXT("FadeOut 2"));
-    // 승리 or 패배 위젯 띄우기
-    
+void UOverlayWidgetController::HandleCastStarted(ABaseCharacter* Character, const USkillDefinition* Skill)
+{
+    USkillDefinition* InSkill = const_cast<USkillDefinition*>(Skill);
+    TargetingSkill = InSkill;
+    BuildAndBroadcast();
+}
+
+void UOverlayWidgetController::HandleCastCanceled()
+{
+    TargetingSkill = nullptr;
+    BuildAndBroadcast();
+}
+
+void UOverlayWidgetController::HandleCastResolved(const FSkillResult& SkillResult)
+{
+    TargetingSkill = nullptr;
+    BuildAndBroadcast();
+}
+
+void UOverlayWidgetController::HandleMoveDistanceChanged(float Remaining, float Max)
+{
+    OnMoveDistanceChanged.Broadcast(Remaining, Max);
 }
 
 void UOverlayWidgetController::HandleHealthChanged(float NewHealth, float MaxHealth)
@@ -144,6 +175,15 @@ void UOverlayWidgetController::BuildAndBroadcast()
 
         V.CooldownRemain = SkillBook->GetCooldownRemaining(Def);
 
+        if (const auto* SES = GetWorld()->GetSubsystem<USkillExecutionSubsystem>())
+        {
+            if (TargetingSkill && TargetingSkill->Meta.ID == Def->Meta.ID)
+            {
+                V.bIsTargeting = SES->GetCastState() == ECastState::Targeting;
+                V.bUsable = true;
+            }
+        }
+
         PRINTLOG(TEXT("[UI] Slot %s usable=%d cd=%d"), *Def->Meta.DisplayName.ToString(), (int32)bUsable, V.CooldownRemain);
 
         Views.Add(V);
@@ -151,3 +191,6 @@ void UOverlayWidgetController::BuildAndBroadcast()
 
     OnActionSlotsUpdated.Broadcast(Views);
 }
+
+
+

@@ -9,6 +9,7 @@ class ABaseCharacter;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSig, float, NewHealth, float, MaxHealth);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnManaChangedSig, float, NewMana, float, MaxMana);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMoveDistanceChangedSig, float, RemainingDistance, float, MaxDistance);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnFadeOutDelegate, EResultState);
 
 
@@ -36,10 +37,10 @@ public:
 
     // Move
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Stats|Mana")
-    float MoveAllowanceCm = 750.f;
+    float MaxMoveDistance = 750.f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Stats|Mana")
-    float RemainingMoveCm = 750.f;
+    float RemainingMoveDistance = 750.f;
     
 
     // UI delegates
@@ -49,8 +50,15 @@ public:
     UPROPERTY(BlueprintAssignable, Category="Stats|Events")
     FOnManaChangedSig OnManaChanged;
 
+    UPROPERTY(BlueprintAssignable, Category="Stats|Events")
+    FOnMoveDistanceChangedSig OnMoveDistanceChanged;
+
     FOnFadeOutDelegate OnFadeOut;
-    
+
+public:
+    void ResetRemainingMoveDistance();
+    void ConsumeMoveDistance(float Distance);
+    void BroadcastMoveDistance() const;
 
 public:
     UFUNCTION(BlueprintCallable, Category="Stats|Health")
@@ -65,6 +73,12 @@ public:
     UFUNCTION(BlueprintCallable, Category="Stats|Mana")
     FORCEINLINE float GetMaxMana() const { return MaxMana; }
 
+    UFUNCTION(BlueprintCallable, Category="Stats|Move")
+    FORCEINLINE float GetRemainingMoveDistance() const { return RemainingMoveDistance; }
+
+    UFUNCTION(BlueprintCallable, Category="Stats|Move")
+    FORCEINLINE float GetMaxMoveDistanceValue() const { return MaxMoveDistance; }
+
 protected:
     virtual void BeginPlay() override;
 
@@ -75,3 +89,8 @@ private:
     UPROPERTY()
     ABaseCharacter* Character;
 };
+
+
+
+
+

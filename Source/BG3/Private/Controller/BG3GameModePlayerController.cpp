@@ -1,4 +1,4 @@
-ï»¿
+
 #include "Controller/BG3GameModePlayerController.h"
 
 #include "BG3/BG3.h"
@@ -15,6 +15,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "BG3/BG3.h"
 #include "Character/BG3EnemyCharacter.h"
+#include "Component/CharacterStatsComponent.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
 #include "EnhancedInput/Public/InputMappingContext.h"
 #include "Game/BG3GameMode.h"
@@ -59,7 +60,7 @@ ABG3GameModePlayerController::ABG3GameModePlayerController()
 		BG3CameraClass = CameraClassRef.Class;
 	}
 
-    // ë§ˆìš°ìŠ¤ ì…ë ¥ ì»´í¬ë„ŒíŠ¸ ìƒì„±(ì…ë ¥ ë°”ì¸ë”©ì€ SetupInputComponentì—ì„œ ìˆ˜í–‰)
+    // ¸¶¿ì½º ÀÔ·Â ÄÄÆ÷³ÍÆ® »ı¼º(ÀÔ·Â ¹ÙÀÎµùÀº SetupInputComponent¿¡¼­ ¼öÇà)
     MouseInput = CreateDefaultSubobject<UMouseInputComponent>(TEXT("MouseInputComponent"));
 }
 
@@ -151,7 +152,7 @@ void ABG3GameModePlayerController::SetupInputComponent()
 		EIC->BindAction(LMBClickAction, ETriggerEvent::Started, this, &ABG3GameModePlayerController::OnLMBClick);
 		EIC->BindAction(LMBClickAction, ETriggerEvent::Completed, this, &ABG3GameModePlayerController::OnLMBClick);
 
-        // ë§ˆìš°ìŠ¤ ì…ë ¥(íƒ€ê²Ÿ ì„ íƒ/í™•ì •/ì·¨ì†Œ) ë°”ì¸ë”© ì—°ê²°
+        // ¸¶¿ì½º ÀÔ·Â(Å¸°Ù ¼±ÅÃ/È®Á¤/Ãë¼Ò) ¹ÙÀÎµù ¿¬°á
         if (MouseInput)
         {
             MouseInput->BindInput(EIC);
@@ -178,7 +179,7 @@ void ABG3GameModePlayerController::OnLMBClick(const FInputActionValue& value)
 		}
 	}
 
-	// SkillExecutionSubsystemì˜ CastStateê°€ ECastState::Targeting ì¼ ë•Œë§Œ ë™ì‘ (ìŠ¤í‚¬ íƒ€ê²ŸíŒ… ì¤‘ì¼ ë•Œë§Œ)
+	// SkillExecutionSubsystemÀÇ CastState°¡ ECastState::Targeting ÀÏ ¶§¸¸ µ¿ÀÛ (½ºÅ³ Å¸°ÙÆÃ ÁßÀÏ ¶§¸¸)
 }
 
 void ABG3GameModePlayerController::OnMoveCamera(const FInputActionValue& value)
@@ -227,12 +228,12 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
     // Reset Actions Budget 
     if (NewCharacter->GetClass()->ImplementsInterface(UActionBudgetProvider::StaticClass()))
     {
-        PRINTLOG(TEXT("[SwitchToPawn] BeginTurnReset for %s"), *NewCharacter->GetName());
-        IActionBudgetProvider::Execute_BeginTurnReset(NewCharacter);
-        bool bA = IActionBudgetProvider::Execute_CanSpendActionSlot(NewCharacter, EActionCost::Action);
-        bool bB = IActionBudgetProvider::Execute_CanSpendActionSlot(NewCharacter, EActionCost::Bonus);
-        PRINTLOG(TEXT("[SwitchToPawn] After Reset CanSpend: Action=%d Bonus=%d"), bA, bB);
-    }	
+	    PRINTLOG(TEXT("[SwitchToPawn] BeginTurnReset for %s"), *NewCharacter->GetName());
+    	IActionBudgetProvider::Execute_BeginTurnReset(NewCharacter);
+    	bool bA = IActionBudgetProvider::Execute_CanSpendActionSlot(NewCharacter, EActionCost::Action);
+    	bool bB = IActionBudgetProvider::Execute_CanSpendActionSlot(NewCharacter, EActionCost::Bonus);
+    	PRINTLOG(TEXT("[SwitchToPawn] After Reset CanSpend: Action=%d Bonus=%d"), bA, bB);
+    }
 
     // Reset Turn Variables
     PRINTLOG(TEXT("[SwitchToPawn] Call OnOwnerTurnStart"));
@@ -244,8 +245,18 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
 		if (GM->IsEnemyWin()) return;
 		enemy->SetMyTurn();
 	}
+
+    // Reset RemainingMoveDistance
+    if (MouseInput)
+    {
+        MouseInput->SetComponentTickEnabled(false);
+        MouseInput->PendingTurnMove.Reset();
+    }
+    NewCharacter->Stats->ResetRemainingMoveDistance();
 	
 	CurrentCharacterChanged.ExecuteIfBound(NewCharacter);
 }
+
+
 
 

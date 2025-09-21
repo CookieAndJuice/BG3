@@ -6,12 +6,86 @@
 #include "MouseInputComponent.generated.h"
 
 class UInputAction;
+class UEnhancedInputComponent;
+class AActor;
+class ABaseCharacter;
+struct FAIRequestID;
+struct FPathFollowingResult;
 
-/**
- * 마우스 입력을 통해 타겟 선택/확정/취소를 담당하는 간단 컴포넌트.
- * - PlayerController에 부착하여 사용(Enhanced Input 바인딩은 PC의 SetupInputComponent에서 넘겨받음)
- * - 스킬 캐스팅이 Targeting 상태일 때만 동작
- */
+struct FTurnMoveResult
+{
+    FVector TargetLocation;
+    float ConsumedDistance = 0.f;
+    bool bWithinAllowance = false;
+};
+
+USTRUCT()
+struct FPendingTurnMove
+{
+    GENERATED_BODY()
+
+    FVector StartLocation = FVector::ZeroVector;
+    FVector PlannedDestination = FVector::ZeroVector;
+    FVector LastLocation = FVector::ZeroVector;
+    float PlannedDistance = 0.f;
+    float RemainingBudget = 0.f;
+    bool bActive = false;
+
+    void Begin(const FVector& InStart, const FVector& InDestination, float InDistance)
+    {
+        StartLocation = InStart;
+        PlannedDestination = InDestination;
+        LastLocation = InStart;
+        PlannedDistance = InDistance;
+        RemainingBudget = InDistance;
+        bActive = RemainingBudget > KINDA_SMALL_NUMBER;
+    }
+
+    float ConsumeToLocation(const FVector& CurrentLocation)
+    {
+        if (!bActive)
+        {
+            return 0.f;
+        }
+
+        const FVector Delta = CurrentLocation - LastLocation;
+        const float Step = Delta.Size2D();
+        LastLocation = CurrentLocation;
+
+        if (Step <= KINDA_SMALL_NUMBER || RemainingBudget <= KINDA_SMALL_NUMBER)
+        {
+            RemainingBudget = FMath::Max(0.f, RemainingBudget);
+            return 0.f;
+        }
+
+        const float Allowed = FMath::Min(Step, RemainingBudget);
+        RemainingBudget = FMath::Max(0.f, RemainingBudget - Allowed);
+
+        if (RemainingBudget <= KINDA_SMALL_NUMBER)
+        {
+            RemainingBudget = 0.f;
+            bActive = false;
+        }
+
+        return Allowed;
+    }
+
+    float Flush(const FVector& CurrentLocation)
+    {
+        return ConsumeToLocation(CurrentLocation);
+    }
+
+    void Reset()
+    {
+        bActive = false;
+        PlannedDistance = 0.f;
+        RemainingBudget = 0.f;
+        StartLocation = FVector::ZeroVector;
+        PlannedDestination = FVector::ZeroVector;
+        LastLocation = FVector::ZeroVector;
+    }
+};
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class BG3_API UMouseInputComponent : public UActorComponent
 {
@@ -20,16 +94,9 @@ class BG3_API UMouseInputComponent : public UActorComponent
 public:
     UMouseInputComponent();
 
-    /** PlayerController의 EnhancedInputComponent로 입력 바인딩을 위임받아 연결 */
-    void BindInput(class UEnhancedInputComponent* EIC);
-
-    /** 좌클릭 등: 커서 아래 액터 1명을 타겟으로 지정(SetTargets) */
+    void BindInput(UEnhancedInputComponent* EIC);
     void OnClick(const FInputActionValue& Value);
-
-    /** 확정 키: ConfirmAndExecute 호출 */
     void OnConfirm(const FInputActionValue& Value);
-
-    /** 취소 키: CancelCast 호출 */
     void OnCancel(const FInputActionValue& Value);
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Move")
@@ -37,8 +104,16 @@ public:
 
     TWeakObjectPtr<AActor> ActiveMoveIndicator;
 
+    FPendingTurnMove PendingTurnMove;
+
+    void IssueTurnMove(const FVector& DesiredLocation);
+    void HandleMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result);
+    void ApplyTravelledDistance(ABaseCharacter& Character);
+
+protected:
+    virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 public:
-    // 입력 액션(에셋이 없으면 바인딩 생략)
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Input")
     TObjectPtr<UInputAction> ClickAction;
 
@@ -49,12 +124,9 @@ public:
     TObjectPtr<UInputAction> CancelAction;
 
 private:
-    /** 커서 아래 액터 1개를 트레이스로 구한다(없으면 nullptr) */
     AActor* GetActorUnderCursor() const;
-
-    /** 현재 Subsystem이 Targeting 상태인지 */
     bool IsTargeting() const;
-
     bool IsIdle() const;
-};
 
+    FTurnMoveResult GetClampedTurnDistance(UWorld* World, const FVector& Start, const FVector& DesiredEnd, float RemainingDistance);
+};

@@ -36,7 +36,9 @@ struct FActionSlotView
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 CooldownRemain = 0;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsTargeting = false;
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSlotClicked, int32, SkillID);
@@ -67,6 +69,8 @@ protected:
 	UPROPERTY(meta=(BindWidgetOptional))
 	class UBorder* Overlay_Disabled = nullptr;
 
+	UPROPERTY(meta=(BindWidgetOptional))
+	class UImage* Img_TargetingBorder = nullptr;
 	
 
 

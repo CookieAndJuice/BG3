@@ -46,6 +46,11 @@ void UActionSlotEntry::Setup(const FActionSlotView& InView)
     {
         Overlay_Disabled->SetVisibility(View.bUsable ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
     }
+
+    if (Img_TargetingBorder)
+    {
+        Img_TargetingBorder->SetVisibility(View.bIsTargeting ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+    }
 }
 
 void UActionSlotEntry::NativeOnInitialized()

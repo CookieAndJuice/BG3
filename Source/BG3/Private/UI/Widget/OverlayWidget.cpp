@@ -15,7 +15,10 @@ void UOverlayWidget::NativeConstruct()
 
     // Init Turn UI
     UBG3GameManageSubsystem* GMSubsys = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>();
-    TurnEndWidget->OnTurnEndDelegate.BindUFunction(GMSubsys, FName(TEXT("BeginNextTurn")));
+    if (TurnEndWidget)
+    {
+        TurnEndWidget->OnTurnEndDelegate.BindUFunction(GMSubsys, FName(TEXT("BeginNextTurn")));
+    }
     
     Text_Lose->SetVisibility(ESlateVisibility::Hidden);
     Text_Win->SetVisibility(ESlateVisibility::Hidden);
@@ -23,12 +26,32 @@ void UOverlayWidget::NativeConstruct()
 
 void UOverlayWidget::SetController(UOverlayWidgetController* InController)
 {
+    if (Controller)
+    {
+        Controller->OnFadeOutAnimationStart.RemoveDynamic(this, &UOverlayWidget::FadeOutAnimationStart);
+    }
+
     Controller = InController;
+
+    if (!Controller)
+    {
+        if (TurnEndWidget)
+        {
+            TurnEndWidget->BindController(nullptr);
+        }
+        return;
+    }
+
+    Controller->OnFadeOutAnimationStart.AddDynamic(this, &UOverlayWidget::FadeOutAnimationStart);
 
     if (ActionPanel)
     {
         ActionPanel->SetController(Controller);
-        Controller->OnFadeOutAnimationStart.AddDynamic(this, &UOverlayWidget::FadeOutAnimationStart);
+    }
+
+    if (TurnEndWidget)
+    {
+        TurnEndWidget->BindController(Controller);
     }
 }
 
@@ -42,12 +65,12 @@ void UOverlayWidget::FadeOutAnimationStart(EResultState result)
 
     if (result == EResultState::Enemy)
     {
-        // Lose 띄우기
+        // Lose ?�우�?
         Text_Lose->SetVisibility(ESlateVisibility::Visible);
     }
     else if (result == EResultState::Player)
     {
-        // Win 띄우기
+        // Win ?�우�?
         Text_Win->SetVisibility(ESlateVisibility::Visible);
     }
 }

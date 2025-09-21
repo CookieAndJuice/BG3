@@ -16,6 +16,7 @@ enum class EResultState : uint8;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActionSlotsUpdated, const TArray<FActionSlotView>&, Slots);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStatsInitialized);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStatChangedUI, float, Current, float, Max);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMoveDistanceChangedUI, float, Remaining, float, Max);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFadeOutAnimationStart, EResultState, result);
 
 
@@ -44,6 +45,9 @@ public:
     UPROPERTY(BlueprintAssignable, Category="Stats|UI")
     FOnStatChangedUI OnManaChanged;
 
+    UPROPERTY(BlueprintAssignable, Category="Stats|UI")
+    FOnMoveDistanceChangedUI OnMoveDistanceChanged;
+
 	FOnFadeOutAnimationStart OnFadeOutAnimationStart;
 
     UFUNCTION(Category="Combat|UI")
@@ -58,6 +62,9 @@ public:
     UPROPERTY()
     UCharacterStatsComponent* Stats = nullptr;
 
+	UPROPERTY()
+	USkillDefinition* TargetingSkill = nullptr;
+
     void BuildAndBroadcast();
 
 	UFUNCTION()
@@ -69,6 +76,15 @@ public:
 	UFUNCTION()
 	void HandleFadeOut(EResultState result);
 
+	UFUNCTION()
+	void HandleCastStarted(ABaseCharacter* Character, const USkillDefinition* Skill);
+
+	UFUNCTION()
+	void HandleCastCanceled();
+
+	UFUNCTION()
+	void HandleCastResolved(const FSkillResult& SkillResult);
+
     // Stats handlers
     UFUNCTION()
     void HandleHealthChanged(float NewHealth, float MaxHealth);
@@ -76,6 +92,14 @@ public:
     UFUNCTION()
     void HandleManaChanged(float NewMana, float MaxMana);
 
+    UFUNCTION()
+    void HandleMoveDistanceChanged(float Remaining, float Max);
+
 private:
     
 };
+
+
+
+
+
