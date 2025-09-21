@@ -56,3 +56,8 @@ void UBaseAnimInstance::AnimNotify_HitEnd()
     Character->SetIsHit(false);
     bIsHit = false;
 }
+
+void UBaseAnimInstance::AnimNotify_Fire()
+{
+    
+}

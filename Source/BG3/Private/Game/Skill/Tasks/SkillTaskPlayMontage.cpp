@@ -165,6 +165,8 @@ void USkillTaskPlayMontage::OnMontageEnded(UAnimMontage* InMontage, bool bInterr
 
     ClearActiveTaskBinding();
 
+    
+
     AnimInst->OnMontageEnded.RemoveAll(this);
     AnimInst->OnPlayMontageNotifyBegin.RemoveAll(this);
 
@@ -185,7 +187,7 @@ void USkillTaskPlayMontage::OnMontageEnded(UAnimMontage* InMontage, bool bInterr
     // 만약 Caster가 Enemy이면 애니메이션 몽타주 재생 끝나고 타겟에게 데미지 입히기
     if (Cast<ABG3EnemyCharacter>(CasterCharacter))
     {
-        FinalizeCast();
+        //FinalizeCast();
 
         FTimerHandle Timer;
         GetWorld()->GetTimerManager().SetTimer(Timer, [this]()
