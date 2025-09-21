@@ -6,6 +6,12 @@
 #include "GameFramework/Pawn.h"
 #include "BG3GameCamera.generated.h"
 
+UENUM()
+enum class EAttackMode : uint8
+{
+	Melee, Ranged
+};
+
 UCLASS()
 class BG3_API ABG3GameCamera : public APawn
 {
@@ -85,6 +91,9 @@ public:	// Camera Movement
 	float MinTargetArmLength = 400.f;
 
 	float MiddleTargetArmLength = 0.f;
+
+private:// Camera Movement for Record during Action
+	float preTargetArmLength = 0.f;
 	
 public:	// Camera Movement
 	void FocusCamera(class ABaseCharacter* focusCharacter);
@@ -96,4 +105,8 @@ public:	// Camera Movement
 	void RotateCamera(float input);
 
 	void CustomZoom(float input, float targetArmLength);
+	
+	void PlayAttackCamera(EAttackMode attackMode, class ABaseCharacter* target);
+
+	void StopAttackCamera();
 };

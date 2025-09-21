@@ -49,6 +49,10 @@ void ABG3GameCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 카메라는 항상 중심 바라보기
+	
+	// CameraComponent->SetRelativeRotation()
+	
 	if (bIsFreeCameraMode)
 	{
 		FVector desiredDir(GetActorForwardVector() * Dx + GetActorRightVector() * Dy);
@@ -76,7 +80,6 @@ void ABG3GameCamera::Tick(float DeltaTime)
 		
 		if (FMath::Abs(ZoomTarget - cur) < 0.05)
 		{
-			cur = ZoomTarget;
 			ZoomDirection = 0;
 		}
 	}
@@ -122,4 +125,50 @@ void ABG3GameCamera::CustomZoom(float input, float targetArmLength)
 {
 	ZoomDirection = -input;
 	ZoomTarget = FMath::Clamp(targetArmLength, MinTargetArmLength, MaxTargetArmLength);
+}
+
+// when Action is started
+void ABG3GameCamera::PlayAttackCamera(EAttackMode attackMode, ABaseCharacter* target)
+{
+	// 카메라로부터 플레이어와 거리가 특정 거리보다 멀면 카메라 이동
+	// if ()
+	{
+		if (attackMode == EAttackMode::Melee)
+		{
+			// 플레이어 중심으로
+
+		
+		}
+		else if (attackMode == EAttackMode::Ranged)
+		{
+			// 적과 플레이어 중간으로
+
+		}
+	}
+	
+	// 카메라가 특정 확대 정도보다 가까우면 축소
+	// 근거리 : 중간보다 가까우면 중간으로 축소
+	// 원거리 : 그냥 축소
+	
+	// if ()
+	{
+		preTargetArmLength = SpringArmComponent->TargetArmLength;
+		if (attackMode == EAttackMode::Melee)
+		{
+			// 플레이어 중심으로
+
+			CustomZoom(-1, MiddleTargetArmLength);
+		}
+		else if (attackMode == EAttackMode::Ranged)
+		{
+			// 적과 플레이어 중간으로
+			CustomZoom(1, MaxTargetArmLength);
+		}
+	}
+}
+
+// when Action is end
+void ABG3GameCamera::StopAttackCamera()
+{
+	
 }
