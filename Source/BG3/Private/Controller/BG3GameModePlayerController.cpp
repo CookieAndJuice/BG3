@@ -21,8 +21,11 @@
 #include "Game/BG3GameMode.h"
 #include "Component/MouseInputComponent.h"
 #include "Component/SkillBookComponent.h"
+#include "Component/TurnWidgetManagerComponent.h"
+#include "Dataflow/DataflowOverlay.h"
 #include "UI/Widget/TurnEndWidget.h"
 #include "Game/SkillExecutionSubsystem.h"
+#include "UI/Widget/TurnOrderFrameWidget.h"
 
 ABG3GameModePlayerController::ABG3GameModePlayerController()
 {
@@ -94,6 +97,15 @@ void ABG3GameModePlayerController::BeginPlay()
 		}
 		OverlayWidget->SetController(WC);
 	}
+
+	// Add CharacterWigets to TurnOrderFrame
+	for (auto pawnData : GMSubsystem->CombatPawns)
+	{
+		UTurnWidgetManagerComponent* turnWidgetManager = pawnData.TurnCharacter->TurnWidgetManager;
+		turnWidgetManager->AddWidgetToArray();
+	}
+	// Add to Turn Order Widgets to Overlay Widget
+	OverlayWidget->GetTurnOrderFrame()->CreateFrameWidget();
 	
 	SetShowMouseCursor(true);
 }
@@ -114,8 +126,7 @@ void ABG3GameModePlayerController::InitializeCamera()
 	SetViewTargetWithBlend(BG3Camera);
 
 	// Set Follow Mode
-	FVector location = PossessedCharacter->GetActorLocation();
-	BG3Camera->FocusCamera(location);
+	BG3Camera->FocusCamera(PossessedCharacter);
 }
 
 void ABG3GameModePlayerController::UseSkill(int32 SkillID)
@@ -211,8 +222,8 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
     PossessedCharacter = NewCharacter;
 
     // Switch Camera Target
-    FVector location = PossessedCharacter->GetActorLocation();
-    BG3Camera->FocusCamera(location);
+    BG3Camera->FocusCamera(PossessedCharacter);
+	BG3Camera->CustomZoom(1, BG3Camera->MaxTargetArmLength);
 
     // Reset Actions Budget 
     if (NewCharacter->GetClass()->ImplementsInterface(UActionBudgetProvider::StaticClass()))

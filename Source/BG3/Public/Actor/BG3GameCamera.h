@@ -50,6 +50,10 @@ private:// Camera State
 private:// Camera Movement
 	float Dx;
 	float Dy;
+
+	UPROPERTY()
+	TObjectPtr<class ABaseCharacter> FocusCharacter;
+	
 	FVector PreDirection;
 	float ZoomDirection;
 	float ZoomTarget;
@@ -75,17 +79,21 @@ public:	// Camera Movement
 	float ZoomSpeed = 20.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
-	float MaxTargetArmLength = 1000.f;
+	float MaxTargetArmLength = 1200.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
-	float MinTargetArmLength = 300.f;
+	float MinTargetArmLength = 400.f;
+
+	float MiddleTargetArmLength = 0.f;
 	
 public:	// Camera Movement
-	void FocusCamera(FVector location);
+	void FocusCamera(class ABaseCharacter* focusCharacter);
 	
 	void FreeCamera(FVector2D direction);
 	
 	void Zoom(float input);
 
 	void RotateCamera(float input);
+
+	void CustomZoom(float input, float targetArmLength);
 };

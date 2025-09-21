@@ -6,10 +6,12 @@
 #include "Interface/ActionBudgetProvider.h"
 #include "BaseCharacter.generated.h"
 
+enum class EActionCost : uint8;
 class UCharacterArchetype;
 class USkillSet;
 class USkillBookComponent;
 class UCharacterStatsComponent;
+class UTurnWidgetManagerComponent;
 
 UCLASS()
 class BG3_API ABaseCharacter : public ACharacter, public IActionBudgetProvider
@@ -22,7 +24,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skills|Defaults")
 	TObjectPtr<USkillSet> DefaultSkills;
 
@@ -34,6 +35,9 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     TObjectPtr<UCharacterStatsComponent> Stats;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UTurnWidgetManagerComponent> TurnWidgetManager;
 	
 	/* 행동력 */
 
@@ -66,12 +70,16 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void PlayAttackAnimation(UAnimMontage* MontageToPlay);
 
+	void SetID(int32 id);
+	int32 GetID();
+
+	void SetPortrait(UTexture2D* portrait);
+	UTexture2D* GetPortrait();
 
 	void SetIsHit(bool bInHit);
 	bool GetIsHit();
 	void SetIsDead(bool bInDead);
 	bool GetIsDead();
-
 	
 protected:
 	virtual void BeginPlay() override;
@@ -82,6 +90,11 @@ protected:
 	UStaticMeshComponent* Weapon;
 
 private:
+	int32 CharacterID = 0;
+	
+	// Character Portrait for UI
+	UPROPERTY(VisibleDefaultsOnly, Category = "UI")
+	UTexture2D* CharacterPortrait = nullptr;
 
 	/* 현재 행동력 */
 	int32 CurrentActions = 1;
@@ -92,5 +105,5 @@ private:
 	
 	bool bIsHit = false;
 	bool bIsDead = false;
-
+	
 };

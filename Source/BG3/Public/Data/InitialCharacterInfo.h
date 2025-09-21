@@ -15,6 +15,8 @@ struct FCharInfo
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere)
+	int32 CharacterID;
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<class ABaseCharacter> Character;
 	UPROPERTY(EditAnywhere)
 	FTransform SpawnTransform;

@@ -74,3 +74,13 @@ void UOverlayWidget::FadeOutAnimationStart(EResultState result)
         Text_Win->SetVisibility(ESlateVisibility::Visible);
     }
 }
+
+UPlayerHPWidget* UOverlayWidget::GetPlayerHPWidget()
+{
+    return PlayerHPWidget;
+}
+
+UTurnOrderFrameWidget* UOverlayWidget::GetTurnOrderFrame()
+{
+    return TurnOrderFrame;
+}

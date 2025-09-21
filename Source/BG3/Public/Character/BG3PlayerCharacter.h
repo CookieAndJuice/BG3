@@ -5,6 +5,8 @@
 #include "BaseCharacter.h"
 #include "BG3PlayerCharacter.generated.h"
 
+class UHpWidgetManageComponent;
+
 UCLASS()
 class BG3_API ABG3PlayerCharacter : public ABaseCharacter
 {
@@ -13,6 +15,9 @@ class BG3_API ABG3PlayerCharacter : public ABaseCharacter
 public:
 	// Sets default values for this character's properties
 	ABG3PlayerCharacter();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UHpWidgetManageComponent> HpWidgetManager;
 
 protected:
 	// Called when the game starts or when spawned
