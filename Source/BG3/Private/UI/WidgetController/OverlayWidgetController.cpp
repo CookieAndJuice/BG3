@@ -56,6 +56,12 @@ void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter, ABG3GameM
         PRINTLOG(TEXT("[UI] Bound PC CurrentCharacterChanged"));
     }
 
+    if (auto* SES = GetWorld()->GetSubsystem<USkillExecutionSubsystem>())
+    {
+        SES->CastingStarted.AddUObject(this, &UOverlayWidgetController::HandleCastStarted);
+        SES->CastingCanceled.AddUObject(this, &UOverlayWidgetController::HandleCastCanceled);
+        SES->SkillResolved.AddUObject(this, &UOverlayWidgetController::HandleCastResolved);
+    }
     
     RefreshSlots();
 }
@@ -105,12 +111,26 @@ void UOverlayWidgetController::HandleUsabilityChanged(const USkillDefinition* /*
 
 void UOverlayWidgetController::HandleFadeOut(EResultState result)
 {
-    // ?§Î≤Ñ?àÏù¥??Î™®Îì† ?ÑÏ†Ø??Fade Out
     OnFadeOutAnimationStart.Broadcast(result);
+}
 
-    PRINTDELEGATELOG(TEXT("FadeOut 2"));
-    // ?πÎ¶¨ or ?®Î∞∞ ?ÑÏ†Ø ?ÑÏö∞Í∏?
-    
+void UOverlayWidgetController::HandleCastStarted(ABaseCharacter* Character, const USkillDefinition* Skill)
+{
+    USkillDefinition* InSkill = const_cast<USkillDefinition*>(Skill);
+    TargetingSkill = InSkill;
+    BuildAndBroadcast();
+}
+
+void UOverlayWidgetController::HandleCastCanceled()
+{
+    TargetingSkill = nullptr;
+    BuildAndBroadcast();
+}
+
+void UOverlayWidgetController::HandleCastResolved(const FSkillResult& SkillResult)
+{
+    TargetingSkill = nullptr;
+    BuildAndBroadcast();
 }
 
 void UOverlayWidgetController::HandleMoveDistanceChanged(float Remaining, float Max)
@@ -154,6 +174,15 @@ void UOverlayWidgetController::BuildAndBroadcast()
         V.bUsable = bUsable;
 
         V.CooldownRemain = SkillBook->GetCooldownRemaining(Def);
+
+        if (const auto* SES = GetWorld()->GetSubsystem<USkillExecutionSubsystem>())
+        {
+            if (TargetingSkill && TargetingSkill->Meta.ID == Def->Meta.ID)
+            {
+                V.bIsTargeting = SES->GetCastState() == ECastState::Targeting;
+                V.bUsable = true;
+            }
+        }
 
         PRINTLOG(TEXT("[UI] Slot %s usable=%d cd=%d"), *Def->Meta.DisplayName.ToString(), (int32)bUsable, V.CooldownRemain);
 

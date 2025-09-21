@@ -62,6 +62,9 @@ public:
     UPROPERTY()
     UCharacterStatsComponent* Stats = nullptr;
 
+	UPROPERTY()
+	USkillDefinition* TargetingSkill = nullptr;
+
     void BuildAndBroadcast();
 
 	UFUNCTION()
@@ -72,6 +75,15 @@ public:
 
 	UFUNCTION()
 	void HandleFadeOut(EResultState result);
+
+	UFUNCTION()
+	void HandleCastStarted(ABaseCharacter* Character, const USkillDefinition* Skill);
+
+	UFUNCTION()
+	void HandleCastCanceled();
+
+	UFUNCTION()
+	void HandleCastResolved(const FSkillResult& SkillResult);
 
     // Stats handlers
     UFUNCTION()

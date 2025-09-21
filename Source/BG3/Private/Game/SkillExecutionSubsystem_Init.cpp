@@ -12,8 +12,8 @@ void USkillExecutionSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
     if (SkillExecutor)
     {
-        CastingStarted.Unbind();
-        CastingStarted.BindUObject(SkillExecutor, &USkillCastExecutor::OnCastingStarted);
+        CastingStarted.RemoveAll(this);
+        CastingStarted.AddUObject(SkillExecutor, &USkillCastExecutor::OnCastingStarted);
         CastConfirmed.Unbind();
         CastConfirmed.BindUObject(SkillExecutor, &USkillCastExecutor::OnCastConfirmed);
     }
@@ -21,7 +21,7 @@ void USkillExecutionSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void USkillExecutionSubsystem::Deinitialize()
 {
-    CastingStarted.Unbind();
+    CastingStarted.RemoveAll(this);
     SkillExecutor = nullptr;
     Super::Deinitialize();
 }

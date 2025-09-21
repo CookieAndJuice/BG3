@@ -54,7 +54,7 @@ bool USkillExecutionSubsystem::RequestCast(ABaseCharacter* Caster, USkillDefinit
         
         PRINTLOG(TEXT("Reserve Success"));
         // TODO: SkillExecutor 구현 후 콜백함수 바인딩하기
-        CastingStarted.ExecuteIfBound(Caster, Skill);
+        CastingStarted.Broadcast(Caster, Skill);
         return true;
     }
     else
@@ -85,7 +85,7 @@ void USkillExecutionSubsystem::CancelCast()
     // 상태 초기화 및 취소 알림
     ResetCast();
     CastState = ECastState::Canceled;
-    CastingCanceled.ExecuteIfBound();
+    CastingCanceled.Broadcast();
     CastState = ECastState::Idle;
 }
 
@@ -222,7 +222,7 @@ bool USkillExecutionSubsystem::ConfirmAndExecute(int32 CurrentRound)
 
     // 완료 알림 후 상태 초기화
     CastState = ECastState::Completed;
-    SkillResolved.ExecuteIfBound(CurrentSkillResult);
+    SkillResolved.Broadcast(CurrentSkillResult);
 
     ResetCast();
     CastState = ECastState::Idle;
@@ -330,7 +330,7 @@ void USkillExecutionSubsystem::FinalizeCastAfterExecutor(const TArray<AActor*>& 
     }
 
     CastState = ECastState::Completed;
-    SkillResolved.ExecuteIfBound(CurrentSkillResult);
+    SkillResolved.Broadcast(CurrentSkillResult);
 
     ResetCast();
     CastState = ECastState::Idle;
