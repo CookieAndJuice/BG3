@@ -57,7 +57,10 @@ void UBaseAnimInstance::AnimNotify_HitEnd()
     bIsHit = false;
 }
 
-void UBaseAnimInstance::AnimNotify_Fire()
+void UBaseAnimInstance::AnimNotify_Shoot()
 {
-    
+    if (ActiveMontageTask.IsValid())
+    {
+        ActiveMontageTask->HandleShootNotify(FName(TEXT("Shoot")));
+    }
 }

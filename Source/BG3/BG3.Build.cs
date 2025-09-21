@@ -8,7 +8,7 @@ public class BG3 : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayTags", "UMG", "Slate", "SlateCore", "AIModule", "NavigationSystem"  });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayTags", "UMG", "Slate", "SlateCore", "AIModule", "NavigationSystem", "Niagara"  });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "NavigationSystem"});
 

@@ -41,7 +41,7 @@ public:
     void AnimNotify_HitEnd();
 
     UFUNCTION()
-    void AnimNotify_Fire();
+    void AnimNotify_Shoot();
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     bool bIsHit = false;

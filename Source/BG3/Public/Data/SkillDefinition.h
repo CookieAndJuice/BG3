@@ -121,7 +121,7 @@ public:
 	UAnimMontage* DefaultMontage = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
-	FName HitNotifyName;
+	FName NotifyName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
 	TArray<TSubclassOf<USkillTaskBase>> Tasks;

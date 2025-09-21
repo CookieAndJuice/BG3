@@ -27,6 +27,7 @@ public:
     void SetRound(int32 InRound) { Round = InRound; }
 
     void HandleHitNotify(FName TriggeredNotify = NAME_None);
+    void HandleShootNotify(FName TriggeredNotify = NAME_None);
 
     virtual void Start(UObject* WorldContext, AActor* Caster, const USkillDefinition* Skill, const TArray<AActor*>& Targets) override;
     virtual void Cancel() override;
@@ -58,5 +59,6 @@ private:
     int32 Round = 0;
 
     bool bHitApplied = false;
+    bool bShootHandled = false;
 };
 

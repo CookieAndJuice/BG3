@@ -12,10 +12,16 @@ void USkillTaskSpawnProjectile::Start(UObject* WorldContext, AActor* Caster, con
     }
 
     PRINTLOG(TEXT("[Task] SpawnProjectile (skeleton) by %s"), *Caster->GetName());
-    // Skeleton only: do not actually spawn; finish immediately.
-    if (OnFinished.IsBound()) OnFinished.Execute();
+
+
+
+
+
+    
+    //if (OnFinished.IsBound()) OnFinished.Execute();
 }
 
 void USkillTaskSpawnProjectile::Cancel()
 {
+    
 }
