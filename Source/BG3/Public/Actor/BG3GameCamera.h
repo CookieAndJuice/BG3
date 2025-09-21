@@ -60,37 +60,55 @@ private:// Camera Movement
 	UPROPERTY()
 	TObjectPtr<class ABaseCharacter> FocusCharacter;
 	
-	FVector PreDirection;
-	float ZoomDirection;
-	float ZoomTarget;
+	FVector PreDirection = FVector::ZeroVector;
+	float ZoomDirection = 0;
+	float ZoomTarget = 0;
 	bool bDoesCameraMove = false;
 
+	float TargetPitch = 0;
+	float PitchDirection = 0;
+	float ZoomAlpha = 0;
+
 public:	// Camera Movement
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	// Camera Move
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraActorMove")
 	float FreeDirMoveSpeed = 10.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraActorMove")
 	float FreeLocMoveSpeed = 1000.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraActorMove")
 	float FocusMoveSpeed = 10.f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
-	float RotateSpeed = 75.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraActorMove")
+	float RotateSpeed = 90.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	// Camera Zoom
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraZoom")
 	float ZoomDistance = 100.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraZoom")
 	float ZoomSpeed = 20.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraZoom")
 	float MaxTargetArmLength = 1200.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
-	float MinTargetArmLength = 400.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraZoom")
+	float MinTargetArmLength = 600.f;
 
 	float MiddleTargetArmLength = 0.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraZoom")
+	float MaxPitch = -20.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraZoom")
+	float MinPitch = -60.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraZoom")
+	float PitchStep = 5.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraZoom")
+	float PitchInterpSpeed = 2.5f;
 
 private:// Camera Movement for Record during Action
 	float preTargetArmLength = 0.f;

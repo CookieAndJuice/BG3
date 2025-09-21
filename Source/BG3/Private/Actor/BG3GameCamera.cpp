@@ -42,16 +42,13 @@ void ABG3GameCamera::BeginPlay()
 
 	GMSubsystem = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>();
 	ZoomTarget = SpringArmComponent->TargetArmLength;
+	TargetPitch = SpringArmComponent->GetComponentRotation().Pitch;
 }
 
 // Called every frame
 void ABG3GameCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	// 카메라는 항상 중심 바라보기
-	
-	// CameraComponent->SetRelativeRotation()
 	
 	if (bIsFreeCameraMode)
 	{
@@ -73,14 +70,40 @@ void ABG3GameCamera::Tick(float DeltaTime)
 
 	if (ZoomDirection != 0)
 	{
-		float cur = SpringArmComponent->TargetArmLength;
+		// change interpto -> lerp
+		// change interpto -> lerp
+		// change interpto -> lerp
 		
-		float length = FMath::FInterpTo(cur, ZoomTarget, DeltaTime, ZoomSpeed);
+		// Scale TargetArmLength
+		float cur = SpringArmComponent->TargetArmLength;
+
+		float length = FMath::Lerp(cur, ZoomTarget, ZoomAlpha);
+		
+		// float length = FMath::FInterpTo(cur, ZoomTarget, DeltaTime, ZoomSpeed);
 		SpringArmComponent->TargetArmLength = length;
 		
 		if (FMath::Abs(ZoomTarget - cur) < 0.05)
 		{
 			ZoomDirection = 0;
+		}
+		
+		// Rotate SpringArm
+		FRotator curRot = SpringArmComponent->GetRelativeRotation();
+		// FRotator desiredRot = curRot;
+		// desiredRot.Pitch = TargetPitch;
+
+		float pitch = FMath::Lerp(curRot.Pitch, TargetPitch, ZoomAlpha);
+		
+		FRotator angle = curRot + FRotator(pitch, 0.f, 0.f);
+		// FRotator angle = FMath::RInterpTo(curRot, desiredRot, DeltaTime, PitchInterpSpeed);
+		SpringArmComponent->SetRelativeRotation(angle);
+
+		PRINTLOG(TEXT("%f"), angle.Pitch);
+		// if (FMath::Abs(desiredRot.Pitch - curRot.Pitch) < 0.05)
+		if (FMath::Abs(TargetPitch - curRot.Pitch) < 0.05)
+		{
+			PitchDirection = 0;
+			ZoomAlpha = 0;
 		}
 	}
 }
@@ -108,9 +131,15 @@ void ABG3GameCamera::FreeCamera(FVector2D direction)
 
 void ABG3GameCamera::Zoom(float input)
 {
+	// 확대면 거리가 줄도록
 	ZoomDirection = -input;
 	ZoomTarget += ZoomDirection * ZoomDistance;
 	ZoomTarget = FMath::Clamp(ZoomTarget, MinTargetArmLength, MaxTargetArmLength);
+
+	// 확대면 pitch가 커지게
+	PitchDirection = input;
+	TargetPitch += PitchStep * PitchDirection;
+	TargetPitch = FMath::Clamp(TargetPitch, MinPitch, MaxPitch);
 }
 
 void ABG3GameCamera::RotateCamera(float input)
