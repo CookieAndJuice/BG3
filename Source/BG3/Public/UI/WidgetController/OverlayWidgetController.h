@@ -16,6 +16,7 @@ enum class EResultState : uint8;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActionSlotsUpdated, const TArray<FActionSlotView>&, Slots);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStatsInitialized);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStatChangedUI, float, Current, float, Max);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnMoveDistanceChangedUI, float, Remaining, float, Max);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFadeOutAnimationStart, EResultState, result);
 
 
@@ -43,6 +44,9 @@ public:
 
     UPROPERTY(BlueprintAssignable, Category="Stats|UI")
     FOnStatChangedUI OnManaChanged;
+
+    UPROPERTY(BlueprintAssignable, Category="Stats|UI")
+    FOnMoveDistanceChangedUI OnMoveDistanceChanged;
 
 	FOnFadeOutAnimationStart OnFadeOutAnimationStart;
 
@@ -76,6 +80,14 @@ public:
     UFUNCTION()
     void HandleManaChanged(float NewMana, float MaxMana);
 
+    UFUNCTION()
+    void HandleMoveDistanceChanged(float Remaining, float Max);
+
 private:
     
 };
+
+
+
+
+

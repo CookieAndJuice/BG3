@@ -12,6 +12,23 @@ UCharacterStatsComponent::UCharacterStatsComponent()
     PrimaryComponentTick.bCanEverTick = false;
 }
 
+void UCharacterStatsComponent::ResetRemainingMoveDistance()
+{
+    RemainingMoveDistance = MaxMoveDistance;
+    BroadcastMoveDistance();
+}
+
+void UCharacterStatsComponent::ConsumeMoveDistance(float Distance)
+{
+    RemainingMoveDistance = FMath::Clamp(RemainingMoveDistance - Distance, 0.f, MaxMoveDistance);
+    BroadcastMoveDistance();
+}
+
+void UCharacterStatsComponent::BroadcastMoveDistance() const
+{
+    OnMoveDistanceChanged.Broadcast(RemainingMoveDistance, MaxMoveDistance);
+}
+
 void UCharacterStatsComponent::BeginPlay()
 {
     Super::BeginPlay();
@@ -29,6 +46,7 @@ void UCharacterStatsComponent::BeginPlay()
     // Push initial values to UI
     OnHealthChanged.Broadcast(Health, MaxHealth);
     OnManaChanged.Broadcast(Mana, MaxMana);
+    BroadcastMoveDistance();
 
     Character = Cast<ABaseCharacter>(GetOwner());
 }
@@ -56,18 +74,10 @@ void UCharacterStatsComponent::HandleTakeAnyDamage(AActor* DamagedActor, float D
     {
         PRINTLOG(TEXT("%s has died"), *DamagedActor->GetName());
         Character->SetIsDead(true);
-
-        // // Enemy이면 Idle State로 전환
-        // if (auto* enemy = Cast<ABG3EnemyCharacter>(Character))
-        // {
-        //     enemy->FSMComp->ChangeState(ECharacterState::Idle);
-        // }
         
-        // CombatPawns에서 제거
         auto* Subsystem = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>();
         Subsystem->RemoveCharacterFromCombatPawns(Character);
-
-        // 누가 이겼는지 판단
+        
         ABG3GameMode* GM = Cast<ABG3GameMode>(GetWorld()->GetAuthGameMode());
         EResultState result = GM->DecideWhoWin();
         
@@ -90,3 +100,7 @@ void UCharacterStatsComponent::HandleTakeAnyDamage(AActor* DamagedActor, float D
         
     }
 }
+
+
+
+

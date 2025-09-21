@@ -1,5 +1,3 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,32 +5,45 @@
 #include "TurnEndWidget.generated.h"
 
 class UOverlayWidgetController;
+class UButton;
 
 DECLARE_DELEGATE(FOnTurnEndDelegate);
 
 UCLASS()
 class BG3_API UTurnEndWidget : public UUserWidget
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	virtual void NativeConstruct() override;
-	
-	FOnTurnEndDelegate OnTurnEndDelegate;
+    virtual void NativeConstruct() override;
+    virtual void NativeDestruct() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidgetOptional))
-	TObjectPtr<class UButton> TurnEndButton;
+    FOnTurnEndDelegate OnTurnEndDelegate;
 
-	UFUNCTION()
-	void OnTurnEndButtonHovered();
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidgetOptional))
+    TObjectPtr<UButton> TurnEndButton;
 
-	UFUNCTION()
-	void OnTurnEndButtonPressed();
+    UFUNCTION()
+    void OnTurnEndButtonHovered();
 
-	UFUNCTION()
-	void OnTurnEndButtonReleased();
-	
-	UFUNCTION()
-	void OnTurnEndButtonClicked();
-	
+    UFUNCTION()
+    void OnTurnEndButtonPressed();
+
+    UFUNCTION()
+    void OnTurnEndButtonReleased();
+
+    UFUNCTION()
+    void OnTurnEndButtonClicked();
+
+    void BindController(UOverlayWidgetController* InController);
+
+    UFUNCTION()
+    void HandleMoveDistanceChanged(float Remaining, float Max);
+
+    UFUNCTION(BlueprintImplementableEvent, Category="Combat|UI")
+    void UpdateMoveDistance(float Remaining, float Max);
+
+private:
+    UPROPERTY()
+    TObjectPtr<UOverlayWidgetController> Controller;
 };
