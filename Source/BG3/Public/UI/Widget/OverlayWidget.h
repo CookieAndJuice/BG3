@@ -5,10 +5,13 @@
 #include "Blueprint/UserWidget.h"
 #include "OverlayWidget.generated.h"
 
+enum class EResultState : uint8;
 class UCombatActionPanel;
 class UOverlayWidgetController;
 class UTurnEndWidget;
 class UPlayerHPWidget;
+class UPlayerPortraitWidget;
+class UTurnOrderFrameWidget;
 class UTextBlock;
 
 UCLASS()
@@ -32,6 +35,8 @@ public:
     UPROPERTY(meta=(BindWidgetAnim), Transient)
     UWidgetAnimation* FadeOut3;
 
+    UPlayerHPWidget* GetPlayerHPWidget();
+    UTurnOrderFrameWidget* GetTurnOrderFrame();
 
 protected:
     virtual void NativeConstruct() override;
@@ -47,7 +52,13 @@ protected:
     UTurnEndWidget* TurnEndWidget = nullptr;
 
     UPROPERTY(meta=(BindWidgetOptional), BlueprintReadOnly)
-    UPlayerHPWidget* PlayerHP = nullptr;
+    UPlayerHPWidget* PlayerHPWidget = nullptr;
+
+    UPROPERTY(meta=(BindWidgetOptional), BlueprintReadOnly)
+    UPlayerPortraitWidget* PlayerPortrait = nullptr;
+
+    UPROPERTY(meta=(BindWidgetOptional), BlueprintReadOnly)
+    UTurnOrderFrameWidget* TurnOrderFrame = nullptr;
 
     UPROPERTY(meta=(BindWidgetOptional), BlueprintReadOnly)
     UTextBlock* Text_Win;

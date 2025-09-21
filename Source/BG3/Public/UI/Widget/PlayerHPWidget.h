@@ -9,11 +9,24 @@
 /**
  * 
  */
+USTRUCT()
+struct FPlayerHPWidgetData
+{
+	GENERATED_BODY()
+	UPROPERTY()
+	TObjectPtr<class UTextBlock> HpText;
+	UPROPERTY()
+	TObjectPtr<class UProgressBar> HpBar;
+};
+
 UCLASS()
 class BG3_API UPlayerHPWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	virtual void NativeConstruct() override;
+	
 public: // Bind UI
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidgetOptional))
 	TObjectPtr<class UProgressBar> Player1HPBar;
@@ -27,10 +40,25 @@ public: // Bind UI
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidgetOptional))
 	TObjectPtr<class UTextBlock> Player2HP;
 
-	int32 maxHP1 = 0;
-	int32 maxHP2 = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidgetOptional))
+	TObjectPtr<class UButton> Player1Btn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidgetOptional))
+	TObjectPtr<class UButton> Player2Btn;
 	
-	void InitUI(int32 hp1, int32 hp2);
-	void SetPlayer1HP(int32 hp1);
-	void SetPlayer2HP(int32 hp2);
+public:
+	void SetPlayerHP(int32 id, int32 curHp, int32 maxHp);
+
+private:
+	UFUNCTION()
+	void OnPlayer1BtnClicked();
+
+	UFUNCTION()
+	void OnPlayer2BtnClicked();
+	
+	UPROPERTY()
+	TMap<int32, FPlayerHPWidgetData> SlotMap;
+
+	UPROPERTY()
+	TObjectPtr<class UBG3GameManageSubsystem> GMSubsys;
 };

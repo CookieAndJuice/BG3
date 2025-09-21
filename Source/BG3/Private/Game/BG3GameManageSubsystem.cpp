@@ -13,6 +13,8 @@
 #include "Game/BG3GameMode.h"
 #include "Game/BG3GameState.h"
 #include "Game/SkillExecutionSubsystem.h"
+#include "Component/TurnWidgetManagerComponent.h"
+#include "UI/Widget/TurnOrderFrameWidget.h"
 
 UBG3GameManageSubsystem::UBG3GameManageSubsystem()
 {
@@ -75,23 +77,6 @@ void UBG3GameManageSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	GState->PrintCurrentState();
 }
 
-void UBG3GameManageSubsystem::SpawnEnemies()
-{
-	// Spawn & Init
-	for (const auto& enemyInfo : EnemyDataAsset->CharInfos)
-	{
-		auto enemy = GetWorld()->SpawnActor<ABG3EnemyCharacter>(enemyInfo.Character, enemyInfo.SpawnTransform);
-		if (enemy)
-		{
-			int32 order = GM->CalcInitiative(5);
-			PRINTLOG(TEXT("Enemy %d"), order);
-			FTurnData data = {order, enemy};
-			//enemy->SpawnDefaultController();
-			CombatPawns.Add(data);
-		}
-	}
-}
-
 void UBG3GameManageSubsystem::SpawnPlayers()
 {
 	// Spawn & Init
@@ -101,9 +86,32 @@ void UBG3GameManageSubsystem::SpawnPlayers()
 		if (player)
 		{
 			int32 order = GM->CalcInitiative(10);
-			PRINTLOG(TEXT("Player %d"), order);
+			player->SetID(playerInfo.CharacterID);
+			player->SetPortrait(playerInfo.Portrait);
+			PlayerMap.Add(playerInfo.CharacterID, player);
+			
 			FTurnData data = {order, player};
 			//player->SpawnDefaultController();
+			CombatPawns.Add(data);
+		}
+	}
+}
+
+void UBG3GameManageSubsystem::SpawnEnemies()
+{
+	// Spawn & Init
+	for (const auto& enemyInfo : EnemyDataAsset->CharInfos)
+	{
+		auto enemy = GetWorld()->SpawnActor<ABG3EnemyCharacter>(enemyInfo.Character, enemyInfo.SpawnTransform);
+		if (enemy)
+		{
+			int32 order = GM->CalcInitiative(5);
+			enemy->SetID(enemyInfo.CharacterID);
+			enemy->SetPortrait(enemyInfo.Portrait);
+			EnemyMap.Add(enemyInfo.CharacterID, enemy);
+			
+			FTurnData data = {order, enemy};
+			//enemy->SpawnDefaultController();
 			CombatPawns.Add(data);
 		}
 	}
@@ -162,6 +170,16 @@ ABaseCharacter* UBG3GameManageSubsystem::GetCurrentPawn()
 {
 	ABaseCharacter* pawn = CastChecked<ABaseCharacter>(CombatPawns[Index].TurnCharacter);
 	return pawn;
+}
+
+ABG3PlayerCharacter* UBG3GameManageSubsystem::GetPlayerFromID(int32 id)
+{
+	return PlayerMap.FindRef(id);
+}
+
+ABG3EnemyCharacter* UBG3GameManageSubsystem::GetEnemyFromID(int32 id)
+{
+	return EnemyMap.FindRef(id);
 }
 
 void UBG3GameManageSubsystem::RemoveCharacterFromCombatPawns(ABaseCharacter* InCharacter)

@@ -48,7 +48,7 @@ void UCharacterStatsComponent::HandleTakeAnyDamage(AActor* DamagedActor, float D
     const FString Msg = FString::Printf(TEXT("Damaged %s | HP: %.1f -> %.1f / %.1f"), *DamagedActor->GetName(), Prev, Health,
   MaxHealth);
     GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Magenta, Msg);
-
+    
     // Notify UI
     OnHealthChanged.Broadcast(Health, MaxHealth);
 

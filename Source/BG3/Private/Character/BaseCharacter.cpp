@@ -6,6 +6,7 @@
 #include "Data/SkillDefinition.h"
 #include "Component/SkillBookComponent.h"
 #include "Component/CharacterStatsComponent.h"
+#include "Component/TurnWidgetManagerComponent.h"
 #include "Components/CapsuleComponent.h"
 
 ABaseCharacter::ABaseCharacter()
@@ -32,7 +33,7 @@ ABaseCharacter::ABaseCharacter()
     Weapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon"));
     Weapon->SetupAttachment(GetMesh(), FName("RightHandSocket"));
 
-   
+    TurnWidgetManager = CreateDefaultSubobject<UTurnWidgetManagerComponent>(TEXT("TurnWidgetManager"));
 }
 
 void ABaseCharacter::BeginTurnReset_Implementation()
@@ -40,6 +41,26 @@ void ABaseCharacter::BeginTurnReset_Implementation()
     CurrentActions = 1;
     CurrentBonusActions = 1;
     CurrentReactions = 1;
+}
+
+void ABaseCharacter::SetID(int32 id)
+{
+    CharacterID = id;
+}
+
+int32 ABaseCharacter::GetID()
+{
+    return CharacterID;
+}
+
+void ABaseCharacter::SetPortrait(UTexture2D* portrait)
+{
+    CharacterPortrait = portrait;
+}
+
+UTexture2D* ABaseCharacter::GetPortrait()
+{
+    return CharacterPortrait;
 }
 
 void ABaseCharacter::SetIsHit(bool bInHit)

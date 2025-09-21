@@ -31,6 +31,8 @@ ABG3GameCamera::ABG3GameCamera()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	MiddleTargetArmLength = (MaxTargetArmLength + MinTargetArmLength) / 2;
 }
 
 // Called when the game starts or when spawned
@@ -59,7 +61,7 @@ void ABG3GameCamera::Tick(float DeltaTime)
 	}
 	else
 	{
-		FVector targetLoc = GMSubsystem->GetCurrentPawn()->GetActorLocation();
+		FVector targetLoc = FocusCharacter->GetActorLocation();
 		
 		FVector NextLoc = FMath::VInterpTo(GetActorLocation(), targetLoc, DeltaTime, FocusMoveSpeed);
 		SetActorLocation(NextLoc);
@@ -71,6 +73,7 @@ void ABG3GameCamera::Tick(float DeltaTime)
 		
 		float length = FMath::FInterpTo(cur, ZoomTarget, DeltaTime, ZoomSpeed);
 		SpringArmComponent->TargetArmLength = length;
+		
 		if (FMath::Abs(ZoomTarget - cur) < 0.05)
 		{
 			cur = ZoomTarget;
@@ -85,8 +88,10 @@ void ABG3GameCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void ABG3GameCamera::FocusCamera(FVector location)
+void ABG3GameCamera::FocusCamera(class ABaseCharacter* focusCharacter)
 {
+	// location 넣는 게 맞을 지도
+	FocusCharacter = focusCharacter;
 	bIsFreeCameraMode = false;
 }
 
@@ -111,4 +116,10 @@ void ABG3GameCamera::RotateCamera(float input)
 	float rotatorVal = input * RotateSpeed * GetWorld()->GetDeltaSeconds();
 	FRotator rotator(0.f, rotatorVal, 0.f);
 	AddActorWorldRotation(rotator);
+}
+
+void ABG3GameCamera::CustomZoom(float input, float targetArmLength)
+{
+	ZoomDirection = -input;
+	ZoomTarget = FMath::Clamp(targetArmLength, MinTargetArmLength, MaxTargetArmLength);
 }

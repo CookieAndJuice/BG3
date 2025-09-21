@@ -3,37 +3,70 @@
 
 #include "UI/Widget/PlayerHPWidget.h"
 
+#include "Actor/BG3GameCamera.h"
+#include "BG3/BG3.h"
+#include "Components/Button.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Controller/BG3GameModePlayerController.h"
+#include "Game/BG3GameManageSubsystem.h"
+#include "Character/BaseCharacter.h"
+#include "Character/BG3PlayerCharacter.h"
 
-void UPlayerHPWidget::InitUI(int32 hp1, int32 hp2)
+void UPlayerHPWidget::NativeConstruct()
 {
-	FString hpString = FString::Printf(TEXT("%d / %d"), hp1, hp1);
-	Player1HP->SetText(FText::FromString(hpString));
-	hpString = FString::Printf(TEXT("%d / %d"), hp2, hp2);
-	Player2HP->SetText(FText::FromString(hpString));
+	Super::NativeConstruct();
 
-	maxHP1 = hp1;
-	maxHP2 = hp2;
+	SlotMap.Add(1, {Player1HP, Player1HPBar});
+	SlotMap.Add(2, {Player2HP, Player2HPBar});
 	
-	Player1HPBar->SetPercent(0.f);
-	Player2HPBar->SetPercent(0.f);
+	if (Player1Btn)
+	{
+		Player1Btn->OnClicked.AddDynamic(this, &UPlayerHPWidget::OnPlayer1BtnClicked);
+	}
+	if (Player2Btn)
+	{
+		Player2Btn->OnClicked.AddDynamic(this, &UPlayerHPWidget::OnPlayer2BtnClicked);
+	}
+
+	GMSubsys = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>();
 }
 
-void UPlayerHPWidget::SetPlayer1HP(int32 hp1)
+void UPlayerHPWidget::SetPlayerHP(int32 id, int32 curHp, int32 maxHp)
 {
-	FString hpString = FString::Printf(TEXT("%d / %d"), hp1, maxHP1);
-	Player1HP->SetText(FText::FromString(hpString));
+	FString hpString = FString::Printf(TEXT("%d / %d"), curHp, maxHp);
+	SlotMap[id].HpText->SetText(FText::FromString(hpString));
 
-	float hp =  1 - (static_cast<float>(hp1) / maxHP1);
-	Player1HPBar->SetPercent(hp);
+	float hp =  1 - (static_cast<float>(curHp) / maxHp);
+	SlotMap[id].HpBar->SetPercent(hp);
 }
 
-void UPlayerHPWidget::SetPlayer2HP(int32 hp2)
+void UPlayerHPWidget::OnPlayer1BtnClicked()
 {
-	FString hpString = FString::Printf(TEXT("%d / %d"), hp2, maxHP2);
-	Player1HP->SetText(FText::FromString(hpString));
+	if (ABG3GameModePlayerController* PC = Cast<ABG3GameModePlayerController>(GetOwningPlayer()))
+	{
+		if (PC->BG3Camera)
+		{
+			ABaseCharacter* character = Cast<ABaseCharacter>(GMSubsys->GetPlayerFromID(1));
+			if (character)
+			{
+				PC->BG3Camera->FocusCamera(character);
+			}
+		}
+	}
+}
 
-	float hp = 1 - (static_cast<float>(hp2) / maxHP2);
-	Player1HPBar->SetPercent(hp);
+void UPlayerHPWidget::OnPlayer2BtnClicked()
+{
+	if (ABG3GameModePlayerController* PC = Cast<ABG3GameModePlayerController>(GetOwningPlayer()))
+	{
+		if (PC->BG3Camera)
+		{
+			ABaseCharacter* character = Cast<ABaseCharacter>(GMSubsys->GetPlayerFromID(2));
+			if (character)
+			{
+				PC->BG3Camera->FocusCamera(character);
+			}
+		}
+	}
 }

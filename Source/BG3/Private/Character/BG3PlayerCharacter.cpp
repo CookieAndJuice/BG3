@@ -3,19 +3,24 @@
 
 #include "Character/BG3PlayerCharacter.h"
 
+#include "Component/CharacterStatsComponent.h"
+#include "Component/HpWidgetManageComponent.h"
+
 
 // Sets default values
 ABG3PlayerCharacter::ABG3PlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	HpWidgetManager = CreateDefaultSubobject<UHpWidgetManageComponent>(TEXT("HpWidgetManager"));
 }
 
 // Called when the game starts or when spawned
 void ABG3PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
