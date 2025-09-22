@@ -1,4 +1,4 @@
-﻿#include "Game/Skill/Tasks/SkillTaskMoveTo.h"
+#include "Game/Skill/Tasks/SkillTaskMoveTo.h"
 
 #include "BG3/BG3.h"
 #include "AIController.h"
@@ -91,7 +91,7 @@ void USkillTaskMoveTo::Start(UObject* /*WorldContext*/, AActor* Caster, const US
     }
 
     const float RangeCm = (Skill && Skill->Targeting.RangeMeters > 0.f)
-        ? Skill->Targeting.RangeMeters * 50.f
+        ? Skill->Targeting.RangeMeters * 100.f
         : AcceptRadius;
 
     ABaseCharacter* CasterCharacter = Cast<ABaseCharacter>(Caster);
@@ -272,3 +272,4 @@ void USkillTaskMoveTo::HandleMoveCompleted(FAIRequestID RequestID, EPathFollowin
         OnFailed.Execute(TEXT("MoveFailed"));
     }
 }
+
