@@ -52,6 +52,7 @@ public:	// Camera
 	
 private:// Camera State
 	bool bIsFreeCameraMode = false;
+	bool bIsAttackCameraActive = false;
 
 private:// Camera Movement
 	float Dx;
@@ -59,6 +60,8 @@ private:// Camera Movement
 
 	UPROPERTY()
 	TObjectPtr<class ABaseCharacter> FocusCharacter;
+
+	FVector AttackFocusLocation = FVector::ZeroVector;
 	
 	FVector PreDirection = FVector::ZeroVector;
 	float ZoomDirection = 0;
@@ -106,6 +109,8 @@ public:	// Camera Movement
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraZoom")
 	float MinPitch = -60.f;
 
+	float MiddlePitch = 0.f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CameraZoom")
 	float PitchStep = 5.f;
 	
@@ -114,11 +119,14 @@ public:	// Camera Movement
 
 private:// Camera Movement for Record during Action
 	float preTargetArmLength = 0.f;
+	float prePitch = 0.f;
 	
 public:	// Camera Movement
 	void FocusCamera(class ABaseCharacter* focusCharacter);
 	
 	void FreeCamera(FVector2D direction);
+
+	void AttackCamera(FVector location);
 	
 	void UpdateZoom(const float DeltaTime);
 	
@@ -126,9 +134,11 @@ public:	// Camera Movement
 
 	void RotateCamera(float input);
 
-	void CustomZoom(float input, float targetArmLength);
-	
+	void CustomZoom(float input, float targetArmLength, float targetPitch);
+
+	UFUNCTION(BlueprintCallable)
 	void PlayAttackCamera(EAttackMode attackMode, class ABaseCharacter* target);
 
+	UFUNCTION(BlueprintCallable)
 	void StopAttackCamera();
 };

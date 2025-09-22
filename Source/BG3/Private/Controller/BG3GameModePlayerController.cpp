@@ -60,7 +60,7 @@ ABG3GameModePlayerController::ABG3GameModePlayerController()
 		BG3CameraClass = CameraClassRef.Class;
 	}
 
-    // ¸¶¿ì½º ÀÔ·Â ÄÄÆ÷³ÍÆ® »ý¼º(ÀÔ·Â ¹ÙÀÎµùÀº SetupInputComponent¿¡¼­ ¼öÇà)
+    // ï¿½ï¿½ï¿½ì½º ï¿½Ô·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½(ï¿½Ô·ï¿½ ï¿½ï¿½ï¿½Îµï¿½ï¿½ï¿½ SetupInputComponentï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
     MouseInput = CreateDefaultSubobject<UMouseInputComponent>(TEXT("MouseInputComponent"));
 }
 
@@ -152,7 +152,7 @@ void ABG3GameModePlayerController::SetupInputComponent()
 		EIC->BindAction(LMBClickAction, ETriggerEvent::Started, this, &ABG3GameModePlayerController::OnLMBClick);
 		EIC->BindAction(LMBClickAction, ETriggerEvent::Completed, this, &ABG3GameModePlayerController::OnLMBClick);
 
-        // ¸¶¿ì½º ÀÔ·Â(Å¸°Ù ¼±ÅÃ/È®Á¤/Ãë¼Ò) ¹ÙÀÎµù ¿¬°á
+        // ï¿½ï¿½ï¿½ì½º ï¿½Ô·ï¿½(Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½/È®ï¿½ï¿½/ï¿½ï¿½ï¿½) ï¿½ï¿½ï¿½Îµï¿½ ï¿½ï¿½ï¿½ï¿½
         if (MouseInput)
         {
             MouseInput->BindInput(EIC);
@@ -179,7 +179,7 @@ void ABG3GameModePlayerController::OnLMBClick(const FInputActionValue& value)
 		}
 	}
 
-	// SkillExecutionSubsystemÀÇ CastState°¡ ECastState::Targeting ÀÏ ¶§¸¸ µ¿ÀÛ (½ºÅ³ Å¸°ÙÆÃ ÁßÀÏ ¶§¸¸)
+	// SkillExecutionSubsystemï¿½ï¿½ CastStateï¿½ï¿½ ECastState::Targeting ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½Å³ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 }
 
 void ABG3GameModePlayerController::OnMoveCamera(const FInputActionValue& value)
@@ -223,7 +223,7 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
 
     // Switch Camera Target
     BG3Camera->FocusCamera(PossessedCharacter);
-	BG3Camera->CustomZoom(1, BG3Camera->MaxTargetArmLength);
+	BG3Camera->CustomZoom(1, BG3Camera->MaxTargetArmLength, BG3Camera->MinPitch);
 
     // Reset Actions Budget 
     if (NewCharacter->GetClass()->ImplementsInterface(UActionBudgetProvider::StaticClass()))
