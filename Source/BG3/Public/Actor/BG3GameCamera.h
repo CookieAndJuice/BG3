@@ -70,6 +70,7 @@ private:// Camera Movement
 	
 	// TargetArmLength
 	float TargetLength = 0;
+	float ExtraTargetArmLength = 5.f;
 
 	// Pitch
 	float TargetPitch = 0;
