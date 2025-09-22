@@ -188,14 +188,15 @@ void USkillTaskPlayMontage::OnMontageEnded(UAnimMontage* InMontage, bool bInterr
         return;
     }
 
-    /*
+    
     if (!bHitApplied && OnFinished.IsBound() && !bShootHandled)
     {
         OnFinished.Execute();
     }
-    */
+    
 
     // 만약 Caster가 Enemy이면 애니메이션 몽타주 재생 끝나고 타겟에게 데미지 입히기
+    
     if (Cast<ABG3EnemyCharacter>(CasterCharacter))
     {
         FTimerHandle Timer;

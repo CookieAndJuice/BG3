@@ -2,54 +2,54 @@
 
 #include "BG3/BG3.h"
 #include "Character/BaseCharacter.h"
+#include "Components/BoxComponent.h"
 #include "Data/SkillDefinition.h"
 #include "Engine/World.h"
 #include "Game/Skill/Projectile/ProjectileBase.h"
-#include "GameFramework/ProjectileMovementComponent.h"
 
 void USkillTaskSpawnProjectile::Start(UObject* WorldContext, AActor* Caster, const USkillDefinition* Skill, const TArray<AActor*>& Targets)
 {
-    if (!WorldContext || !Caster)
-    {
-        if (OnFailed.IsBound()) OnFailed.Execute(TEXT("InvalidContext"));
-        return;
-    }
+    if (!WorldContext || !Caster || !Skill) return;
 
-    PRINTLOG(TEXT("[Task] SpawnProjectile (skeleton) by %s"), *Caster->GetName());
-
-    TSubclassOf<AProjectileBase> ProjectileClass = Skill->Damage.ProjectileClass;
     ABaseCharacter* Character = Cast<ABaseCharacter>(Caster);
     if (!Character) return;
 
-    FName SpawnSocketName = Skill->Damage.SpawnSocketName;
-    FVector SocketLocation = Character->GetMesh()->GetSocketLocation(SpawnSocketName);
-    
-    //FRotator SocketRotation = Character->GetMesh()->GetSocketRotation(SpawnSocketName);
+    const TSubclassOf<AProjectileBase> ProjectileClass = Skill->Damage.ProjectileClass;
+    if (!ProjectileClass) return;
 
-    TArray<ABaseCharacter*> ValidTargets;
-    ValidTargets.Reserve(Targets.Num());
-    for (AActor* Target : Targets)
+    const FVector SocketLocation = Character->GetMesh()->GetSocketLocation(Skill->Damage.SpawnSocketName);
+
+    if (Targets.Num() == 0)
     {
-        if (ABaseCharacter* TargetCharacter = Cast<ABaseCharacter>(Target))
+        const FVector FallbackDir = Character->GetActorForwardVector().GetSafeNormal();
+        if (!FallbackDir.IsNearlyZero())
         {
-            ValidTargets.Add(TargetCharacter);
+            if (AProjectileBase* Projectile = Character->GetWorld()->SpawnActor<AProjectileBase>(ProjectileClass, SocketLocation, FallbackDir.Rotation()))
+            {
+                Projectile->Init(Character, nullptr, Skill, FallbackDir);
+            }
+        }
+    }
+    else
+    {
+        for (AActor* Target : Targets)
+        {
+            ABaseCharacter* TargetCharacter = Cast<ABaseCharacter>(Target);
+            if (!TargetCharacter) continue;
+
+            const FVector AimLocation = TargetCharacter->GetActorLocation();
+            const FVector LaunchDirection = (AimLocation - SocketLocation).GetSafeNormal();
+            if (LaunchDirection.IsNearlyZero()) continue;
+            
+            if (AProjectileBase* Projectile = Character->GetWorld()->SpawnActor<AProjectileBase>(ProjectileClass, SocketLocation, LaunchDirection.Rotation()))
+            {
+                Projectile->Box->IgnoreActorWhenMoving(Character, true);
+                Projectile->Box->MoveIgnoreActors.AddUnique(Character);
+                Projectile->Init(Character, TargetCharacter, Skill, LaunchDirection);
+            }
         }
     }
 
-    if (Targets.Num() > 0)
-    {
-        for (ABaseCharacter* TargetCharacter : ValidTargets)
-        {
-            FVector Dir = (TargetCharacter->GetMesh()->GetSocketLocation(FName("Spine")) - SocketLocation).GetSafeNormal();
-            FRotator Rot = Dir.Rotation();
-            AProjectileBase* Projectile = GetWorld()->SpawnActor<AProjectileBase>(ProjectileClass, SocketLocation, Rot);
-            Projectile->ProjectileMovement->Velocity = Dir * 500.f;
-            Projectile->Init(Character, TargetCharacter, Skill);
-        }
-    }
-    
-    
-    
     if (OnFinished.IsBound()) OnFinished.Execute();
 }
 
@@ -57,3 +57,6 @@ void USkillTaskSpawnProjectile::Cancel()
 {
     
 }
+
+
+
