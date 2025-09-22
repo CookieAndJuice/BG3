@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "SkillDefinition.generated.h"
 
+class AProjectileBase;
 class USkillTaskBase;
 class UTexture2D;
 class USkeleton;
@@ -185,6 +186,12 @@ USTRUCT(BlueprintType)
 struct FDamagePackage
 {
 	GENERATED_BODY();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<AProjectileBase> ProjectileClass = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FName SpawnSocketName = FName("");
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FGameplayTag DamageType; // 예: Damage.Physical / Damage.Fire

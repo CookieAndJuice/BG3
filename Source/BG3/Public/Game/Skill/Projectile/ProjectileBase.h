@@ -11,6 +11,7 @@ class USkillDefinition;
 class UBoxComponent;
 class UStaticMeshComponent;
 class UCameraShakeBase;
+class ABaseCharacter;
 
 UCLASS()
 class BG3_API AProjectileBase : public AActor
@@ -19,7 +20,10 @@ class BG3_API AProjectileBase : public AActor
 
 public:
 	AProjectileBase();
-	void Init(ABaseCharacter* Caster, ABaseCharacter* Target, USkillDefinition* Skill);
+	void Init(ABaseCharacter* Caster, ABaseCharacter* Target, const USkillDefinition* Skill);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UProjectileMovementComponent* ProjectileMovement;
 
 protected:
 	virtual void BeginPlay() override;
@@ -30,14 +34,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UStaticMeshComponent* Mesh;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UProjectileMovementComponent* ProjectileMovement;
+	
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UCameraShakeBase> ImpactCameraShake;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UNiagaraComponent* Trail;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UNiagaraComponent* Niagara;
 
 	void OnImpactFX(const FHitResult& Hit);
 	void LaunchInDirection(const FVector& Dir);
