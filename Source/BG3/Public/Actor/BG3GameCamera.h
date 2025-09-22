@@ -62,12 +62,14 @@ private:// Camera Movement
 	
 	FVector PreDirection = FVector::ZeroVector;
 	float ZoomDirection = 0;
-	float ZoomTarget = 0;
-	bool bDoesCameraMove = false;
+	float ZoomAlpha = 10;
+	
+	// TargetArmLength
+	float TargetLength = 0;
 
+	// Pitch
 	float TargetPitch = 0;
 	float PitchDirection = 0;
-	float ZoomAlpha = 0;
 
 public:	// Camera Movement
 	// Camera Move
@@ -117,6 +119,8 @@ public:	// Camera Movement
 	void FocusCamera(class ABaseCharacter* focusCharacter);
 	
 	void FreeCamera(FVector2D direction);
+	
+	void UpdateZoom(const float DeltaTime);
 	
 	void Zoom(float input);
 

@@ -5,6 +5,7 @@
 
 #include "BG3/BG3.h"
 #include "Camera/CameraComponent.h"
+#include "Chaos/SoftsSpring.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Game/BG3GameManageSubsystem.h"
@@ -41,8 +42,9 @@ void ABG3GameCamera::BeginPlay()
 	Super::BeginPlay();
 
 	GMSubsystem = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>();
-	ZoomTarget = SpringArmComponent->TargetArmLength;
-	TargetPitch = SpringArmComponent->GetComponentRotation().Pitch;
+	TargetLength = SpringArmComponent->TargetArmLength;
+	TargetPitch = SpringArmComponent->GetRelativeRotation().Pitch;
+	PRINTLOG(TEXT("%f"), TargetPitch);
 }
 
 // Called every frame
@@ -68,44 +70,7 @@ void ABG3GameCamera::Tick(float DeltaTime)
 		SetActorLocation(NextLoc);
 	}
 
-	if (ZoomDirection != 0)
-	{
-		// change interpto -> lerp
-		// change interpto -> lerp
-		// change interpto -> lerp
-		
-		// Scale TargetArmLength
-		float cur = SpringArmComponent->TargetArmLength;
-
-		float length = FMath::Lerp(cur, ZoomTarget, ZoomAlpha);
-		
-		// float length = FMath::FInterpTo(cur, ZoomTarget, DeltaTime, ZoomSpeed);
-		SpringArmComponent->TargetArmLength = length;
-		
-		if (FMath::Abs(ZoomTarget - cur) < 0.05)
-		{
-			ZoomDirection = 0;
-		}
-		
-		// Rotate SpringArm
-		FRotator curRot = SpringArmComponent->GetRelativeRotation();
-		// FRotator desiredRot = curRot;
-		// desiredRot.Pitch = TargetPitch;
-
-		float pitch = FMath::Lerp(curRot.Pitch, TargetPitch, ZoomAlpha);
-		
-		FRotator angle = curRot + FRotator(pitch, 0.f, 0.f);
-		// FRotator angle = FMath::RInterpTo(curRot, desiredRot, DeltaTime, PitchInterpSpeed);
-		SpringArmComponent->SetRelativeRotation(angle);
-
-		PRINTLOG(TEXT("%f"), angle.Pitch);
-		// if (FMath::Abs(desiredRot.Pitch - curRot.Pitch) < 0.05)
-		if (FMath::Abs(TargetPitch - curRot.Pitch) < 0.05)
-		{
-			PitchDirection = 0;
-			ZoomAlpha = 0;
-		}
-	}
+	UpdateZoom(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -129,12 +94,46 @@ void ABG3GameCamera::FreeCamera(FVector2D direction)
 	Dy = direction.Y;
 }
 
+void ABG3GameCamera::UpdateZoom(const float DeltaTime)
+{
+	if (ZoomDirection != 0)
+	{
+		float percent = DeltaTime * ZoomAlpha;
+		
+		// TargetArmLength
+		float curLen = SpringArmComponent->TargetArmLength;
+		float nextLen = FMath::Lerp(curLen, TargetLength, percent);
+
+		// Pitch
+		float curPitch = SpringArmComponent->GetRelativeRotation().Pitch;
+		float nextPitch = FMath::Lerp(curPitch, TargetPitch, percent);
+		FRotator curRot = SpringArmComponent->GetRelativeRotation();
+		curRot.Pitch = nextPitch;
+		
+		if (FMath::Abs(nextLen - curLen) < 0.05)
+		{
+			curRot.Pitch = TargetPitch;
+			
+			SpringArmComponent->TargetArmLength = TargetLength;
+			SpringArmComponent->SetRelativeRotation(curRot);
+			
+			ZoomDirection = 0;
+			PitchDirection = 0;
+		}
+		else
+		{
+			SpringArmComponent->TargetArmLength = nextLen;
+			SpringArmComponent->SetRelativeRotation(curRot);
+		}
+	}
+}
+
 void ABG3GameCamera::Zoom(float input)
 {
 	// 확대면 거리가 줄도록
 	ZoomDirection = -input;
-	ZoomTarget += ZoomDirection * ZoomDistance;
-	ZoomTarget = FMath::Clamp(ZoomTarget, MinTargetArmLength, MaxTargetArmLength);
+	TargetLength += ZoomDirection * ZoomDistance;
+	TargetLength = FMath::Clamp(TargetLength, MinTargetArmLength, MaxTargetArmLength);
 
 	// 확대면 pitch가 커지게
 	PitchDirection = input;
@@ -153,7 +152,7 @@ void ABG3GameCamera::RotateCamera(float input)
 void ABG3GameCamera::CustomZoom(float input, float targetArmLength)
 {
 	ZoomDirection = -input;
-	ZoomTarget = FMath::Clamp(targetArmLength, MinTargetArmLength, MaxTargetArmLength);
+	TargetLength = FMath::Clamp(targetArmLength, MinTargetArmLength, MaxTargetArmLength);
 }
 
 // when Action is started
