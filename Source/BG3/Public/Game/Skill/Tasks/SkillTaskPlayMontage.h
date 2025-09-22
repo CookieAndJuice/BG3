@@ -8,6 +8,9 @@
 class ABaseCharacter;
 class UBaseAnimInstance;
 class USkillDefinition;
+class UNiagaraSystem;
+class UNiagaraSystemComponent;
+class USoundBase;
 
 DECLARE_MULTICAST_DELEGATE(FOnAnimEnded);
 
@@ -54,11 +57,17 @@ private:
     UPROPERTY()
     TArray<TWeakObjectPtr<AActor>> WeakTargets;
 
+    UPROPERTY()
+    UNiagaraSystem* NiagaraSystem;
+
+    UPROPERTY()
+    USoundBase* HitSound;
     
     UPROPERTY()
     int32 Round = 0;
 
     bool bHitApplied = false;
     bool bShootHandled = false;
+    
 };
 

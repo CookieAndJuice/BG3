@@ -12,6 +12,9 @@ class UTexture2D;
 class USkeleton;
 class UAnimMontage;
 class USkeletalMeshComponent;
+class UNiagaraSystem;
+class USoundBase;
+class UCameraShakeBase;
 
 UENUM(BlueprintType)
 enum class EDeliveryMethod : uint8
@@ -88,6 +91,32 @@ struct FDice
 	int32 Sides = 6; // dM
 };
 
+USTRUCT(BlueprintType)
+struct FSkillAssetSet
+{
+	GENERATED_BODY()
+
+public:
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Asset")
+	TArray<FSkillAnimEntry> AnimPerSkeleton;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Asset")
+	UAnimMontage* DefaultMontage = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Asset")
+	FName NotifyName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Asset")
+	UNiagaraSystem* ImpactEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Asset")
+	USoundBase* ImpactSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Asset")
+	UCameraShakeBase* ImpactCameraShake;
+};
+
 
 
 USTRUCT(BlueprintType)
@@ -114,15 +143,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
 	ESkillKind SkillKind = ESkillKind::NonCombat;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
-	TArray<FSkillAnimEntry> AnimPerSkeleton;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
-	UAnimMontage* DefaultMontage = nullptr;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
-	FName NotifyName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Skill|Meta")
 	TArray<TSubclassOf<USkillTaskBase>> Tasks;
@@ -225,6 +245,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Rules")
 	FDamagePackage Damage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Rules")
+	FSkillAssetSet SkillAssetSet;
 
 public:
 	UAnimMontage* GetMontageForSkeleton(const USkeleton* Skeleton) const;

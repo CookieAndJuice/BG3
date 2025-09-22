@@ -1,5 +1,6 @@
 #include "Game/Skill/Tasks/SkillTaskPlayMontage.h"
 
+#include "NiagaraFunctionLibrary.h"
 #include "BG3/BG3.h"
 #include "Animation/AnimInstance.h"
 #include "Character/Animation/BaseAnimInstance.h"
@@ -9,6 +10,7 @@
 #include "Data/SkillDefinition.h"
 #include "Component/SimpleEnemyFSMComponent.h"
 #include "Game/SkillExecutionSubsystem.h"
+#include "Kismet/GameplayStatics.h"
 
 void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, const USkillDefinition* Skill, const TArray<AActor*>& Targets)
 {
@@ -47,6 +49,8 @@ void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, con
         MontageToPlay = Skill->GetMontageForMesh(Mesh);
     }
 
+    
+
     if (!MontageToPlay)
     {
         if (OnFailed.IsBound())
@@ -58,9 +62,9 @@ void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, con
 
     Montage = MontageToPlay;
 
-    if (Skill && Skill->Meta.NotifyName != NAME_None)
+    if (Skill && Skill->SkillAssetSet.NotifyName != NAME_None)
     {
-        HitNotifyName = Skill->Meta.NotifyName;
+        HitNotifyName = Skill->SkillAssetSet.NotifyName;
     }
 
     // 애님 인스턴스에 Montage Task 바인딩
@@ -75,6 +79,15 @@ void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, con
     {
         Enemy->EnemyFSMComp->BindingMontageTask(this);
     }
+
+    if (Skill->SkillAssetSet.ImpactEffect)
+        NiagaraSystem = Skill->SkillAssetSet.ImpactEffect;
+
+    if (Skill->SkillAssetSet.ImpactSound)
+        HitSound = Skill->SkillAssetSet.ImpactSound;
+
+   
+    
 
     AnimInstance->OnMontageEnded.AddDynamic(this, &USkillTaskPlayMontage::OnMontageEnded);
     AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &USkillTaskPlayMontage::OnNotifyBegin);
@@ -145,6 +158,19 @@ void USkillTaskPlayMontage::HandleHitNotify(FName TriggeredNotify)
     {
         PRINTLOG(TEXT("[MontageTask] Notify %s on %s"), *NotifyToLog.ToString(), *CasterCharacter->GetName());
     }
+
+    if (HitSound)
+        UGameplayStatics::PlaySound2D(this, HitSound);
+
+    if (NiagaraSystem)
+    {
+        for (auto Target : WeakTargets)
+        {
+            UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, NiagaraSystem, Target->GetActorLocation());
+        }
+    }
+    
+    
 
     FinalizeCast();
 

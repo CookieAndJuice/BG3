@@ -12,6 +12,7 @@ class UBoxComponent;
 class UStaticMeshComponent;
 class UCameraShakeBase;
 class ABaseCharacter;
+class USoundBase;
 
 UCLASS()
 class BG3_API AProjectileBase : public AActor
@@ -51,6 +52,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UNiagaraSystem* ImpactEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USoundBase* ImpactSound;
 
 	
 	float DistanceToPlayer;

@@ -9,10 +9,10 @@ UAnimMontage* USkillDefinition::GetMontageForSkeleton(const USkeleton* Skeleton)
 {
     if (!Skeleton)
     {
-        return Meta.DefaultMontage;
+        return SkillAssetSet.DefaultMontage;
     }
 
-    for (const FSkillAnimEntry& Entry : Meta.AnimPerSkeleton)
+    for (const FSkillAnimEntry& Entry : SkillAssetSet.AnimPerSkeleton)
     {
         if (Entry.Skeleton.IsNull())
         {
@@ -42,14 +42,14 @@ UAnimMontage* USkillDefinition::GetMontageForSkeleton(const USkeleton* Skeleton)
         }
     }
 
-    return Meta.DefaultMontage;
+    return SkillAssetSet.DefaultMontage;
 }
 
 UAnimMontage* USkillDefinition::GetMontageForMesh(const USkeletalMeshComponent* Mesh) const
 {
     if (!Mesh)
     {
-        return Meta.DefaultMontage;
+        return SkillAssetSet.DefaultMontage;
     }
 
     const USkeleton* Skeleton = nullptr;
