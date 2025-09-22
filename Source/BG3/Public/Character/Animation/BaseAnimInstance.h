@@ -40,6 +40,9 @@ public:
     UFUNCTION()
     void AnimNotify_HitEnd();
 
+    UFUNCTION()
+    void AnimNotify_Shoot();
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
     bool bIsHit = false;
 

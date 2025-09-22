@@ -58,19 +58,19 @@ void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, con
 
     Montage = MontageToPlay;
 
-    if (Skill && Skill->Meta.HitNotifyName != NAME_None)
+    if (Skill && Skill->Meta.NotifyName != NAME_None)
     {
-        HitNotifyName = Skill->Meta.HitNotifyName;
+        HitNotifyName = Skill->Meta.NotifyName;
     }
 
     // 애님 인스턴스에 Montage Task 바인딩
-    // Hit Notify 시에 AnimInst에서 HandleHitNotify 호출
+    // Notify 시에 AnimInst에서 HandleNotify 호출
     if (UBaseAnimInstance* BaseAnim = Cast<UBaseAnimInstance>(AnimInstance))
     {
         BaseAnim->SetActiveMontageTask(this);
     }
 
-    //
+    // Enemy가 몽타주 재생 후 턴 종료를 위한 바인딩
     if (ABG3EnemyCharacter* Enemy = Cast<ABG3EnemyCharacter>(Caster))
     {
         Enemy->EnemyFSMComp->BindingMontageTask(this);
@@ -156,6 +156,15 @@ void USkillTaskPlayMontage::HandleHitNotify(FName TriggeredNotify)
     }
 }
 
+void USkillTaskPlayMontage::HandleShootNotify(FName TriggeredNotify)
+{
+    if (OnFinished.IsBound() && !bShootHandled)
+    {
+        bShootHandled = true;
+        OnFinished.Execute();
+    }
+}
+
 void USkillTaskPlayMontage::OnMontageEnded(UAnimMontage* InMontage, bool bInterrupted)
 {
     if (!AnimInst.IsValid())
@@ -164,6 +173,8 @@ void USkillTaskPlayMontage::OnMontageEnded(UAnimMontage* InMontage, bool bInterr
     }
 
     ClearActiveTaskBinding();
+
+    
 
     AnimInst->OnMontageEnded.RemoveAll(this);
     AnimInst->OnPlayMontageNotifyBegin.RemoveAll(this);
@@ -177,16 +188,17 @@ void USkillTaskPlayMontage::OnMontageEnded(UAnimMontage* InMontage, bool bInterr
         return;
     }
 
-    if (!bHitApplied && OnFinished.IsBound())
+    
+    if (!bHitApplied && OnFinished.IsBound() && !bShootHandled)
     {
         OnFinished.Execute();
     }
+    
 
     // 만약 Caster가 Enemy이면 애니메이션 몽타주 재생 끝나고 타겟에게 데미지 입히기
+    
     if (Cast<ABG3EnemyCharacter>(CasterCharacter))
     {
-        FinalizeCast();
-
         FTimerHandle Timer;
         GetWorld()->GetTimerManager().SetTimer(Timer, [this]()
         {

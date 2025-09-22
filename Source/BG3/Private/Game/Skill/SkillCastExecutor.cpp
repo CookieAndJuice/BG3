@@ -45,7 +45,7 @@ void USkillCastExecutor::OnCastConfirmed(ABaseCharacter* Caster, const USkillDef
         if (USkillTaskPlayMontage* MontageTask = Cast<USkillTaskPlayMontage>(NewTask))
         {
             MontageTask->Montage = Skill->GetMontageForMesh(Caster->GetMesh());
-            MontageTask->HitNotifyName = Skill->Meta.HitNotifyName;
+            MontageTask->HitNotifyName = Skill->Meta.NotifyName;
             MontageTask->SetRound(CachedRound);
         }
 

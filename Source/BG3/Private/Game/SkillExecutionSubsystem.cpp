@@ -204,6 +204,7 @@ bool USkillExecutionSubsystem::ConfirmAndExecute(int32 CurrentRound)
         return true;
     }
 
+    /*
     for (AActor* Target : Targets)
     {
         // 각 타겟에 대해 주사위 굴림 후 데미지 적용
@@ -226,6 +227,8 @@ bool USkillExecutionSubsystem::ConfirmAndExecute(int32 CurrentRound)
 
     ResetCast();
     CastState = ECastState::Idle;
+    */
+    
     return true;
 }
 
@@ -334,6 +337,4 @@ void USkillExecutionSubsystem::FinalizeCastAfterExecutor(const TArray<AActor*>& 
 
     ResetCast();
     CastState = ECastState::Idle;
-
-    
 }
