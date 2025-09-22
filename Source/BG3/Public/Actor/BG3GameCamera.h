@@ -53,6 +53,7 @@ public:	// Camera
 private:// Camera State
 	bool bIsFreeCameraMode = false;
 	bool bIsAttackCameraActive = false;
+	EAttackMode PreAttackMode = EAttackMode::Melee;
 
 private:// Camera Movement
 	float Dx;

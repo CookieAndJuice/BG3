@@ -88,8 +88,6 @@ public:
 
 	void OnClickInTargeting(FHitResult Hit);
 
-	
-
 	/* 델리게이트 */
 	
     FOnCastingStarted CastingStarted;

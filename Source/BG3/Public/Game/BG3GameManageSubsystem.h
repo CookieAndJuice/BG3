@@ -73,6 +73,7 @@ public: // Find Pawns
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FTurnData> CombatPawns;
 
+	UFUNCTION(BlueprintCallable)
 	class ABG3PlayerCharacter* GetPlayerFromID(int32 id);
 	class ABG3EnemyCharacter* GetEnemyFromID(int32 id);
 

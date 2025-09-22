@@ -45,7 +45,6 @@ void ABG3GameCamera::BeginPlay()
 	GMSubsystem = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>();
 	TargetLength = SpringArmComponent->TargetArmLength;
 	TargetPitch = SpringArmComponent->GetRelativeRotation().Pitch;
-	PRINTLOG(TEXT("%f"), TargetPitch);
 }
 
 // Called every frame
@@ -167,12 +166,12 @@ void ABG3GameCamera::CustomZoom(float input, float targetArmLength, float target
 {
 	// 확대면 거리가 줄도록
 	ZoomDirection = -input;
-	targetArmLength += ZoomDirection * ZoomDistance;
+	PRINTLOG(TEXT("TargetArmLength : %f"), targetArmLength);
 	TargetLength = FMath::Clamp(targetArmLength, MinTargetArmLength, MaxTargetArmLength);
 
 	// 확대면 pitch가 커지게
 	PitchDirection = input;
-	targetPitch += PitchStep * PitchDirection;
+	PRINTLOG(TEXT("TargetPitch : %f"), targetPitch);
 	TargetPitch = FMath::Clamp(targetPitch, MinPitch, MaxPitch);
 }
 
@@ -180,17 +179,16 @@ void ABG3GameCamera::CustomZoom(float input, float targetArmLength, float target
 void ABG3GameCamera::PlayAttackCamera(EAttackMode attackMode, ABaseCharacter* target)
 {
 	// 카메라로부터 플레이어와 거리가 특정 거리보다 멀면 카메라 이동
+	PreAttackMode = attackMode;
 	float dist = (GMSubsystem->GetCurrentPawn()->GetActorLocation() - CameraComponent->GetComponentLocation()).Size();
-	PRINTLOG(TEXT("%f"), dist);
-	if (dist < MaxTargetArmLength)
+	if (dist > MaxTargetArmLength)
 	{
-		if (attackMode == EAttackMode::Melee)
+		if (PreAttackMode == EAttackMode::Melee)
 		{
 			// 플레이어 중심으로
 			FocusCamera(GMSubsystem->GetCurrentPawn());
-		
 		}
-		else if (attackMode == EAttackMode::Ranged)
+		else if (PreAttackMode == EAttackMode::Ranged)
 		{
 			// 적과 플레이어 중간으로
 			FVector midLoc = (target->GetActorLocation() + GMSubsystem->GetCurrentPawn()->GetActorLocation()) / 2;
@@ -200,16 +198,16 @@ void ABG3GameCamera::PlayAttackCamera(EAttackMode attackMode, ABaseCharacter* ta
 		// 카메라가 특정 확대 정도보다 가까우면 축소
 		preTargetArmLength = SpringArmComponent->TargetArmLength;
 		prePitch = SpringArmComponent->GetRelativeRotation().Pitch;
-		if (attackMode == EAttackMode::Melee)
+		if (PreAttackMode == EAttackMode::Melee)
 		{
 			// 근거리 : 중간보다 가까우면 중간으로 축소
 			if (preTargetArmLength < MiddleTargetArmLength)
 				CustomZoom(-1, MiddleTargetArmLength, MiddlePitch);
 		}
-		else if (attackMode == EAttackMode::Ranged)
+		else if (PreAttackMode == EAttackMode::Ranged)
 		{
 			// 원거리 : 그냥 축소
-			CustomZoom(1, MaxTargetArmLength, MinPitch);
+			CustomZoom(-1, MaxTargetArmLength, MinPitch);
 		}
 	}
 }
@@ -217,5 +215,13 @@ void ABG3GameCamera::PlayAttackCamera(EAttackMode attackMode, ABaseCharacter* ta
 // when Action is end
 void ABG3GameCamera::StopAttackCamera()
 {
-	
+	if (PreAttackMode == EAttackMode::Melee)
+	{
+		// 카메라 줌 복구
+	}
+	else if (PreAttackMode == EAttackMode::Ranged)
+	{
+		FocusCamera(GMSubsystem->GetCurrentPawn());
+		// 카메라 줌 복구
+	}
 }
