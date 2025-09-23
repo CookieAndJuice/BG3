@@ -50,6 +50,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Actions")
 	int32 ReactionCount = 1;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Actions")
+	int32 MoveCount = 10;
+
 	bool bIsInAction;
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="ActionBudget")
@@ -100,6 +103,7 @@ private:
 	int32 CurrentActions = 1;
 	int32 CurrentBonusActions = 1;
 	int32 CurrentReactions = 1;
+	int32 CurrentMove = 10;
 
 	/* 애니메이션 */
 	

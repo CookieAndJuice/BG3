@@ -11,7 +11,6 @@
 
 ABaseCharacter::ABaseCharacter()
 {
-
     PrimaryActorTick.bCanEverTick = false;
 
     
@@ -143,6 +142,8 @@ void ABaseCharacter::SpendActionSlot_Implementation(EActionCost Cost)
         return;
     case EActionCost::Reaction:
         CurrentReactions--;
+    case EActionCost::Move:
+        CurrentMove--;
         return;
     }
 
@@ -159,6 +160,8 @@ bool ABaseCharacter::CanSpendActionSlot_Implementation(EActionCost Cost) const
         return CurrentBonusActions > 0;
     case EActionCost::Reaction:
         return CurrentReactions > 0;
+    case EActionCost::Move:
+        return CurrentMove > 0;
     default:
         return false;
     }
@@ -176,6 +179,8 @@ void ABaseCharacter::RefundActionSlot_Implementation(EActionCost Cost)
         return;
     case EActionCost::Reaction:
         CurrentReactions++;
+    case EActionCost::Move:
+        CurrentMove++;
         return;
     }
 

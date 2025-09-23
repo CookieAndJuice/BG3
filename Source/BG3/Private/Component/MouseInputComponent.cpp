@@ -92,7 +92,7 @@ void UMouseInputComponent::OnClick(const FInputActionValue& /*Value*/)
     FHitResult Hit;
     const bool bHit = PC->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
 
-    // ?寃잜똿 以묒씪 ??
+    // 스킬 타겟팅 
     if (!IsIdle())
     {
         if (USkillExecutionSubsystem* SES = GetWorld()->GetSubsystem<USkillExecutionSubsystem>())
