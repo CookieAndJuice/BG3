@@ -39,7 +39,7 @@ void UTurnWidgetManagerComponent::AddWidgetToArray()
 	CharacterWidget = CreateWidget<UCharacterTurnHpWidget>(GetWorld(), CharacterWidgetClass);
 	CharacterWidget->InitializeWithCharacter(Cast<ABaseCharacter>(GetOwner()));
 
-	if (UTexture2D* portrait = Cast<ABaseCharacter>(GetOwner())->GetPortrait())
+	if (UTexture2D* portrait = Cast<ABaseCharacter>(GetOwner())->GetSmallPortrait())
 	{
 		CharacterWidget->CharacterImage->SetBrushFromTexture(portrait);
 	}

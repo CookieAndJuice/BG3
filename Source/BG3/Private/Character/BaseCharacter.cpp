@@ -62,6 +62,16 @@ UTexture2D* ABaseCharacter::GetPortrait()
     return CharacterPortrait;
 }
 
+void ABaseCharacter::SetSmallPortrait(UTexture2D* portrait)
+{
+    CharacterSmallPortrait = portrait;
+}
+
+UTexture2D* ABaseCharacter::GetSmallPortrait()
+{
+    return CharacterSmallPortrait;
+}
+
 void ABaseCharacter::SetIsHit(bool bInHit)
 {
     bIsHit = bInHit;

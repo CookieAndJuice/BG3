@@ -37,6 +37,7 @@ public:
 
     UPlayerHPWidget* GetPlayerHPWidget();
     UTurnOrderFrameWidget* GetTurnOrderFrame();
+    UPlayerPortraitWidget* GetPlayerPortraitWidget();
 
 protected:
     virtual void NativeConstruct() override;

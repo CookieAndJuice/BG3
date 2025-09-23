@@ -22,6 +22,8 @@ public:
 	FTransform SpawnTransform;
 	UPROPERTY(EditAnywhere)
 	class UTexture2D* Portrait;
+	UPROPERTY(EditAnywhere)
+	class UTexture2D* SmallPortrait;
 };
 
 UCLASS()

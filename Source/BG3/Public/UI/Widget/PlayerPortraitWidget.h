@@ -15,6 +15,18 @@ class BG3_API UPlayerPortraitWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	UPlayerPortraitWidget(const FObjectInitializer& ObjectInitializer);
+	
+	virtual void NativeConstruct() override;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidgetOptional))
 	TObjectPtr<class UImage> Portrait;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<class UMaterialInterface> PortraitMaterial;
+	
+	UPROPERTY()
+	TObjectPtr<class UMaterialInstanceDynamic> PortraitMID;
+
+	void ChangePortrait(class UTexture2D* texture);
 };

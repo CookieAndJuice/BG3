@@ -25,6 +25,7 @@
 #include "Dataflow/DataflowOverlay.h"
 #include "UI/Widget/TurnEndWidget.h"
 #include "Game/SkillExecutionSubsystem.h"
+#include "UI/Widget/PlayerPortraitWidget.h"
 #include "UI/Widget/TurnOrderFrameWidget.h"
 
 ABG3GameModePlayerController::ABG3GameModePlayerController()
@@ -254,6 +255,10 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
 		if (GM->IsEnemyWin()) return;
 		enemy->SetMyTurn();
 		return;
+	}
+	else
+	{
+		OverlayWidget->GetPlayerPortraitWidget()->ChangePortrait(NewCharacter->GetPortrait());
 	}
 	
 	CurrentCharacterChanged.ExecuteIfBound(NewCharacter);
