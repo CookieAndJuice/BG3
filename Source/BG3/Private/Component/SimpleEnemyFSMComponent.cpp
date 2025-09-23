@@ -3,6 +3,7 @@
 
 #include "Component/SimpleEnemyFSMComponent.h"
 
+#include "Actor/BG3GameCamera.h"
 #include "BG3/BG3.h"
 #include "Character/BG3EnemyCharacter.h"
 #include "Character/BG3PlayerCharacter.h"
@@ -84,20 +85,51 @@ void USimpleEnemyFSMComponent::PlanState()
 	PRINTSTATELOG(TEXT("Plan Plan Plan"));
 	
 	// select target
-
-	// 1. max distance
-	// if same 2. hp
+	// 1. select ESkillKind
+	// 2. melee : distance / ranged : hp
 	
 	TArray<AActor*> playerArray;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABG3PlayerCharacter::StaticClass(), playerArray);
 
-	int MaxDistance = (playerArray[0]->GetActorLocation() - me->GetActorLocation()).Size();
-	
-	for (int32 i = 0; i < playerArray.Num(); i++)
+	// Set SkillID from SkillKind
+	int32 typeNumber = FMath::RandRange(1, 2);
+	ESkillKind skillKind;
+	int32 skillID = 0;
+	if (typeNumber == 1)
 	{
-		ABG3PlayerCharacter* player = Cast<ABG3PlayerCharacter>(playerArray[i]);
-		FVector dir = player->GetActorLocation() - me->GetActorLocation();
-		float distance = dir.Size();
+		skillKind = ESkillKind::Melee;
+
+		// near target
+		FindNearestTarget(playerArray);
+		int32 index = FMath::RandRange(0, MeleeAttackIDs.Num() - 1);
+		skillID = MeleeAttackIDs[index];
+	}
+	else if (typeNumber == 2)
+	{
+		skillKind = ESkillKind::Ranged;
+
+		// low hp target
+		FindLowestHPTarget();
+		int32 index = FMath::RandRange(0, RangedAttackIDs.Num() - 1);
+		skillID = RangedAttackIDs[index];
+	}
+	
+	DoAction(skillID);
+}
+
+void USimpleEnemyFSMComponent::ExecuteState()
+{
+	PRINTSTATELOG(TEXT("Execute Execute Execute"));
+}
+
+void USimpleEnemyFSMComponent::FindNearestTarget(TArray<AActor*> &targets)
+{
+	// Find Nearest Target
+	int minDistance = (targets[0]->GetActorLocation() - me->GetActorLocation()).Size();
+	for (int32 i = 0; i < targets.Num(); i++)
+	{
+		ABG3PlayerCharacter* player = Cast<ABG3PlayerCharacter>(targets[i]);
+		float distance = (player->GetActorLocation() - me->GetActorLocation()).Size();
 		
 		if (nullptr == target)
 		{
@@ -107,57 +139,57 @@ void USimpleEnemyFSMComponent::PlanState()
 
 		if (player->GetIsDead()) continue;
 		
-		if (distance > MaxDistance)
+		if (distance > minDistance)
 		{
-			distance = MaxDistance;
-			continue;
-		}
-
-		target = player;
-
-		if (Cast<ABG3PlayerCharacter>(player)->Stats->Health < Cast<ABG3PlayerCharacter>(target)->Stats->Health)
-		{
+			minDistance = distance;
 			target = player;
 		}
 	}
-	
-	// target distance
-	float targetDistance = 0;
-	if (nullptr != target)
-	{
-		targetDistance = (target->GetActorLocation() - me->GetActorLocation()).Size();
-		PRINTSTATELOG(TEXT("%f"), targetDistance);
-
-		ABG3GameMode* gm= Cast<ABG3GameMode>(GetWorld()->GetAuthGameMode());
-		
-		// select action
-		//if (targetDistance <= MaxDistance)
-		{
-			// melee
-			bool reqSuccess = gm->RequestUseSkill(me, 1);
-			if (reqSuccess)
-			{
-				TArray<AActor*> tempTargetArray;
-				tempTargetArray.Add(target);
-				SESubsys->SetTargets(tempTargetArray);
-				
-				SESubsys->ConfirmAndExecute(Cast<ABG3GameState>(GetWorld()->GetGameState())->GetCurrentRound());
-			}
-		}
-		{
-			// ranged
-		}
-
-		// change state to ExecuteState
-		ChangeState(ECharacterState::Execute);
-	}
-	// if cannot do anything (cause of slots) -> EndMyTurn()
-	
 }
 
-void USimpleEnemyFSMComponent::ExecuteState()
+void USimpleEnemyFSMComponent::FindLowestHPTarget()
 {
-	PRINTSTATELOG(TEXT("Execute Execute Execute"));
+}
+
+void USimpleEnemyFSMComponent::DoAction(int32 skillID)
+{
+	if (nullptr == target) return;
+	
+	float targetDistance = (target->GetActorLocation() - me->GetActorLocation()).Size();
+	PRINTSTATELOG(TEXT("%f"), targetDistance);
+
+	ABG3GameMode* gm= Cast<ABG3GameMode>(GetWorld()->GetAuthGameMode());
+	
+	// (이동해야 할 거리 <= 최대 이동 가능 거리) ? 액션(이동 + 스킬) 발동 : 액션(이동만) 발동
+	if (targetDistance <= me->Stats->GetRemainingMoveDistance())
+	{
+		// move & attack
+		bool reqSuccess = gm->RequestUseSkill(me, skillID);
+		if (reqSuccess)
+		{
+			TArray<AActor*> tempTargetArray;
+			tempTargetArray.Add(target);
+			SESubsys->SetTargets(tempTargetArray);
+			
+			SESubsys->ConfirmAndExecute(Cast<ABG3GameState>(GetWorld()->GetGameState())->GetCurrentRound());
+		}
+	}
+	else
+	{
+		// move only
+		bool reqSuccess = gm->RequestUseSkill(me, MoveActionID);
+		if (reqSuccess)
+		{
+			TArray<AActor*> tempTargetArray;
+			tempTargetArray.Add(target);
+			SESubsys->SetTargets(tempTargetArray);
+			
+			SESubsys->ConfirmAndExecute(Cast<ABG3GameState>(GetWorld()->GetGameState())->GetCurrentRound());
+		}
+	}
+
+	// change state to ExecuteState
+	ChangeState(ECharacterState::Execute);
 }
 
 void USimpleEnemyFSMComponent::BindingMontageTask(USkillTaskPlayMontage* InTask)

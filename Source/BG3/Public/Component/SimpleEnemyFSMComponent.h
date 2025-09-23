@@ -47,6 +47,11 @@ public:	// FSM
 	void PlanState();
 	void ExecuteState();
 
+private:// Helper Function
+	void FindNearestTarget(TArray<AActor*> &targets);
+	void FindLowestHPTarget();
+	void DoAction(int32 skillID);
+
 public: // Montage Task
 	void BindingMontageTask(USkillTaskPlayMontage* InTask);
 	
@@ -59,10 +64,18 @@ protected:
 	
 	bool bIsMyTurn = false;
 	
-
 	UPROPERTY()
 	TObjectPtr<class ABG3PlayerCharacter> target = nullptr;
 
 	UPROPERTY()
 	TObjectPtr<class ABG3EnemyCharacter> me;
+
+	UPROPERTY()
+	TArray<int32> MeleeAttackIDs = {1, 101};
+
+	UPROPERTY()
+	TArray<int32> RangedAttackIDs = {20};
+
+	UPROPERTY()
+	int32 MoveActionID = 888;
 };
