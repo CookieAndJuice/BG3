@@ -88,7 +88,7 @@ void AProjectileBase::LaunchInDirection(const FVector& Dir)
 	ProjectileMovement->Velocity = Direction * 450.f;
 	//ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->Activate(true);
-	DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + ProjectileMovement->Velocity, FColor::Red);
+	//DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + ProjectileMovement->Velocity, FColor::Red);
 
 	ProjectileMovement->UpdateComponentVelocity();
 }

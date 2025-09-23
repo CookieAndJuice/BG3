@@ -41,6 +41,9 @@ public:
 	void StopEnemies();
 	bool IsEnemyWin();
 	void FinalizeCast(const TArray<AActor*>& InTargets, int32 CurrentRound);
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void SpawnSystem(ABaseCharacter* Caster, FVector TargetLocation);
 	
 	EResultState DecideWhoWin();
 };
