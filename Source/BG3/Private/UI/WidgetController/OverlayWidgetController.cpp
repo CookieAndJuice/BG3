@@ -7,6 +7,7 @@
 #include "Components/Overlay.h"
 #include "Controller/BG3GameModePlayerController.h"
 #include "Data/SkillDefinition.h"
+#include "Game/BG3GameManageSubsystem.h"
 #include "UI/Widget/ActionSlotEntry.h"
 #include "Game/SkillExecutionSubsystem.h"
 
@@ -182,7 +183,20 @@ void UOverlayWidgetController::BuildAndBroadcast()
                 V.bIsTargeting = SES->GetCastState() == ECastState::Targeting;
                 V.bUsable = true;
             }
+            
         }
+
+        // OwningCharacter랑 GameManageSubsystem의 GetCurrentPawn이랑 같지 않으면
+        // V.bUsable = false로 설정하기
+        if (UBG3GameManageSubsystem* GMSub = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>())
+        {
+            if (GMSub->GetCurrentPawn() != OwningCharacter)
+            {
+                V.bUsable = false;
+                V.bIsTargeting = false;
+            }
+        }
+        
 
         PRINTLOG(TEXT("[UI] Slot %s usable=%d cd=%d"), *Def->Meta.DisplayName.ToString(), (int32)bUsable, V.CooldownRemain);
 
