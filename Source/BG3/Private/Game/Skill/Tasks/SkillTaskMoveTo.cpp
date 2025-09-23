@@ -10,6 +10,7 @@
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "Character/BG3EnemyCharacter.h"
+#include "Component/SimpleEnemyFSMComponent.h"
 #include "Game/BG3GameState.h"
 #include "Game/SkillExecutionSubsystem.h"
 
@@ -264,14 +265,20 @@ void USkillTaskMoveTo::HandleMoveCompleted(FAIRequestID RequestID, EPathFollowin
             (int32)Result, Spent, PlannedMoveDistance, CachedStats->GetRemainingMoveDistance());
     }
 
-    if (Cast<ABG3EnemyCharacter>(CachedStats->GetOwner()))
+    if (ABG3EnemyCharacter* Enemy = Cast<ABG3EnemyCharacter>(CachedStats->GetOwner()))
     {
         if (CachedSkill && CachedSkill->Meta.ID == 888)
         {
+            PRINTLOG(TEXT("$$$$$$"));
             USkillExecutionSubsystem* Subsystem = GetWorld()->GetSubsystem<USkillExecutionSubsystem>();
             ABG3GameState* GS = GetWorld()->GetGameState<ABG3GameState>();
             TArray<AActor*> EmptyTargets;
             Subsystem->FinalizeCastAfterExecutor(EmptyTargets, GS->GetCurrentRound());
+            FTimerHandle Timer;
+            GetWorld()->GetTimerManager().SetTimer(Timer, [this, Enemy]()
+            {
+                Enemy->EnemyFSMComp->EndMyTurn();
+            }, 1.f, false);
         }
     }
 
