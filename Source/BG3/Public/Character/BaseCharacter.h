@@ -78,6 +78,8 @@ public:
 
 	void SetPortrait(UTexture2D* portrait);
 	UTexture2D* GetPortrait();
+	void SetSmallPortrait(UTexture2D* portrait);
+	UTexture2D* GetSmallPortrait();
 
 	void SetIsHit(bool bInHit);
 	bool GetIsHit();
@@ -98,6 +100,10 @@ private:
 	// Character Portrait for UI
 	UPROPERTY(VisibleDefaultsOnly, Category = "UI")
 	UTexture2D* CharacterPortrait = nullptr;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "UI")
+	UTexture2D* CharacterSmallPortrait = nullptr;
+
 
 	/* 현재 행동력 */
 	int32 CurrentActions = 1;

@@ -65,12 +65,12 @@ void UOverlayWidget::FadeOutAnimationStart(EResultState result)
 
     if (result == EResultState::Enemy)
     {
-        // Lose ?�우�?
+        // Lose ?�우�?
         Text_Lose->SetVisibility(ESlateVisibility::Visible);
     }
     else if (result == EResultState::Player)
     {
-        // Win ?�우�?
+        // Win ?�우�?
         Text_Win->SetVisibility(ESlateVisibility::Visible);
     }
 }
@@ -83,4 +83,9 @@ UPlayerHPWidget* UOverlayWidget::GetPlayerHPWidget()
 UTurnOrderFrameWidget* UOverlayWidget::GetTurnOrderFrame()
 {
     return TurnOrderFrame;
+}
+
+UPlayerPortraitWidget* UOverlayWidget::GetPlayerPortraitWidget()
+{
+    return PlayerPortrait;
 }

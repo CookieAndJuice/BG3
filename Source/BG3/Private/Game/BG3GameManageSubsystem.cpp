@@ -88,6 +88,7 @@ void UBG3GameManageSubsystem::SpawnPlayers()
 			int32 order = GM->CalcInitiative(10);
 			player->SetID(playerInfo.CharacterID);
 			player->SetPortrait(playerInfo.Portrait);
+			player->SetSmallPortrait(playerInfo.SmallPortrait);
 			PlayerMap.Add(playerInfo.CharacterID, player);
 			
 			FTurnData data = {order, player};
@@ -108,6 +109,7 @@ void UBG3GameManageSubsystem::SpawnEnemies()
 			int32 order = GM->CalcInitiative(5);
 			enemy->SetID(enemyInfo.CharacterID);
 			enemy->SetPortrait(enemyInfo.Portrait);
+			enemy->SetSmallPortrait(enemyInfo.SmallPortrait);
 			EnemyMap.Add(enemyInfo.CharacterID, enemy);
 			
 			FTurnData data = {order, enemy};

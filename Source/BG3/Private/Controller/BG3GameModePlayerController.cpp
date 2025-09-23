@@ -15,6 +15,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "BG3/BG3.h"
 #include "Character/BG3EnemyCharacter.h"
+#include "Character/BG3PlayerCharacter.h"
 #include "Component/CharacterStatsComponent.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
 #include "EnhancedInput/Public/InputMappingContext.h"
@@ -25,6 +26,7 @@
 #include "Dataflow/DataflowOverlay.h"
 #include "UI/Widget/TurnEndWidget.h"
 #include "Game/SkillExecutionSubsystem.h"
+#include "UI/Widget/PlayerPortraitWidget.h"
 #include "UI/Widget/TurnOrderFrameWidget.h"
 
 ABG3GameModePlayerController::ABG3GameModePlayerController()
@@ -106,6 +108,10 @@ void ABG3GameModePlayerController::BeginPlay()
 	}
 	// Add to Turn Order Widgets to Overlay Widget
 	OverlayWidget->GetTurnOrderFrame()->CreateFrameWidget();
+	if (Cast<ABG3PlayerCharacter>(PossessedCharacter))
+	{
+		OverlayWidget->GetPlayerPortraitWidget()->ChangePortrait(PossessedCharacter->GetPortrait());
+	}
 	
 	SetShowMouseCursor(true);
 }
@@ -255,6 +261,11 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
 		enemy->SetMyTurn();
 		return;
 	}
+	// else
+	// {
+	PRINTLOG(TEXT("%s"), *PossessedCharacter->GetName());
+	OverlayWidget->GetPlayerPortraitWidget()->ChangePortrait(PossessedCharacter->GetPortrait());
+	// }
 	
 	CurrentCharacterChanged.ExecuteIfBound(NewCharacter);
 }
