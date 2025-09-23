@@ -107,7 +107,10 @@ void USkillTaskMoveTo::Start(UObject* /*WorldContext*/, AActor* Caster, const US
 
     CachedStats = CasterCharacter->Stats;
     CachedStartLocation = CasterCharacter->GetActorLocation();
-    CachedSkill = Skill;
+
+    USkillDefinition* InSkill = const_cast<USkillDefinition*>(Skill);
+    
+    CachedSkill = InSkill;
 
     const float RemainingBudget = CachedStats->GetRemainingMoveDistance();
     if (RemainingBudget <= KINDA_SMALL_NUMBER)
