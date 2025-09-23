@@ -9,6 +9,9 @@
 #include "Navigation/PathFollowingComponent.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
+#include "Character/BG3EnemyCharacter.h"
+#include "Game/BG3GameState.h"
+#include "Game/SkillExecutionSubsystem.h"
 
 namespace
 {
@@ -104,6 +107,7 @@ void USkillTaskMoveTo::Start(UObject* /*WorldContext*/, AActor* Caster, const US
 
     CachedStats = CasterCharacter->Stats;
     CachedStartLocation = CasterCharacter->GetActorLocation();
+    CachedSkill = Skill;
 
     const float RemainingBudget = CachedStats->GetRemainingMoveDistance();
     if (RemainingBudget <= KINDA_SMALL_NUMBER)
@@ -255,6 +259,17 @@ void USkillTaskMoveTo::HandleMoveCompleted(FAIRequestID RequestID, EPathFollowin
 
         PRINTLOG(TEXT("[Task] MoveTo: completed result=%d spent=%.1f planned=%.1f remaining=%.1f"),
             (int32)Result, Spent, PlannedMoveDistance, CachedStats->GetRemainingMoveDistance());
+    }
+
+    if (Cast<ABG3EnemyCharacter>(CachedStats->GetOwner()))
+    {
+        if (CachedSkill && CachedSkill->Meta.ID == 888)
+        {
+            USkillExecutionSubsystem* Subsystem = GetWorld()->GetSubsystem<USkillExecutionSubsystem>();
+            ABG3GameState* GS = GetWorld()->GetGameState<ABG3GameState>();
+            TArray<AActor*> EmptyTargets;
+            Subsystem->FinalizeCastAfterExecutor(EmptyTargets, GS->GetCurrentRound());
+        }
     }
 
     CachedStats.Reset();
