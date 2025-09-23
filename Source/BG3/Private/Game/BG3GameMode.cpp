@@ -43,8 +43,6 @@ ABG3GameMode::ABG3GameMode()
 	{
 		StatModifierByScore[s] = FMath::FloorToInt((s - 10) / 2.0f);
 	}
-
-	
 }
 
 void ABG3GameMode::BeginPlay()

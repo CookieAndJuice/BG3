@@ -54,14 +54,14 @@ void UBG3GameManageSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	{
 		if (a.TurnOrder != b.TurnOrder)
 		{
-			return a.TurnOrder < b.TurnOrder;
+			return a.TurnOrder > b.TurnOrder;
 		}
 		const bool bAIsPlayer = a.TurnCharacter->IsA(ABG3PlayerCharacter::StaticClass());
 		const bool bBIsPlayer = b.TurnCharacter->IsA(ABG3PlayerCharacter::StaticClass());
 		
 		if (bAIsPlayer != bBIsPlayer)
 		{
-			return bAIsPlayer;
+			return bBIsPlayer;
 		}
 		
 		return false;

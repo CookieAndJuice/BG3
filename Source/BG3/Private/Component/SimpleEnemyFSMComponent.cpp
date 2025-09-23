@@ -107,18 +107,18 @@ void USimpleEnemyFSMComponent::PlanState()
 
 		if (player->GetIsDead()) continue;
 		
-		// if (distance > MaxDistance)
-		// {
-		// 	distance = MaxDistance;
-		// 	continue;
-		// }
+		if (distance > MaxDistance)
+		{
+			distance = MaxDistance;
+			continue;
+		}
 
 		target = player;
 
-		// if (Cast<ABG3PlayerCharacter>(player)->Stats->Health < Cast<ABG3PlayerCharacter>(target)->Stats->Health)
-		// {
-		// 	target = player;
-		// }
+		if (Cast<ABG3PlayerCharacter>(player)->Stats->Health < Cast<ABG3PlayerCharacter>(target)->Stats->Health)
+		{
+			target = player;
+		}
 	}
 	
 	// target distance
