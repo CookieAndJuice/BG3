@@ -10,6 +10,8 @@
 #include "Controller/BG3GameModePlayerController.h"
 #include "Game/BG3GameManageSubsystem.h"
 #include "Character/BaseCharacter.h"
+#include "Character/BG3EnemyCharacter.h"
+#include "Components/Image.h"
 
 
 class ABG3GameModePlayerController;
@@ -29,6 +31,14 @@ void UCharacterTurnHpWidget::NativeConstruct()
 void UCharacterTurnHpWidget::InitializeWithCharacter(ABaseCharacter* character)
 {
 	OwnerCharacter = character;
+	if (Cast<ABG3EnemyCharacter>(OwnerCharacter.Get()))
+	{
+		CharacterBtnBG->SetColorAndOpacity({0.536458f, 0.036323f, 0.036323f, 1.f});
+	}
+	else
+	{
+		CharacterBtnBG->SetColorAndOpacity({0.033203f, 0.397256f, 0.708333f, 1.f});
+	}
 }
 
 void UCharacterTurnHpWidget::SetPlayerHP(int32 curHp, int32 maxHp)

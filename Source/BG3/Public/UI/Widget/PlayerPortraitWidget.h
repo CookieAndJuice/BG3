@@ -13,4 +13,8 @@ UCLASS()
 class BG3_API UPlayerPortraitWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidgetOptional))
+	TObjectPtr<class UImage> Portrait;
 };

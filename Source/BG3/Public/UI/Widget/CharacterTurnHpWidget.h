@@ -16,6 +16,9 @@ class BG3_API UCharacterTurnHpWidget : public UUserWidget
 	
 public:
 	virtual void NativeConstruct() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidgetOptional))
+	TObjectPtr<class UImage> CharacterBtnBG;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(BindWidgetOptional))
 	TObjectPtr<class UImage> CharacterImage;
