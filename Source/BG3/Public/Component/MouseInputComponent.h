@@ -124,6 +124,7 @@ public:
     TObjectPtr<UInputAction> CancelAction;
 
 private:
+    void ClearMoveIndicator();
     AActor* GetActorUnderCursor() const;
     bool IsTargeting() const;
     bool IsIdle() const;
