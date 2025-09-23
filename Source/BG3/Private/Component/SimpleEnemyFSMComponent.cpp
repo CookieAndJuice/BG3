@@ -92,7 +92,8 @@ void USimpleEnemyFSMComponent::PlanState()
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABG3PlayerCharacter::StaticClass(), playerArray);
 
 	// Set SkillID from SkillKind
-	int32 typeNumber = FMath::RandRange(1, 2);
+	// *** Now Enemy doesn't have Ranged Skill ***
+	int32 typeNumber = FMath::RandRange(1, 1);
 	ESkillKind skillKind;
 	int32 skillID = 0;
 	if (typeNumber == 1)
@@ -174,7 +175,8 @@ void USimpleEnemyFSMComponent::FindLowestHPTarget(TArray<AActor*> &targets)
 void USimpleEnemyFSMComponent::DoAction(int32 skillID)
 {
 	if (nullptr == target) return;
-	
+
+	// 이동해야 할 거리로 바꾸기 = 실제 이동할 거리 = 타겟까지의 거리 - 스킬 사거리
 	float targetDistance = (target->GetActorLocation() - me->GetActorLocation()).Size();
 
 	ABG3GameMode* gm= Cast<ABG3GameMode>(GetWorld()->GetAuthGameMode());
@@ -187,6 +189,7 @@ void USimpleEnemyFSMComponent::DoAction(int32 skillID)
 		
 		if (reqSuccess)
 		{
+			PRINTLOG(TEXT("attack move : %d"), skillID);
 			TArray<AActor*> tempTargetArray;
 			tempTargetArray.Add(target);
 			SESubsys->SetTargets(tempTargetArray);
@@ -202,6 +205,7 @@ void USimpleEnemyFSMComponent::DoAction(int32 skillID)
 		
 		if (reqSuccess)
 		{
+			PRINTLOG(TEXT("move : %d"), skillID);
 			TArray<AActor*> tempTargetArray;
 			tempTargetArray.Add(target);
 			SESubsys->SetTargets(tempTargetArray);
