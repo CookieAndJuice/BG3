@@ -92,9 +92,10 @@ void UMouseInputComponent::OnClick(const FInputActionValue& /*Value*/)
     FHitResult Hit;
     const bool bHit = PC->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
 
-    // 스킬 타겟팅 
+    // 스킬 타겟팅 중일 때
     if (!IsIdle())
     {
+        if (Hit.Component->GetCollisionObjectType() != ECC_Pawn) return;
         if (USkillExecutionSubsystem* SES = GetWorld()->GetSubsystem<USkillExecutionSubsystem>())
         {
             SES->OnClickInTargeting(Hit);
@@ -102,6 +103,7 @@ void UMouseInputComponent::OnClick(const FInputActionValue& /*Value*/)
         return;
     }
 
+    // 스킬 타겟팅 중이 아닐 때
     if (UBG3GameManageSubsystem* Sub = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>())
     {
         if (ABaseCharacter* Character = Sub->GetCurrentPawn())

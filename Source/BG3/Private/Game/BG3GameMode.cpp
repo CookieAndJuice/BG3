@@ -113,6 +113,15 @@ bool ABG3GameMode::IsEnemyWin()
 	return false;
 }
 
+void ABG3GameMode::FinalizeCast(const TArray<AActor*>& InTargets, int32 CurrentRound)
+{
+	if (USkillExecutionSubsystem* Subsystem = GetWorld()->GetSubsystem<USkillExecutionSubsystem>())
+	{
+		Subsystem->FinalizeCastAfterExecutor(InTargets, CurrentRound);
+	}
+}
+
+
 EResultState ABG3GameMode::DecideWhoWin()
 {
 	EResultState result = EResultState::None;

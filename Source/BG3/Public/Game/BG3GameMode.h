@@ -40,6 +40,7 @@ public:
 	bool RequestUseSkill(class ABaseCharacter* Caster, int32 SkillID);
 	void StopEnemies();
 	bool IsEnemyWin();
+	void FinalizeCast(const TArray<AActor*>& InTargets, int32 CurrentRound);
 	
 	EResultState DecideWhoWin();
 };

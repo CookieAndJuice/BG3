@@ -44,6 +44,9 @@ private:
     UPROPERTY()
     TWeakObjectPtr<UCharacterStatsComponent> CachedStats;
 
+    UPROPERTY()
+    USkillDefinition* CachedSkill = nullptr;
+
     FVector CachedStartLocation = FVector::ZeroVector;
     float PlannedMoveDistance = 0.f;
 
