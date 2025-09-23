@@ -72,7 +72,7 @@ protected:
 
 private:// Action IDs
 	UPROPERTY()
-	TArray<int32> MeleeAttackIDs = {1};
+	TArray<int32> MeleeAttackIDs = {1, 85, 86};
 
 	UPROPERTY()
 	TArray<int32> RangedAttackIDs = {20};

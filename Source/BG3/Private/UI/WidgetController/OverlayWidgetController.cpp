@@ -164,7 +164,7 @@ void UOverlayWidgetController::BuildAndBroadcast()
         if (!Def) continue;
 
         // 스킬이 만약 이동 스킬이면, 컴뱃 패널에 추가하지 않음
-        if (Def->Meta.ID == 888) return;
+        if (Def->Meta.ID == 888) continue;
 
         FActionSlotView V;
         V.SkillID = Def->Meta.ID;

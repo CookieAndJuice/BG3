@@ -196,6 +196,11 @@ void USimpleEnemyFSMComponent::DoAction(int32 skillID)
 			
 			SESubsys->ConfirmAndExecute(Cast<ABG3GameState>(GetWorld()->GetGameState())->GetCurrentRound());
 		}
+		else
+		{
+			ChangeState(ECharacterState::Plan);
+			return;
+		}
 	}
 	else
 	{
