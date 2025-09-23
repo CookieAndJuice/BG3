@@ -13,6 +13,15 @@
 #include "GameFramework/PlayerController.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
 
+void UMouseInputComponent::ClearMoveIndicator()
+{
+    if (ActiveMoveIndicator.IsValid())
+    {
+        ActiveMoveIndicator->Destroy();
+        ActiveMoveIndicator = nullptr;
+    }
+}
+
 UMouseInputComponent::UMouseInputComponent()
 {
     PrimaryComponentTick.bCanEverTick = true;
@@ -83,7 +92,7 @@ void UMouseInputComponent::OnClick(const FInputActionValue& /*Value*/)
     FHitResult Hit;
     const bool bHit = PC->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
 
-    // ?寃잜똿 以묒씪 ??
+    // 스킬 타겟팅 
     if (!IsIdle())
     {
         if (USkillExecutionSubsystem* SES = GetWorld()->GetSubsystem<USkillExecutionSubsystem>())
@@ -97,21 +106,22 @@ void UMouseInputComponent::OnClick(const FInputActionValue& /*Value*/)
     {
         if (ABaseCharacter* Character = Sub->GetCurrentPawn())
         {
-            FTransform IndicatorTransform;
-            FVector IndicatorLocation = Hit.ImpactPoint;
-            IndicatorLocation.Z += 60.f;
-            IndicatorTransform.SetLocation(IndicatorLocation);
-
-            FActorSpawnParameters Params;
-            Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-            if (ActiveMoveIndicator.IsValid())
+            ClearMoveIndicator();
+            
+            if (Character->Stats->RemainingMoveDistance > 100.f)
             {
-                ActiveMoveIndicator->Destroy();
-                ActiveMoveIndicator = nullptr;
-            }
+                
+                FTransform IndicatorTransform;
+                FVector IndicatorLocation = Hit.ImpactPoint;
+                IndicatorLocation.Z += 60.f;
+                IndicatorTransform.SetLocation(IndicatorLocation);
 
-            ActiveMoveIndicator = GetWorld()->SpawnActor<AActor>(MoveIndicatorClass, IndicatorTransform, Params);
+                FActorSpawnParameters Params;
+                Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+                
+                ActiveMoveIndicator = GetWorld()->SpawnActor<AActor>(MoveIndicatorClass, IndicatorTransform, Params);
+            }
+            
 
             PRINTLOG(TEXT("RemainingMoveDistance : %.1f"), Character->Stats->RemainingMoveDistance);
             IssueTurnMove(Hit.Location);
@@ -234,6 +244,12 @@ void UMouseInputComponent::ApplyTravelledDistance(ABaseCharacter& Character)
         PRINTLOG(TEXT("[Move] %s travelled %.1f (planned %.1f). Remaining %.1f / %.1f"),
             *Character.GetName(), ConsumedDistance, PlannedDistance, RemainingMove, MaxMove);
     }
+
+    if (PendingTurnMove.bActive == true)
+    {
+        ClearMoveIndicator();
+    }
+    
 
     PendingTurnMove.Reset();
     SetComponentTickEnabled(false);

@@ -239,13 +239,6 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
     PRINTLOG(TEXT("[SwitchToPawn] Call OnOwnerTurnStart"));
     NewCharacter->SkillBook->OnOwnerTurnStart(); 
 	
-	if (auto* enemy = Cast<ABG3EnemyCharacter>(PossessedCharacter))
-	{
-		ABG3GameMode* GM = Cast<ABG3GameMode>(GetWorld()->GetAuthGameMode());
-		if (GM->IsEnemyWin()) return;
-		enemy->SetMyTurn();
-	}
-
     // Reset RemainingMoveDistance
     if (MouseInput)
     {
@@ -253,6 +246,15 @@ void ABG3GameModePlayerController::SwitchToPawn(ABaseCharacter* NewCharacter)
         MouseInput->PendingTurnMove.Reset();
     }
     NewCharacter->Stats->ResetRemainingMoveDistance();
+
+	// enemy
+	if (auto* enemy = Cast<ABG3EnemyCharacter>(PossessedCharacter))
+	{
+		ABG3GameMode* GM = Cast<ABG3GameMode>(GetWorld()->GetAuthGameMode());
+		if (GM->IsEnemyWin()) return;
+		enemy->SetMyTurn();
+		return;
+	}
 	
 	CurrentCharacterChanged.ExecuteIfBound(NewCharacter);
 }
