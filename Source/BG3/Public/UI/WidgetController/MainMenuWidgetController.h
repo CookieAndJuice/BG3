@@ -55,4 +55,7 @@ private:
 	//
 	// UPROPERTY()
 	// class UMediaSource* PressAnyKeyScreen2;
+
+	// UPROPERTY()
+	// TObjectPtr<class USoundBase*> MainMenuSound;
 };

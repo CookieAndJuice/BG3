@@ -28,4 +28,8 @@ void AMainMenuWidgetController::BeginPlay()
 
 	MainMenuWidget = CreateWidget<UMainMenuWidget>(GetWorld(), MainMenuWidgetClass);
 	MainMenuWidget->AddToViewport();
+
+	//  UGameplayStatics::PlaySound2D(GetWorld(), MainMenuSound);
+
+	SetShowMouseCursor(true);
 }

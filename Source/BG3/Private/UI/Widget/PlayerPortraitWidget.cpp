@@ -3,6 +3,9 @@
 
 #include "UI/Widget/PlayerPortraitWidget.h"
 
+#include "BG3/BG3.h"
+#include "Components/Image.h"
+
 
 UPlayerPortraitWidget::UPlayerPortraitWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -18,9 +21,11 @@ void UPlayerPortraitWidget::NativeConstruct()
 	Super::NativeConstruct();
 	
 	PortraitMID = UMaterialInstanceDynamic::Create(PortraitMaterial, this);
+	Portrait->SetBrushFromMaterial(PortraitMID);
 }
 
 void UPlayerPortraitWidget::ChangePortrait(UTexture2D* texture)
 {
+	PRINTLOG(TEXT("%s"), *texture->GetName());
 	PortraitMID->SetTextureParameterValue(FName(TEXT("InputTexture")), texture);
 }
