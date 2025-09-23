@@ -49,7 +49,7 @@ public:	// FSM
 
 private:// Helper Function
 	void FindNearestTarget(TArray<AActor*> &targets);
-	void FindLowestHPTarget();
+	void FindLowestHPTarget(TArray<AActor*> &targets);
 	void DoAction(int32 skillID);
 
 public: // Montage Task
@@ -70,8 +70,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class ABG3EnemyCharacter> me;
 
+private:// Action IDs
 	UPROPERTY()
-	TArray<int32> MeleeAttackIDs = {1, 101};
+	TArray<int32> MeleeAttackIDs = {1};
 
 	UPROPERTY()
 	TArray<int32> RangedAttackIDs = {20};

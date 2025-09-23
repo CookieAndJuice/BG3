@@ -107,9 +107,10 @@ void USimpleEnemyFSMComponent::PlanState()
 	else if (typeNumber == 2)
 	{
 		skillKind = ESkillKind::Ranged;
+		PRINTLOG(TEXT("rangedddddddddd"));
 
 		// low hp target
-		FindLowestHPTarget();
+		FindLowestHPTarget(playerArray);
 		int32 index = FMath::RandRange(0, RangedAttackIDs.Num() - 1);
 		skillID = RangedAttackIDs[index];
 	}
@@ -125,7 +126,7 @@ void USimpleEnemyFSMComponent::ExecuteState()
 void USimpleEnemyFSMComponent::FindNearestTarget(TArray<AActor*> &targets)
 {
 	// Find Nearest Target
-	int minDistance = (targets[0]->GetActorLocation() - me->GetActorLocation()).Size();
+	int32 minDistance = 1e9;
 	for (int32 i = 0; i < targets.Num(); i++)
 	{
 		ABG3PlayerCharacter* player = Cast<ABG3PlayerCharacter>(targets[i]);
@@ -136,10 +137,9 @@ void USimpleEnemyFSMComponent::FindNearestTarget(TArray<AActor*> &targets)
 			target = player;
 			continue;
 		}
-
 		if (player->GetIsDead()) continue;
 		
-		if (distance > minDistance)
+		if (distance < minDistance)
 		{
 			minDistance = distance;
 			target = player;
@@ -147,8 +147,28 @@ void USimpleEnemyFSMComponent::FindNearestTarget(TArray<AActor*> &targets)
 	}
 }
 
-void USimpleEnemyFSMComponent::FindLowestHPTarget()
+void USimpleEnemyFSMComponent::FindLowestHPTarget(TArray<AActor*> &targets)
 {
+	// Find Lowest Hp Target
+	float minHealth = 1e9;
+	for (int32 i = 0; i < targets.Num(); i++)
+	{
+		ABG3PlayerCharacter* player = Cast<ABG3PlayerCharacter>(targets[i]);
+		float health = player->Stats->GetHealth();
+
+		if (nullptr == target)
+		{
+			target = player;
+			continue;
+		}
+		if (player->GetIsDead()) continue;
+
+		if (health < minHealth)
+		{
+			minHealth = health;
+			target = player;
+		}
+	}
 }
 
 void USimpleEnemyFSMComponent::DoAction(int32 skillID)
@@ -156,7 +176,6 @@ void USimpleEnemyFSMComponent::DoAction(int32 skillID)
 	if (nullptr == target) return;
 	
 	float targetDistance = (target->GetActorLocation() - me->GetActorLocation()).Size();
-	PRINTSTATELOG(TEXT("%f"), targetDistance);
 
 	ABG3GameMode* gm= Cast<ABG3GameMode>(GetWorld()->GetAuthGameMode());
 	
@@ -165,6 +184,7 @@ void USimpleEnemyFSMComponent::DoAction(int32 skillID)
 	{
 		// move & attack
 		bool reqSuccess = gm->RequestUseSkill(me, skillID);
+		
 		if (reqSuccess)
 		{
 			TArray<AActor*> tempTargetArray;
@@ -177,7 +197,9 @@ void USimpleEnemyFSMComponent::DoAction(int32 skillID)
 	else
 	{
 		// move only
-		bool reqSuccess = gm->RequestUseSkill(me, MoveActionID);
+		skillID = MoveActionID;
+		bool reqSuccess = gm->RequestUseSkill(me, skillID);
+		
 		if (reqSuccess)
 		{
 			TArray<AActor*> tempTargetArray;
