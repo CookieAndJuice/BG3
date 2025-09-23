@@ -1,9 +1,11 @@
 
 #include "Game/Skill/Projectile/ProjectileBase.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Actor/BG3GameCamera.h"
 #include "BG3/BG3.h"
 #include "Character/BaseCharacter.h"
 #include "Components/BoxComponent.h"
+#include "Controller/BG3GameModePlayerController.h"
 #include "Data/SkillDefinition.h"
 #include "Game/BG3GameMode.h"
 #include "Game/BG3GameState.h"
@@ -150,6 +152,7 @@ void AProjectileBase::FinalizeCast(ABaseCharacter* Caster, ABaseCharacter* Targe
 		}
 	}
 
+	Cast<ABG3GameModePlayerController>(GetWorld()->GetFirstPlayerController())->BG3Camera->StopAttackCamera();
 	Destroy();
 }
 

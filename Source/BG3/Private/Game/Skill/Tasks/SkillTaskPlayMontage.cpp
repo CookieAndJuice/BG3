@@ -1,6 +1,7 @@
 #include "Game/Skill/Tasks/SkillTaskPlayMontage.h"
 
 #include "NiagaraFunctionLibrary.h"
+#include "Actor/BG3GameCamera.h"
 #include "BG3/BG3.h"
 #include "Animation/AnimInstance.h"
 #include "Character/Animation/BaseAnimInstance.h"
@@ -9,6 +10,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Data/SkillDefinition.h"
 #include "Component/SimpleEnemyFSMComponent.h"
+#include "Controller/BG3GameModePlayerController.h"
 #include "Game/SkillExecutionSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -48,7 +50,7 @@ void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, con
     {
         MontageToPlay = Skill->GetMontageForMesh(Mesh);
     }
-
+    
     
 
     if (!MontageToPlay)
@@ -86,13 +88,19 @@ void USkillTaskPlayMontage::Start(UObject* /*WorldContext*/, AActor* Caster, con
     if (Skill->SkillAssetSet.ImpactSound)
         HitSound = Skill->SkillAssetSet.ImpactSound;
 
-   
-    
+
+    USkillDefinition* InSkill = const_cast<USkillDefinition*>(Skill); 
+    SkillInfo = InSkill;
 
     AnimInstance->OnMontageEnded.AddDynamic(this, &USkillTaskPlayMontage::OnMontageEnded);
     AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &USkillTaskPlayMontage::OnNotifyBegin);
 
     const float Length = AnimInstance->Montage_Play(MontageToPlay, 1.0f);
+
+    ESkillKind SkillKind = SkillInfo->Meta.SkillKind;
+    ABaseCharacter* targetCharacter = Cast<ABaseCharacter>(Targets[0]);
+    Cast<ABG3GameModePlayerController>(GetWorld()->GetFirstPlayerController())->BG3Camera->PlayAttackCamera(SkillKind, targetCharacter);
+    
     if (Length <= 0.f)
     {
         ClearActiveTaskBinding();
@@ -214,6 +222,8 @@ void USkillTaskPlayMontage::OnMontageEnded(UAnimMontage* InMontage, bool bInterr
         return;
     }
 
+    if (SkillInfo->Meta.SkillKind == ESkillKind::Melee)
+        Cast<ABG3GameModePlayerController>(GetWorld()->GetFirstPlayerController())->BG3Camera->StopAttackCamera();
     
     if (!bHitApplied && OnFinished.IsBound() && !bShootHandled)
     {

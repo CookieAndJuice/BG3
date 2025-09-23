@@ -174,10 +174,10 @@ void ABG3GameCamera::CustomZoom(float input, float targetArmLength, float target
 }
 
 // when Action is started
-void ABG3GameCamera::PlayAttackCamera(EAttackMode attackMode, ABaseCharacter* target)
+void ABG3GameCamera::PlayAttackCamera(ESkillKind attackMode, ABaseCharacter* target)
 {
 	// 카메라로부터 플레이어와 거리가 특정 거리보다 멀면 카메라 이동
-	PreAttackMode = attackMode;
+	PreSkillKind = attackMode;
 	preTargetArmLength = SpringArmComponent->TargetArmLength;
 	prePitch = SpringArmComponent->GetRelativeRotation().Pitch;
 	float dist = (GMSubsystem->GetCurrentPawn()->GetActorLocation() - CameraComponent->GetComponentLocation()).Size();
@@ -185,7 +185,7 @@ void ABG3GameCamera::PlayAttackCamera(EAttackMode attackMode, ABaseCharacter* ta
 	// 근거리
 	if (dist > MaxTargetArmLength + ExtraTargetArmLength)
 	{
-		if (PreAttackMode == EAttackMode::Melee)
+		if (PreSkillKind == ESkillKind::Melee)
 		{
 			// 플레이어 중심으로
 			FocusCamera(GMSubsystem->GetCurrentPawn());
@@ -194,7 +194,7 @@ void ABG3GameCamera::PlayAttackCamera(EAttackMode attackMode, ABaseCharacter* ta
 			if (preTargetArmLength < MiddleTargetArmLength)
 				CustomZoom(1, MiddleTargetArmLength, MiddlePitch);
 		}
-		else if (PreAttackMode == EAttackMode::Ranged)
+		else if (PreSkillKind == ESkillKind::Ranged)
 		{
 			// 적과 플레이어 중간으로
 			FVector midLoc = (target->GetActorLocation() + GMSubsystem->GetCurrentPawn()->GetActorLocation()) / 2;
@@ -203,12 +203,12 @@ void ABG3GameCamera::PlayAttackCamera(EAttackMode attackMode, ABaseCharacter* ta
 	}
 
 	// 원거리 줌
-	if (PreAttackMode == EAttackMode::Ranged)
+	if (PreSkillKind == ESkillKind::Ranged)
 	{		
 		// 그냥 축소
 		CustomZoom(1, MaxTargetArmLength, MinPitch);
 	}
-	PRINTLOG(TEXT("PlayAttackCamera End : %d"), bIsAttackCameraActive);
+		PRINTLOG(TEXT("PlayAttackCamera End : %d"), bIsAttackCameraActive);
 }
 
 // when Action is end
@@ -216,14 +216,15 @@ void ABG3GameCamera::StopAttackCamera()
 {
 	// 카메라 줌 복구
 	PRINTLOG(TEXT("StopAttackCamera Start : %d"), bIsAttackCameraActive);
-	if (!bIsAttackCameraActive) return;
 	
-	if (PreAttackMode == EAttackMode::Ranged)
+	if (PreSkillKind == ESkillKind::Ranged)
 	{
 		FocusCamera(GMSubsystem->GetCurrentPawn());
 	}
+	
 	bIsAttackCameraActive = false;
-	TargetLength = preTargetArmLength;
 	TargetPitch = prePitch;
+	TargetLength = preTargetArmLength;
+	
 	CustomZoom(1, preTargetArmLength, prePitch);
 }

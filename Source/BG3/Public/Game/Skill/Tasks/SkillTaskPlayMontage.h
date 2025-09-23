@@ -26,6 +26,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Montage")
     FName HitNotifyName = FName(TEXT("Hit"));
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Montage")
+    USkillDefinition* SkillInfo = nullptr;
+
     UFUNCTION(BlueprintCallable, Category="Montage")
     void SetRound(int32 InRound) { Round = InRound; }
 

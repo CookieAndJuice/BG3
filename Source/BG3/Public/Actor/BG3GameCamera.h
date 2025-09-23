@@ -3,14 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/SkillDefinition.h"
 #include "GameFramework/Pawn.h"
 #include "BG3GameCamera.generated.h"
 
-UENUM()
-enum class EAttackMode : uint8
-{
-	Melee, Ranged
-};
+enum class ESkillKind : uint8;
 
 UCLASS()
 class BG3_API ABG3GameCamera : public APawn
@@ -53,7 +50,7 @@ public:	// Camera
 private:// Camera State
 	bool bIsFreeCameraMode = false;
 	bool bIsAttackCameraActive = false;
-	EAttackMode PreAttackMode = EAttackMode::Melee;
+	ESkillKind PreSkillKind = ESkillKind::Melee;
 
 private:// Camera Movement
 	float Dx;
@@ -139,7 +136,7 @@ public:	// Camera Movement
 	void CustomZoom(float input, float targetArmLength, float targetPitch);
 
 	UFUNCTION(BlueprintCallable)
-	void PlayAttackCamera(EAttackMode attackMode, class ABaseCharacter* target);
+	void PlayAttackCamera(ESkillKind attackMode, class ABaseCharacter* target);
 
 	UFUNCTION(BlueprintCallable)
 	void StopAttackCamera();
