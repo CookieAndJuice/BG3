@@ -61,6 +61,11 @@ ABG3GameModePlayerController::ABG3GameModePlayerController()
 	{
 		BG3CameraClass = CameraClassRef.Class;
 	}
+	ConstructorHelpers::FObjectFinder<USoundBase> battleSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Assets/Sound/BGM/50_TaruTaru_AfterRescue.50_TaruTaru_AfterRescue'"));
+	if (battleSoundRef.Succeeded())
+	{
+		BattleSound = battleSoundRef.Object;
+	}
 
     // ���콺 �Է� ������Ʈ ����(�Է� ���ε��� SetupInputComponent���� ����)
     MouseInput = CreateDefaultSubobject<UMouseInputComponent>(TEXT("MouseInputComponent"));
@@ -112,6 +117,8 @@ void ABG3GameModePlayerController::BeginPlay()
 	{
 		OverlayWidget->GetPlayerPortraitWidget()->ChangePortrait(PossessedCharacter->GetPortrait());
 	}
+
+	UGameplayStatics::PlaySound2D(GetWorld(), BattleSound);
 	
 	SetShowMouseCursor(true);
 }

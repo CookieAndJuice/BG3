@@ -73,6 +73,10 @@ public:	// Camera
 	void SpawnCamera();
 
 	void InitializeCamera();
+
+public: // Sound
+	UPROPERTY()
+	TObjectPtr<class USoundBase> BattleSound;
 	
     /* Widget */
 

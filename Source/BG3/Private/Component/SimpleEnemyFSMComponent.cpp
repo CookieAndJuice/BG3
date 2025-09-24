@@ -108,7 +108,6 @@ void USimpleEnemyFSMComponent::PlanState()
 	else if (typeNumber == 2)
 	{
 		skillKind = ESkillKind::Ranged;
-		PRINTLOG(TEXT("rangedddddddddd"));
 
 		// low hp target
 		FindLowestHPTarget(playerArray);

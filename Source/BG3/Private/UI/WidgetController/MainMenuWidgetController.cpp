@@ -4,6 +4,7 @@
 #include "UI/WidgetController/MainMenuWidgetController.h"
 
 #include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/Widget/MainMenuWidget.h"
 #include "UI/Widget/PressEnterKeyWidget.h"
 
@@ -20,6 +21,17 @@ AMainMenuWidgetController::AMainMenuWidgetController()
 	{
 		MainMenuWidgetClass = mainMenuRef.Class;
 	}
+
+	ConstructorHelpers::FObjectFinder<USoundBase> pressKeySoundRef(TEXT("/Script/Engine.SoundWave'/Game/Assets/Sound/BGM/Title_OP__cut_34sec_.Title_OP__cut_34sec_'"));
+	if (pressKeySoundRef.Succeeded())
+	{
+		PressKeySound = pressKeySoundRef.Object;
+	}
+	ConstructorHelpers::FObjectFinder<USoundBase> mainMenuSoundRef(TEXT("/Script/Engine.SoundWave'/Game/Assets/Sound/BGM/03_NameInput.03_NameInput'"));
+	if (mainMenuSoundRef.Succeeded())
+	{
+		MainMenuSound = mainMenuSoundRef.Object;
+	}
 }
 
 void AMainMenuWidgetController::BeginPlay()
@@ -29,7 +41,7 @@ void AMainMenuWidgetController::BeginPlay()
 	MainMenuWidget = CreateWidget<UMainMenuWidget>(GetWorld(), MainMenuWidgetClass);
 	MainMenuWidget->AddToViewport();
 
-	//  UGameplayStatics::PlaySound2D(GetWorld(), MainMenuSound);
+	UGameplayStatics::PlaySound2D(GetWorld(), PressKeySound);
 
 	SetShowMouseCursor(true);
 }
