@@ -11,6 +11,7 @@
 #include "Game/BG3GameState.h"
 #include "Game/SkillExecutionSubsystem.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Manager/BG3DiceManager.h"
 
 
@@ -60,6 +61,9 @@ void AProjectileBase::Init(ABaseCharacter* Caster, ABaseCharacter* Target, const
 	}
 
 	SetOwner(Caster);
+
+	if (Skill->SkillAssetSet.ImpactSound)
+		ImpactSound = Skill->SkillAssetSet.ImpactSound; 
 
 	const FVector Direction = LaunchDirection.GetSafeNormal();
 	if (Direction.IsNearlyZero()) return;
@@ -127,6 +131,7 @@ void AProjectileBase::Tick(float DeltaTime)
 		{
 			if (TargetCharacter != OutHit.GetActor()) return;
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, OutHit.ImpactPoint);
+			UGameplayStatics::PlaySound2D(GetWorld(), ImpactSound);
 		}
 		FinalizeCast(CasterCharacter, TargetCharacter);
 	}
