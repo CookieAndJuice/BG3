@@ -35,6 +35,15 @@ public:
     UPROPERTY(meta=(BindWidgetAnim), Transient)
     UWidgetAnimation* FadeOut3;
 
+    UPROPERTY(meta=(BindWidgetAnim), Transient)
+    UWidgetAnimation* FadeOut4;
+
+    UPROPERTY(meta=(BindWidgetAnim), Transient)
+    UWidgetAnimation* FadeOut5;
+
+    UPROPERTY(meta=(BindWidgetAnim), Transient)
+    UWidgetAnimation* FadeOut6;
+
     UPlayerHPWidget* GetPlayerHPWidget();
     UTurnOrderFrameWidget* GetTurnOrderFrame();
     UPlayerPortraitWidget* GetPlayerPortraitWidget();
