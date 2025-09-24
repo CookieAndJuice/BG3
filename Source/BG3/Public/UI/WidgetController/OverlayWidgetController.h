@@ -96,7 +96,10 @@ public:
     void HandleMoveDistanceChanged(float Remaining, float Max);
 
 private:
-    
+    void BindAllFadeOutSources();
+    void ClearFadeOutBindings();
+
+    TSet<TWeakObjectPtr<class UCharacterStatsComponent>> FadeOutSources;
 };
 
 
