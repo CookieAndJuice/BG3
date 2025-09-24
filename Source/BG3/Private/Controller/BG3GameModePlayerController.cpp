@@ -78,10 +78,8 @@ void ABG3GameModePlayerController::BeginPlay()
 	// Initialize Input
 	auto pc = GetWorld()->GetFirstPlayerController();
 	UEnhancedInputLocalPlayerSubsystem* subsys = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(pc->GetLocalPlayer()); 
-	if (subsys)
-	{
-		subsys->AddMappingContext(PlayerIMC, 0);
-	}
+	if (!subsys) return;
+	subsys->AddMappingContext(PlayerIMC, 0);
 	
 	// Initialize Character
 	GMSubsystem = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>();
@@ -98,10 +96,17 @@ void ABG3GameModePlayerController::BeginPlay()
 	UOverlayWidgetController* WC = NewObject<UOverlayWidgetController>(GetWorld());
 	if (WC)
 	{
-		if (ABaseCharacter* PCharacter = Cast<ABaseCharacter>(GMSubsystem->GetCurrentPawn()))
+		if (ABG3PlayerCharacter* PCharacter = Cast<ABG3PlayerCharacter>(GMSubsystem->GetCurrentPawn()))
 		{
 			WC->Initialize(PCharacter, this);
 		}
+		else if (ABG3EnemyCharacter* PEnemy = Cast<ABG3EnemyCharacter>(GMSubsystem->GetCurrentPawn()))
+		{
+			UBG3GameManageSubsystem* Sub = GetWorld()->GetSubsystem<UBG3GameManageSubsystem>();
+			ABaseCharacter* Link = Sub->GetPlayerFromID(1);
+			WC->Initialize(Link, this);
+		}
+		
 		OverlayWidget->SetController(WC);
 	}
 
