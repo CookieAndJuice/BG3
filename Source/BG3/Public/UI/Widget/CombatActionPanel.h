@@ -32,7 +32,7 @@ protected:
     TSubclassOf<UActionSlotEntry> ActionSlotEntryClass;
 
     UPROPERTY(EditAnywhere, Category="Combat|UI")
-    int32 NumRow = 2;
+    int32 NumRow = 1;
 
     UPROPERTY()
     UOverlayWidgetController* Controller = nullptr;

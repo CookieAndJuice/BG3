@@ -97,6 +97,9 @@ public:
 	/* Next Turn Delegate */
 	FCurrentCharacterChanged CurrentCharacterChanged;
 
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void SpawnSystem(ABaseCharacter* Caster, FVector TargetLocation);
+	
 
 private:
 	void UseSkill(int32 SkillID);

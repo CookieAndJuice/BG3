@@ -60,6 +60,10 @@ void UOverlayWidget::FadeOutAnimationStart(EResultState result)
     PlayAnimation(FadeOut1);
     PlayAnimation(FadeOut2);
     PlayAnimation(FadeOut3);
+    PlayAnimation(FadeOut4);
+    PlayAnimation(FadeOut5);
+    PlayAnimation(FadeOut6);
+    
 
     PRINTDELEGATELOG(TEXT("Delegate 3"));
 

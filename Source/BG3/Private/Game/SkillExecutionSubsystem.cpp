@@ -271,6 +271,15 @@ void USkillExecutionSubsystem::ResetCast()
     CurrentSkillResult = FSkillResult{};
 }
 
+void USkillExecutionSubsystem::ResetSkillState()
+{
+    CastState = ECastState::Completed;
+    SkillResolved.Broadcast(CurrentSkillResult);
+
+    ResetCast();
+    CastState = ECastState::Idle;
+}
+
 void USkillExecutionSubsystem::FinalizeCastAfterExecutor(const TArray<AActor*>& InTargets, int32 CurrentRound)
 {
     // Must be in an executing phase
@@ -332,9 +341,5 @@ void USkillExecutionSubsystem::FinalizeCastAfterExecutor(const TArray<AActor*>& 
         SkillBook->CommitUse(Skill, CurrentRound);
     }
 
-    CastState = ECastState::Completed;
-    SkillResolved.Broadcast(CurrentSkillResult);
-
-    ResetCast();
-    CastState = ECastState::Idle;
+    ResetSkillState();
 }

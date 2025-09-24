@@ -273,7 +273,8 @@ void USkillTaskMoveTo::HandleMoveCompleted(FAIRequestID RequestID, EPathFollowin
             USkillExecutionSubsystem* Subsystem = GetWorld()->GetSubsystem<USkillExecutionSubsystem>();
             ABG3GameState* GS = GetWorld()->GetGameState<ABG3GameState>();
             TArray<AActor*> EmptyTargets;
-            Subsystem->FinalizeCastAfterExecutor(EmptyTargets, GS->GetCurrentRound());
+            //Subsystem->FinalizeCastAfterExecutor(EmptyTargets, GS->GetCurrentRound());
+            Subsystem->ResetSkillState();
             FTimerHandle Timer;
             GetWorld()->GetTimerManager().SetTimer(Timer, [this, Enemy]()
             {

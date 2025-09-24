@@ -66,7 +66,9 @@ public:
     virtual void Initialize(FSubsystemCollectionBase& Collection) override;
     virtual void Deinitialize() override;
 
-    
+	// 내부 상태 초기화(참조/결과 클리어)
+	void ResetCast();
+	void ResetSkillState();
 
     // 캐스트 시작 요청(검증+예약 → Targeting 진입)
     bool RequestCast(ABaseCharacter* Caster, USkillDefinition* Skill);
@@ -125,8 +127,7 @@ private:
 
     
 
-    // 내부 상태 초기화(참조/결과 클리어)
-    void ResetCast();
+    
 
 public:
     // Called by executor (e.g., after melee montage hit) to apply damage, commit, resolve and reset

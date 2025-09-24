@@ -25,8 +25,9 @@ void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter, ABG3GameM
     if (Stats)
     {
         Stats->OnMoveDistanceChanged.RemoveDynamic(this, &UOverlayWidgetController::HandleMoveDistanceChanged);
-        Stats->OnFadeOut.RemoveAll(this);
     }
+
+    ClearFadeOutBindings();
 
     OwningCharacter = InCharacter;
     SkillBook = InCharacter ? InCharacter->SkillBook : nullptr;
@@ -42,7 +43,6 @@ void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter, ABG3GameM
     if (Stats)
     {
         Stats->OnMoveDistanceChanged.AddDynamic(this, &UOverlayWidgetController::HandleMoveDistanceChanged);
-        Stats->OnFadeOut.AddUObject(this, &UOverlayWidgetController::HandleFadeOut);
 
         HandleHealthChanged(Stats->GetHealth(), Stats->GetMaxHealth());
         HandleManaChanged(Stats->GetMana(), Stats->GetMaxMana());
@@ -50,6 +50,8 @@ void UOverlayWidgetController::Initialize(ABaseCharacter* InCharacter, ABG3GameM
 
         OnStatsInitialized.Broadcast();
     }
+
+    BindAllFadeOutSources();
 
     if (PC && !PC->CurrentCharacterChanged.IsBound())
     {
@@ -209,5 +211,37 @@ void UOverlayWidgetController::BuildAndBroadcast()
     OnActionSlotsUpdated.Broadcast(Views);
 }
 
+void UOverlayWidgetController::BindAllFadeOutSources()
+{
+    if (UWorld* World = GetWorld())
+    {
+        if (auto* GMSub = World->GetSubsystem<UBG3GameManageSubsystem>())
+        {
+            for (const FTurnData& TurnData : GMSub->CombatPawns)
+            {
+                if (!TurnData.TurnCharacter) continue;
 
+                if (UCharacterStatsComponent* StatsComp = TurnData.TurnCharacter->FindComponentByClass<UCharacterStatsComponent>())
+                {
+                    if (!StatsComp->OnFadeOut.IsBoundToObject(this))
+                    {
+                        StatsComp->OnFadeOut.AddUObject(this, &UOverlayWidgetController::HandleFadeOut);
+                    }
+                    FadeOutSources.Add(StatsComp);
+                }
+            }
+        }
+    }
+}
 
+void UOverlayWidgetController::ClearFadeOutBindings()
+{
+    for (const TWeakObjectPtr<UCharacterStatsComponent>& WeakStats : FadeOutSources)
+    {
+        if (UCharacterStatsComponent* StatsComp = WeakStats.Get())
+        {
+            StatsComp->OnFadeOut.RemoveAll(this);
+        }
+    }
+    FadeOutSources.Empty();
+}
