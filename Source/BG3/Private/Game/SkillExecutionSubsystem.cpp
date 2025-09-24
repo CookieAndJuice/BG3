@@ -330,9 +330,22 @@ void USkillExecutionSubsystem::FinalizeCastAfterExecutor(const TArray<AActor*>& 
 
     for (AActor* Target : Targets)
     {
-        const int32 Damage = GM->Dice ? GM->Dice->RollDice(DiceNum, DiceSides) : FMath::RandRange(DiceNum, DiceNum * DiceSides);
+        int32 Damage = GM->Dice ? GM->Dice->RollDice(DiceNum, DiceSides) : FMath::RandRange(DiceNum, DiceNum * DiceSides);
         CurrentSkillResult.TotalDamage += Damage;
         CurrentSkillResult.Affected.Add(Target);
+
+        if (CurrentSkill->Meta.SkillKind == ESkillKind::Ranged)
+        {
+            FVector TargetLoc = Target->GetActorLocation();
+            FVector CharacterLoc = CurrentCaster->GetActorLocation();
+            float Distance = (TargetLoc-CharacterLoc).Size2D();
+
+            //GEngine->AddOnScreenDebugMessage(99, 3.f, FColor::Red, FString::Printf(TEXT("Distance : %.2f"), Distance));
+
+            if (Distance < 280.f)
+                Damage = FMath::Max(1, Damage-4);           
+        }
+        
         UGameplayStatics::ApplyDamage(Target, Damage, nullptr, Caster, UDamageType::StaticClass());
     }
 
