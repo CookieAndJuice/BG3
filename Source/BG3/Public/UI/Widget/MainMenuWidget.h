@@ -17,16 +17,10 @@ class BG3_API UMainMenuWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void StartGame();
 
 	UFUNCTION()
 	void QuitGame();
 
-private:
-	UPROPERTY(meta=(BindWidget))
-	class UButton* NewGameBtn;
-	
-	UPROPERTY(meta=(BindWidget))
-	class UButton* QuitGameBtn;
 };

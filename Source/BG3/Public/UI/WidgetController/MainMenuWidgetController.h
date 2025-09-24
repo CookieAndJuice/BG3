@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "MainMenuWidgetController.generated.h"
 
+struct FInputActionValue;
 /**
  * 
  */
@@ -18,6 +19,27 @@ public:
 	AMainMenuWidgetController();
 	
 	virtual void BeginPlay() override;
+
+	virtual void SetupInputComponent() override;
+
+public: // input
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<class UInputMappingContext> MainMenuIMC;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<class UInputAction> EnterKeyAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<class UInputAction> SpaceBarAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<class UInputAction> LMBAction;
+
+public:
+	UFUNCTION(BlueprintImplementableEvent, Category = Input)
+	void OnSpaceBarClick(const FInputActionValue& value);
+	UFUNCTION(BlueprintImplementableEvent, Category = Input)
+	void OnEnterKeyClick(const FInputActionValue& value);
 	
 private:
 	// About Bool
@@ -36,7 +58,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UMainMenuWidget> MainMenuWidget;
-
+	
 	// // About Press Enter Key Widget
 	// UPROPERTY(EditAnywhere)
 	// class UMediaPlayer* TouchPlayer1;
