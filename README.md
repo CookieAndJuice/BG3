@@ -2,6 +2,11 @@
 
 **Unreal Engine 5.6**으로 구현된 턴제 전술 RPG입니다. Baldur's Gate 3의 전투 시스템과 D&D 5판의 행동력 시스템(Action/Bonus Action/Reaction/Movement)을 C++ 기반으로 재현합니다.
 
+## 시연 영상
+[![BG3 게임플레이 영상](https://img.shields.io/badge/YouTube-시연%20영상%20보기-red?style=for-the-badge&logo=youtube)](https://drive.google.com/file/d/1vF0U6NqM_qRvn9XLRSNhpf9MIGUOkbuY/view?usp=sharing)
+
+[📹 시연 영상 보기](https://drive.google.com/file/d/1vF0U6NqM_qRvn9XLRSNhpf9MIGUOkbuY/view?usp=sharing)
+
 ## 목차
 - [주요 특징](#주요-특징)
 - [기술 스택](#기술-스택)
